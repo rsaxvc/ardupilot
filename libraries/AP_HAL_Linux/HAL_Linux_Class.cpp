@@ -22,6 +22,7 @@
 #include "OpticalFlow_Onboard.h"
 #include "RCInput.h"
 #include "RCInput_AioPRU.h"
+#include "RCInput_Joystick.h"
 #include "RCInput_Navio2.h"
 #include "RCInput_PRU.h"
 #include "RCInput_RPI.h"
