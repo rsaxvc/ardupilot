@@ -179,8 +179,7 @@ void UARTDevice::set_parity(int v)
         } else {
             t.c_cflag &= ~PARODD;
         }
-    }
-    else {
+    } else {
         // disable parity
         t.c_cflag &= ~PARENB;
     }
