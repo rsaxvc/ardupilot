@@ -70,6 +70,8 @@ class BoardList(object):
             Board("bbbmini"),
             Board("blue"),
             Board("pxfmini"),
+            Board("rsaxvc"),
+            Board("rsaxvc64"),
             Board("canzero"),
             Board("SITL_x86_64_linux_gnu"),
             Board("SITL_arm_linux_gnueabihf"),
