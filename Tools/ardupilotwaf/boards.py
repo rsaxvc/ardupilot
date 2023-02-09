@@ -1378,6 +1378,26 @@ class obal(linux):
             CONFIG_HAL_BOARD_SUBTYPE = 'HAL_BOARD_SUBTYPE_LINUX_OBAL_V1',
         )
 
+class rsaxvc(linux):
+    toolchain = 'arm-linux-gnueabihf'
+
+    def configure_env(self, cfg, env):
+        super(rsaxvc, self).configure_env(cfg, env)
+
+        env.DEFINES.update(
+            CONFIG_HAL_BOARD_SUBTYPE = 'HAL_BOARD_SUBTYPE_LINUX_RSAXVC_V1',
+        )
+
+class rsaxvc64(linux):
+    toolchain = 'aarch64-linux-gnu'
+
+    def configure_env(self, cfg, env):
+        super(rsaxvc64, self).configure_env(cfg, env)
+
+        env.DEFINES.update(
+            CONFIG_HAL_BOARD_SUBTYPE = 'HAL_BOARD_SUBTYPE_LINUX_RSAXVC_V1',
+        )
+
 class SITL_static(sitl):
     def configure_env(self, cfg, env):
         super(SITL_static, self).configure_env(cfg, env)
