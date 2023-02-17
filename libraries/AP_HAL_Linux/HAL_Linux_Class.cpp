@@ -179,7 +179,8 @@ static RCInput_RCProtocol rcinDriver{"/dev/ttyPS0", NULL};
 // in the linux driver and instead user needs to provide a uart via SERIALn_PROTOCOL
 static RCInput_RCProtocol rcinDriver{nullptr, nullptr};
 #elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_RSAXVC_V1
-static RCInput_Joystick  rcinDriver("/dev/input/js0");
+static RCInput_RPI rcinDriver;
+//static RCInput_Joystick  rcinDriver("/dev/input/js0");
 #else
 static RCInput rcinDriver;
 #endif
