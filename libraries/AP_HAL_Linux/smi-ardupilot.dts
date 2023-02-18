@@ -1,0 +1,37 @@
+// Description:	Overlay to enable the secondary memory interface peripheral
+// Author:	Luke Wren
+
+/dts-v1/;
+/plugin/;
+
+/{
+	compatible = "brcm,bcm2835";
+
+	fragment@0 {
+		target = <&smi>;
+		__overlay__ {
+			pinctrl-names = "default";
+			pinctrl-0 = <&smi_pins>;
+			status = "okay";
+		};
+	};
+
+	fragment@1 {
+		target = <&gpio>;
+		__overlay__ {
+			smi_pins: smi_pins {
+				/* Only configure the top-byte of 16-data-bits.
+				   The lower byte is already in-use by other peripherals.
+
+				   Do not configure the address lines, as they are not
+				   useful to us for wave-generation.*/
+
+				brcm,pins = <16 17 18 19 20 21 22 23>;
+				/* Alt 1: SMI */
+				brcm,function = <5 5 5 5 5 5 5 5>;
+				/* Pull everything low by default*/
+				brcm,pull = <1 1 1 1 1 1 1 1>;
+			};
+		};
+	};
+};
