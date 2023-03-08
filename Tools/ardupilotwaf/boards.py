@@ -677,6 +677,7 @@ class sitl(Board):
         self.with_can = True
 
     def configure_env(self, cfg, env):
+        cfg.load('cmsis')
         super(sitl, self).configure_env(cfg, env)
         env.DEFINES.update(
             CONFIG_HAL_BOARD = 'HAL_BOARD_SITL',
@@ -688,6 +689,8 @@ class sitl(Board):
         env.BOARD_CLASS = "SITL"
 
         cfg.define('AP_SIM_ENABLED', 1)
+        cfg.define('HAL_GYROFFT_ENABLED', 1)
+        cfg.define('HAL_WITH_DSP', 1)
         cfg.define('HAL_WITH_SPI', 1)
         cfg.define('HAL_WITH_RAMTRON', 1)
         cfg.define('AP_OPENDRONEID_ENABLED', 1)
@@ -849,6 +852,10 @@ class sitl(Board):
                 ('11','4','0'),
                 ('12','1','0'),
             ])
+
+        env.INCLUDES += [
+            cfg.srcnode.find_dir('modules/CMSIS_DSP/Include').abspath(),
+        ]
 
         # initialise werr_enabled from defaults:
         werr_enabled = bool('g++' in cfg.env.COMPILER_CXX and cfg.env.CC_VERSION in gcc_whitelist)
@@ -1100,6 +1107,12 @@ class chibios(Board):
             USE_LIBC_REALLOC = 0,
         )
 
+        if True: #TODO: figure out of CMSIS is needed
+            cfg.load('cmsis')
+
+        if True: #TODO: figure out CPU type
+            cfg.define('ARM_MATH_DSP', 1)
+
         env.AP_LIBRARIES += [
             'AP_HAL_ChibiOS',
         ]
@@ -1141,7 +1154,6 @@ class chibios(Board):
             '-mthumb',
             '--specs=nano.specs',
             '--specs=nosys.specs',
-            '-D__USE_CMSIS',
             '-Werror=deprecated-declarations',
             '-DNDEBUG=1'
         ]
@@ -1257,7 +1269,6 @@ class chibios(Board):
         ]
 
         env.INCLUDES += [
-            cfg.srcnode.find_dir('libraries/AP_GyroFFT/CMSIS_5/include').abspath(),
             cfg.srcnode.find_dir('modules/lwip/src/include/compat/posix').abspath()
         ]
 

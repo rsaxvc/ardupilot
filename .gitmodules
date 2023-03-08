@@ -42,3 +42,9 @@
 [submodule "modules/lwip"]
 	path = modules/lwip
 	url = https://github.com/ArduPilot/lwip.git
+[submodule "modules/CMSIS_DSP"]
+	path = modules/CMSIS_DSP
+	url = https://github.com/ARM-software/CMSIS-DSP.git
+[submodule "modules/CMSIS_6"]
+	path = modules/CMSIS_6
+	url = https://github.com/rsaxvc/CMSIS_6.git

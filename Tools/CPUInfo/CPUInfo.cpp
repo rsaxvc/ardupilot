@@ -14,10 +14,10 @@
 #include <AP_ESC_Telem/AP_ESC_Telem.h>
 #include "EKF_Maths.h"
 
-#if CONFIG_HAL_BOARD == HAL_BOARD_CHIBIOS
 #if HAL_WITH_DSP
 #include <arm_math.h>
 #endif
+#if CONFIG_HAL_BOARD == HAL_BOARD_CHIBIOS
 #include <hrt.h>
 #include <ch.h>
 #endif // HAL_BOARD_CHIBIOS
@@ -154,7 +154,7 @@ static void show_timings(void)
 
     TIMEIT("sinf()", v_out = sinf(v_f), 100);
     TIMEIT("cosf()", v_out = cosf(v_f), 100);
-    #if HAL_WITH_DSP && CONFIG_HAL_BOARD == HAL_BOARD_CHIBIOS
+    #if HAL_WITH_DSP
     TIMEIT("arm_sin_f32()", v_out = arm_sin_f32(v_f), 100);
     TIMEIT("arm_cos_f32()", v_out = arm_cos_f32(v_f), 100);
     #endif
@@ -171,7 +171,7 @@ static void show_timings(void)
     TIMEIT("asin()", v_out = asin(v_f * 0.2), 100);
     TIMEIT("atan2()", v_out = atan2(v_f * 0.2, v_f * 0.3), 100);
     TIMEIT("sqrt()",v_out = sqrt(v_f), 100);
-    #if HAL_WITH_DSP && CONFIG_HAL_BOARD == HAL_BOARD_CHIBIOS
+    #if HAL_WITH_DSP
 	TIMEIT("arm_sqrt_f32()", arm_sqrt_f32(v_f, (float32_t*)&v_out), 100);
     #endif
     TIMEIT("sq()",v_out = sq(v_f), 100);

@@ -502,7 +502,7 @@ def setup_canperiph_build(cfg):
         ]
 
     cfg.get_board().with_can = True
-    
+
 def load_env_vars(env):
     '''optionally load extra environment variables from env.py in the build directory'''
     print("Checking for env.py")
@@ -732,16 +732,6 @@ def build(bld):
             target=bld.bldnode.find_or_declare('modules/ChibiOS/libch.a')
         )
     ch_task.name = "ChibiOS_lib"
-    DSP_LIBS = {
-        'cortex-m4' : 'libarm_cortexM4lf_math.a',
-        'cortex-m7' : 'libarm_cortexM7lfdp_math.a',
-    }
-    if bld.env.CORTEX in DSP_LIBS:
-        libname = DSP_LIBS[bld.env.CORTEX]
-        # we need to copy the library on cygwin as it doesn't handle linking outside build tree
-        shutil.copyfile(os.path.join(bld.env.SRCROOT,'libraries/AP_GyroFFT/CMSIS_5/lib',libname),
-                        os.path.join(bld.env.BUILDROOT,'modules/ChibiOS/libDSP.a'))
-        bld.env.LIB += ['DSP']
     bld.env.LIB += ['ch']
     bld.env.LIBPATH += ['modules/ChibiOS/']
     if bld.env.ENABLE_CRASHDUMP:

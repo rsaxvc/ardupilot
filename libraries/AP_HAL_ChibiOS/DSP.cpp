@@ -88,32 +88,8 @@ DSP::FFTWindowStateARM::FFTWindowStateARM(uint16_t window_size, uint16_t sample_
     }
 
     // initialize the ARM data structure.
-    // it's important not to use arm_rfft_fast_init_f32() as this links all of the twiddle tables
-    // by being selective we save 70k in text space
-
-    switch (window_size) {
-    case 32:
-        arm_rfft_32_fast_init_f32(&_fft_instance);
-        break;
-    case 64:
-        arm_rfft_64_fast_init_f32(&_fft_instance);
-        break;
-    case 128:
-        arm_rfft_128_fast_init_f32(&_fft_instance);
-        break;
-    case 256:
-        arm_rfft_256_fast_init_f32(&_fft_instance);
-        break;
-#if defined(STM32H7)
-// Don't pull in the larger FFT tables unless we have to
-    case 512:
-        arm_rfft_512_fast_init_f32(&_fft_instance);
-        break;
-    case 1024:
-        arm_rfft_1024_fast_init_f32(&_fft_instance);
-        break;
-#endif
-    }
+    // available CMSIS FFTs are configured via compiler-flags
+    arm_rfft_fast_init_f32(&_fft_instance, window_size);
 }
 
 DSP::FFTWindowStateARM::~FFTWindowStateARM() {}
