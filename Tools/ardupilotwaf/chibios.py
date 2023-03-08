@@ -502,7 +502,80 @@ def setup_canperiph_build(cfg):
         ]
 
     cfg.get_board().with_can = True
-    
+
+def setup_cmsis_build(cfg):
+    '''enable CMSIS_DSP build. By doing this here we can auto-enable CMSIS_DSP'''
+    env = cfg.env
+
+    dirs = [
+        'BasicMathFunctions',
+        'BayesFunctions',
+        'CommonTables',
+        'ComplexMathFunctions',
+        'ControllerFunctions',
+        'DistanceFunctions',
+        'FilteringFunctions',
+        'StatisticsFunctions',
+        'WindowFunctions',
+        'QuaternionMathFunctions',
+        'InterpolationFunctions',
+        'SVMFunctions',
+        'TransformFunctions',
+        'FastMathFunctions',
+        ]
+
+    types = [
+        'f32',
+        'f64',
+        'q15',
+        'q32',
+        ]
+
+    for dir in dirs:
+        for type in types:
+            env.AP_LIBRARIES += [
+                'AP_GyroFFT',
+                'modules/CMSIS_DSP/Source/' + dir + '/arm_*' + type + '.c',
+                ]
+
+    env.AP_LIBRARIES += [
+        'AP_GyroFFT',
+        'modules/CMSIS_DSP/Source/TransformFunctions/arm*bitreversal2.c',
+        'modules/CMSIS_DSP/Source/CommonTables/arm*common_tables.c',
+        'modules/CMSIS_DSP/Source/CommonTables/arm*const_structs.c',
+        ]
+
+    # Do not link in all of the twiddle tables by default.
+    # By being selective we save 70k in text space.
+    env.DEFINES += [
+        'ARM_MATH_DSP',
+        'ARM_MATH_LOOPUNROLL',
+        'ARM_FAST_ALLOW_TABLES',
+        'ARM_TABLE_RECIP_F32',
+        'ARM_TABLE_RECIP_Q15',
+        'ARM_TABLE_SIN_F32',
+        'ARM_TABLE_SIN_Q31',
+        'ARM_TABLE_SIN_Q15',
+        'ARM_TABLE_SQRT_Q31',
+        'ARM_TABLE_SQRT_Q15',
+        'ARM_TABLE_TWIDDLECOEF_F32_32',
+        'ARM_TABLE_TWIDDLECOEF_F32_64',
+        'ARM_TABLE_TWIDDLECOEF_F32_128',
+        'ARM_TABLE_TWIDDLECOEF_F32_256',
+        ]
+
+    if env.CORTEX != 'cortex-m4':
+        env.DEFINES += [
+            'ARM_TABLE_TWIDDLECOEF_F32_512',
+            'ARM_TABLE_TWIDDLECOEF_F32_1024',
+            ]
+
+    env.INCLUDES += [
+        cfg.srcnode.find_dir('modules/CMSIS_DSP/Include').abspath(),
+        cfg.srcnode.find_dir('modules/CMSIS_DSP/PrivateInclude').abspath(),
+        ]
+    cfg.get_board().with_cmsis = True
+
 def load_env_vars(env):
     '''optionally load extra environment variables from env.py in the build directory'''
     print("Checking for env.py")
@@ -617,6 +690,7 @@ def configure(cfg):
         setup_canperiph_build(cfg)
     if env.HAL_NUM_CAN_IFACES and env.AP_PERIPH and int(env.HAL_NUM_CAN_IFACES)>1 and not env.BOOTLOADER:
         env.DEFINES += [ 'CANARD_MULTI_IFACE=1' ]
+    setup_cmsis_build(cfg)
     setup_optimization(cfg.env)
 
 def generate_hwdef_h(env):
@@ -732,16 +806,6 @@ def build(bld):
             target=bld.bldnode.find_or_declare('modules/ChibiOS/libch.a')
         )
     ch_task.name = "ChibiOS_lib"
-    DSP_LIBS = {
-        'cortex-m4' : 'libarm_cortexM4lf_math.a',
-        'cortex-m7' : 'libarm_cortexM7lfdp_math.a',
-    }
-    if bld.env.CORTEX in DSP_LIBS:
-        libname = DSP_LIBS[bld.env.CORTEX]
-        # we need to copy the library on cygwin as it doesn't handle linking outside build tree
-        shutil.copyfile(os.path.join(bld.env.SRCROOT,'libraries/AP_GyroFFT/CMSIS_5/lib',libname),
-                        os.path.join(bld.env.BUILDROOT,'modules/ChibiOS/libDSP.a'))
-        bld.env.LIB += ['DSP']
     bld.env.LIB += ['ch']
     bld.env.LIBPATH += ['modules/ChibiOS/']
     if bld.env.ENABLE_CRASHDUMP:
