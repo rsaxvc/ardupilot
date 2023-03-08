@@ -39,3 +39,6 @@
 	path = modules/Micro-CDR
 	url = https://github.com/ardupilot/Micro-CDR.git
 	branch = master
+[submodule "modules/CMSIS_DSP"]
+	path = modules/CMSIS_DSP
+	url = https://github.com/ARM-software/CMSIS-DSP.git

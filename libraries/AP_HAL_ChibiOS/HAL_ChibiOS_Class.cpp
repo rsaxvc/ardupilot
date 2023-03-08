@@ -37,6 +37,7 @@
 #include <AP_HAL/SIMState.h>
 
 #include <hwdef.h>
+#include "DSP.h"
 
 #ifndef DEFAULT_SERIAL0_BAUD
 #define SERIAL0_BAUD 115200
@@ -108,12 +109,6 @@ static Empty::OpticalFlow opticalFlowDriver;
 static AP_HAL::SIMState xsimstate;
 #endif
 
-#if HAL_WITH_DSP
-static ChibiOS::DSP dspDriver;
-#else
-static Empty::DSP dspDriver;
-#endif
-
 #ifndef HAL_NO_FLASH_SUPPORT
 static ChibiOS::Flash flashDriver;
 #else
@@ -166,7 +161,7 @@ HAL_ChibiOS::HAL_ChibiOS() :
 #if AP_SIM_ENABLED
         &xsimstate,
 #endif
-        &dspDriver,
+        getDspBackend(),
 #if HAL_NUM_CAN_IFACES
         (AP_HAL::CANIface**)canDrivers
 #else

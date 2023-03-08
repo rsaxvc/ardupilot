@@ -1124,7 +1124,7 @@ class chibios(Board):
         ]
 
         env.INCLUDES += [
-            cfg.srcnode.find_dir('libraries/AP_GyroFFT/CMSIS_5/include').abspath()
+            cfg.srcnode.find_dir('modules/CMSIS_DSP/Include').abspath()
         ]
 
         # whitelist of compilers which we should build with -Werror
