@@ -11,7 +11,7 @@ APJ_BOARD_ID 1027
 # crystal frequency, setup to use external oscillator
 OSCILLATOR_HZ 8000000
 
-FLASH_SIZE_KB 1024
+FLASH_SIZE_KB 2048
 
 # bootloader takes first sector
 FLASH_RESERVE_START_KB 96
@@ -161,7 +161,7 @@ define HAL_OSD_TYPE_DEFAULT 1
 ROMFS_WILDCARD libraries/AP_OSD/fonts/font0.bin
 
 # FFT option (disabled by default)
-# define HAL_GYROFFT_ENABLED 1
+define HAL_GYROFFT_ENABLED 1
 # define AP_OAPATHPLANNER_ENABLED 0
 
 # save some flash

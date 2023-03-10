@@ -17,6 +17,8 @@ APJ_BOARD_ID 53
 define HAL_CHIBIOS_ARCH_FMUV6 1
 define AP_FEATURE_BOARD_DETECT 1
 
+define HAL_GYROFFT_ENABLED 1
+
 FLASH_RESERVE_START_KB 128
 
 # to be compatible with the px4 bootloader we need
