@@ -35,6 +35,7 @@
 #include "RCOutput_AioPRU.h"
 #include "RCOutput_Bebop.h"
 #include "RCOutput_Disco.h"
+#include "RCOutput_Multi.h"
 #include "RCOutput_PCA9685.h"
 #include "RCOutput_PRU.h"
 #include "RCOutput_PWM.h"
@@ -200,8 +201,15 @@ static RCOutput_AioPRU rcoutDriver;
 #elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_ERLEBRAIN2  || \
       CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_PXFMINI || \
       CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_RSAXVC_V1
-//static RCOutput_PCA9685 rcoutDriver(i2c_mgr_instance.get_device(1, PCA9685_PRIMARY_ADDRESS), 24576000, 3, RPI_GPIO_<27>());
-static RCOutput_PWM rcoutDriver(0,0,2);
+static RCOutput_PCA9685 rcoutDriverPca(i2c_mgr_instance.get_device(1, PCA9685_PRIMARY_ADDRESS), 24576000, 3, RPI_GPIO_<27>());
+static RCOutput_PWM rcoutDriverPwm(0,0,2);
+static const std::tuple<AP_HAL::RCOutput&,int> rcoutGroups[]=
+    {
+    {rcoutDriverPwm, 2},
+    {rcoutDriverPca, 14},
+    };
+static RCOutput_Multi rcoutDriver(rcoutGroups, sizeof(rcoutGroups)/sizeof(rcoutGroups[0]));
+
 #elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_NAVIO
 static RCOutput_PCA9685 rcoutDriver(i2c_mgr_instance.get_device(1, PCA9685_PRIMARY_ADDRESS), 24576000, 3, NAVIO_GPIO_PCA_OE);
 #elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_BH
