@@ -215,7 +215,7 @@ void Storage::_mark_dirty(uint16_t loc, uint16_t length)
         return;
     }
     uint16_t end = loc + length - 1;
-    for (uint16_t line=loc>>CH_STORAGE_LINE_SHIFT;
+    for (uint_fast16_t line=loc>>CH_STORAGE_LINE_SHIFT;
          line <= end>>CH_STORAGE_LINE_SHIFT;
          line++) {
         _dirty_mask.set(line);
@@ -360,7 +360,7 @@ bool Storage::_flash_write_data(uint8_t sector, uint32_t offset, const uint8_t *
 {
 #ifdef STORAGE_FLASH_PAGE
     size_t base_address = hal.flash->getpageaddr(_flash_page+sector);
-    for (uint8_t i=0; i<STORAGE_FLASH_RETRIES; i++) {
+    for (uint_fast8_t i=0; i<STORAGE_FLASH_RETRIES; i++) {
         EXPECT_DELAY_MS(1);
         if (hal.flash->write(base_address+offset, data, length)) {
             return true;
@@ -407,7 +407,7 @@ bool Storage::_flash_erase_sector(uint8_t sector)
 #ifdef STORAGE_FLASH_PAGE
     // erasing a page can take long enough that USB may not initialise properly if it happens
     // while the host is connecting. Only do a flash erase if we have been up for more than 4s
-    for (uint8_t i=0; i<STORAGE_FLASH_RETRIES; i++) {
+    for (uint_fast8_t i=0; i<STORAGE_FLASH_RETRIES; i++) {
         /*
           a sector erase stops the whole MCU. We need to setup a long
           expected delay, and not only when running in the main

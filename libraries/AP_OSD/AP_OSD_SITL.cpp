@@ -48,15 +48,15 @@ void AP_OSD_SITL::load_font(void)
     if (fd == nullptr || fd->length != 54 * 256) {
         AP_HAL::panic("Bad font file");
     }
-    for (uint16_t i=0; i<256; i++) {
+    for (uint_fast16_t i=0; i<256; i++) {
         const uint8_t *c = &fd->data[i*54];
         // each pixel is 4 bytes, RGBA
         sf::Uint8 *pixels = new sf::Uint8[char_width * char_height * 4];
         if (!font[i].create(char_width, char_height)) {
             AP_HAL::panic("Failed to create texture");
         }
-        for (uint16_t y=0; y<char_height; y++) {
-            for (uint16_t x=0; x<char_width; x++) {
+        for (uint_fast16_t y=0; y<char_height; y++) {
+            for (uint_fast16_t x=0; x<char_width; x++) {
                 // 2 bits per pixel
                 uint16_t bitoffset = (y*char_width+x)*2;
                 uint8_t byteoffset = bitoffset / 8;
@@ -154,8 +154,8 @@ void AP_OSD_SITL::update_thread(void)
                 }
                 w->clear();
 
-                for (uint8_t y=0; y<video_lines; y++) {
-                    for (uint8_t x=0; x<video_cols; x++) {
+                for (uint_fast8_t y=0; y<video_lines; y++) {
+                    for (uint_fast8_t x=0; x<video_cols; x++) {
                         uint16_t px = x * (char_width+char_spacing) * char_scale;
                         uint16_t py = y * (char_height+char_spacing) * char_scale;
                         sf::Sprite s;

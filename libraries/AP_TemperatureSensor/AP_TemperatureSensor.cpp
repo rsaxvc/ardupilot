@@ -123,7 +123,7 @@ void AP_TemperatureSensor::init()
 #endif
 
     // create each instance
-    for (uint8_t instance = 0; instance < AP_TEMPERATURE_SENSOR_MAX_INSTANCES; instance++) {
+    for (uint_fast8_t instance = 0; instance < AP_TEMPERATURE_SENSOR_MAX_INSTANCES; instance++) {
 
         switch (get_type(instance)) {
 #if AP_TEMPERATURE_SENSOR_TSYS01_ENABLED
@@ -167,7 +167,7 @@ void AP_TemperatureSensor::init()
 // update: - For all active instances update temperature and log TEMP
 void AP_TemperatureSensor::update()
 {
-    for (uint8_t i=0; i<_num_instances; i++) {
+    for (uint_fast8_t i=0; i<_num_instances; i++) {
         if (drivers[i] != nullptr && get_type(i) != AP_TemperatureSensor_Params::Type::NONE) {
             drivers[i]->update();
 

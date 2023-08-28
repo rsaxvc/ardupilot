@@ -190,7 +190,7 @@ void AP_RCProtocol_FPort::decode_downlink(const FPort_Frame &frame)
         buf2[len++] = 0xff;
     }
 
-    for (uint8_t i=0; i<sizeof(buf); i++) {
+    for (uint_fast8_t i=0; i<sizeof(buf); i++) {
         uint8_t c = buf[i];
         if (c == FRAME_DLE || buf[i] == FRAME_HEAD) {
             buf2[len++] = FRAME_DLE;

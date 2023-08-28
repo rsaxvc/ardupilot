@@ -98,7 +98,7 @@ void setup(void)
 
     ::printf("time, PWM, thrust, torque, current\n");
     const Vector3f gyro {};
-    for (uint16_t PWM = frame.get_pwm_min(); PWM <= frame.get_pwm_max(); PWM++) {
+    for (uint_fast16_t PWM = frame.get_pwm_min(); PWM <= frame.get_pwm_max(); PWM++) {
         input.servos[0] = PWM;
 
         Vector3f torque;

@@ -10,7 +10,7 @@ AP_Compass_SITL::AP_Compass_SITL()
     : _sitl(AP::sitl())
 {
     if (_sitl != nullptr) {
-        for (uint8_t i=0; i<MAX_CONNECTED_MAGS; i++) {
+        for (uint_fast8_t i=0; i<MAX_CONNECTED_MAGS; i++) {
             uint32_t dev_id = _sitl->mag_devid[i];
             if (dev_id == 0) {
                 continue;
@@ -30,7 +30,7 @@ AP_Compass_SITL::AP_Compass_SITL()
         }
 
         // Scroll through the registered compasses, and set the offsets
-        for (uint8_t i=0; i<_num_compass; i++) {
+        for (uint_fast8_t i=0; i<_num_compass; i++) {
             if (_compass.get_offsets(i).is_zero()) {
                 _compass.set_offsets(i, _sitl->mag_ofs[i]);
             }
@@ -110,7 +110,7 @@ void AP_Compass_SITL::_timer()
     // return delayed measurement
     uint32_t delayed_time = now - _sitl->mag_delay; // get time corresponding to delay
     // find data corresponding to delayed time in buffer
-    for (uint8_t i=0; i<=buffer_length-1; i++) {
+    for (uint_fast8_t i=0; i<=buffer_length-1; i++) {
         // find difference between delayed time and time stamp in buffer
         uint32_t time_delta = abs((int32_t)(delayed_time - buffer[i].time));
         // if this difference is smaller than last delta, store this time
@@ -123,7 +123,7 @@ void AP_Compass_SITL::_timer()
         new_mag_data = buffer[best_index].data;
     }
 
-    for (uint8_t i=0; i<_num_compass; i++) {
+    for (uint_fast8_t i=0; i<_num_compass; i++) {
         _setup_eliptical_correcion(i);
         Vector3f f = (_eliptical_corr * new_mag_data) - _sitl->mag_ofs[i].get();
         // rotate compass
@@ -150,7 +150,7 @@ void AP_Compass_SITL::_timer()
 
 void AP_Compass_SITL::read()
 {
-    for (uint8_t i=0; i<_num_compass; i++) {
+    for (uint_fast8_t i=0; i<_num_compass; i++) {
         drain_accumulated_samples(_compass_instance[i], nullptr);
     }
 }

@@ -24,7 +24,7 @@ void SITL::InvensenseV3::update(const class Aircraft &aircraft)
         AP_HAL::millis16()   // timestamp
     };
 
-    for (uint8_t i=0; i<2; i++) {
+    for (uint_fast8_t i=0; i<2; i++) {
         if (!write_to_fifo(InvensenseV3DevReg::FIFO_DATA, (uint8_t*)&new_data, sizeof(new_data))) {
             return;
         }

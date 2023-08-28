@@ -333,7 +333,7 @@ void AP_InertialSensor_Invensensev3::accumulate()
 
 bool AP_InertialSensor_Invensensev3::accumulate_samples(const FIFOData *data, uint8_t n_samples)
 {
-    for (uint8_t i = 0; i < n_samples; i++) {
+    for (uint_fast8_t i = 0; i < n_samples; i++) {
         const FIFOData &d = data[i];
 
         // we have a header to confirm we don't have FIFO corruption! no more mucking
@@ -791,7 +791,7 @@ uint8_t AP_InertialSensor_Invensensev3::register_read_bank_icm456xy(uint16_t ban
     dev->transfer(send, sizeof(send), nullptr, 0);
 
     // try reading IREG_DATA on ready
-    for (uint8_t i=0; i<10; i++) {
+    for (uint_fast8_t i=0; i<10; i++) {
         if (register_read(INV3REG_456_REG_MISC2) & 0x01) {
             break;
         }
@@ -853,7 +853,7 @@ bool AP_InertialSensor_Invensensev3::hardware_init(void)
 
     if (inv3_type == Invensensev3_Type::ICM42670) {
         // the ICM-42670 needs some more power-up config
-        for (uint8_t tries=0; tries<50; tries++) {
+        for (uint_fast8_t tries=0; tries<50; tries++) {
             // initiate a power up sequence
             register_write(INV3REG_70_SIGNAL_PATH_RESET, 0x10);
             hal.scheduler->delay_microseconds(1000);

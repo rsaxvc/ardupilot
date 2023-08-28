@@ -580,7 +580,7 @@ void AP_Radio_cypress::set_channel(uint8_t channel)
 void AP_Radio_cypress::radio_set_config(const struct config *conf, uint8_t size)
 {
     // setup required radio config
-    for (uint8_t i=0; i<size; i++) {
+    for (uint_fast8_t i=0; i<size; i++) {
         write_register(conf[i].reg, conf[i].value);
     }
 }
@@ -636,7 +636,7 @@ void AP_Radio_cypress::radio_init(void)
 
 void AP_Radio_cypress::dump_registers(uint8_t n)
 {
-    for (uint8_t i=0; i<n; i++) {
+    for (uint_fast8_t i=0; i<n; i++) {
         uint8_t v = read_register(i);
         printf("%02x:%02x ", i, v);
         if ((i+1) % 16 == 0) {
@@ -847,7 +847,7 @@ void AP_Radio_cypress::process_bind(const uint8_t *pkt, uint8_t len)
 
     // Calculate the first sum
     uint16_t bind_sum = 384 - 0x10;
-    for (uint8_t i = 0; i < 8; i++) {
+    for (uint_fast8_t i = 0; i < 8; i++) {
         bind_sum += pkt[i];
     }
 
@@ -857,7 +857,7 @@ void AP_Radio_cypress::process_bind(const uint8_t *pkt, uint8_t len)
     }
 
     // Calculate second sum
-    for (uint8_t i = 8; i < 14; i++) {
+    for (uint_fast8_t i = 8; i < 14; i++) {
         bind_sum += pkt[i];
     }
 

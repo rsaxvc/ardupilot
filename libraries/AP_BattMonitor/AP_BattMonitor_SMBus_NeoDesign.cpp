@@ -37,7 +37,7 @@ void AP_BattMonitor_SMBus_NeoDesign::timer()
     }
 
     bool read_all_cells = true;
-    for(uint8_t i = 0; i < _cell_count; ++i) {
+    for (uint_fast8_t i = 0; i < _cell_count; ++i) {
         if(read_word(BATTMONITOR_ND_CELL_START + i, data)) {
             _state.cell_voltages.cells[i] = data;
             _has_cell_voltages = true;

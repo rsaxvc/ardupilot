@@ -38,9 +38,9 @@ static T* matrix_multiply(const T *A, const T *B, uint16_t n)
     T* ret = new T[n*n];
     memset(ret,0.0f,n*n*sizeof(T));
 
-    for(uint16_t i = 0; i < n; i++) {
-        for(uint16_t j = 0; j < n; j++) {
-            for(uint16_t k = 0;k < n; k++) {
+    for (uint_fast16_t i = 0; i < n; i++) {
+        for (uint_fast16_t j = 0; j < n; j++) {
+            for (uint_fast16_t k = 0;k < n; k++) {
                 ret[i*n + j] += A[i*n + k] * B[k*n + j];
             }
         }
@@ -68,15 +68,15 @@ static inline void swap(T &a, T &b)
 template<typename T>
 static void mat_pivot(const T* A, T* pivot, uint16_t n)
 {
-    for(uint16_t i = 0;i<n;i++){
-        for(uint16_t j=0;j<n;j++) {
+    for (uint_fast16_t i = 0;i<n;i++){
+        for (uint_fast16_t j=0;j<n;j++) {
             pivot[i*n+j] = static_cast<T>(i==j);
         }
     }
 
-    for(uint16_t i = 0;i < n; i++) {
+    for (uint_fast16_t i = 0;i < n; i++) {
         uint16_t max_j = i;
-        for(uint16_t j=i;j<n;j++){
+        for (uint_fast16_t j=i;j<n;j++){
             if (std::is_same<T, double>::value) {
                 if(fabsF(A[j*n + i]) > fabsF(A[max_j*n + i])) {
                     max_j = j;
@@ -89,7 +89,7 @@ static void mat_pivot(const T* A, T* pivot, uint16_t n)
         }
 
         if(max_j != i) {
-            for(uint16_t k = 0; k < n; k++) {
+            for (uint_fast16_t k = 0; k < n; k++) {
                 swap(pivot[i*n + k], pivot[max_j*n + k]);
             }
         }
@@ -157,20 +157,20 @@ static void mat_LU_decompose(const T* A, T* L, T* U, T *P, uint16_t n)
     mat_pivot(A,P,n);
 
     T *APrime = matrix_multiply(P,A,n);
-    for(uint16_t i = 0; i < n; i++) {
+    for (uint_fast16_t i = 0; i < n; i++) {
         L[i*n + i] = 1;
     }
-    for(uint16_t i = 0; i < n; i++) {
-        for(uint16_t j = 0; j < n; j++) {
+    for (uint_fast16_t i = 0; i < n; i++) {
+        for (uint_fast16_t j = 0; j < n; j++) {
             if(j <= i) {    
                 U[j*n + i] = APrime[j*n + i];
-                for(uint16_t k = 0; k < j; k++) {
+                for (uint_fast16_t k = 0; k < j; k++) {
                     U[j*n + i] -= L[j*n + k] * U[k*n + i]; 
                 }
             }
             if(j >= i) {
                 L[j*n + i] = APrime[j*n + i];
-                for(uint16_t k = 0; k < i; k++) {
+                for (uint_fast16_t k = 0; k < i; k++) {
                     L[j*n + i] -= L[j*n + k] * U[k*n + i]; 
                 }
                 L[j*n + i] /= U[i*n + i];
@@ -216,8 +216,8 @@ static bool mat_inverseN(const T* A, T* inv, uint16_t n)
     T *inv_pivoted = matrix_multiply(inv_unpivoted, P, n);
 
     //check sanity of results
-    for(uint16_t i = 0; i < n; i++) {
-        for(uint16_t j = 0; j < n; j++) {
+    for (uint_fast16_t i = 0; i < n; i++) {
+        for (uint_fast16_t j = 0; j < n; j++) {
             if(isnan(inv_pivoted[i*n+j]) || isinf(inv_pivoted[i*n+j])){
                 ret = false;
             }
@@ -265,7 +265,7 @@ static bool inverse3x3(const T m[], T invOut[])
     inv[7] = (m[6] * m[1] - m[0] * m[7]) * invdet;
     inv[8] = (m[0] * m[4] - m[3] * m[1]) * invdet;
 
-    for(uint16_t i = 0; i < 9; i++){
+    for (uint_fast16_t i = 0; i < 9; i++){
         invOut[i] = inv[i];
     }
 
@@ -448,9 +448,9 @@ template <typename T>
 void mat_mul(const T *A, const T *B, T *C, uint16_t n)
 {
     memset(C, 0, sizeof(T)*n*n);
-    for(uint16_t i = 0; i < n; i++) {
-        for(uint16_t j = 0; j < n; j++) {
-            for(uint16_t k = 0;k < n; k++) {
+    for (uint_fast16_t i = 0; i < n; i++) {
+        for (uint_fast16_t j = 0; j < n; j++) {
+            for (uint_fast16_t k = 0;k < n; k++) {
                 C[i*n + j] += A[i*n + k] * B[k*n + j];
             }
         }
@@ -461,7 +461,7 @@ template <typename T>
 void mat_identity(T *A, uint16_t n)
 {
     memset(A, 0, sizeof(T)*n*n);
-    for (uint16_t i=0; i<n; i++) {
+    for (uint_fast16_t i=0; i<n; i++) {
         A[i*n+i] = 1;
     }
 }

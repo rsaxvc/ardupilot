@@ -92,7 +92,7 @@ void EKFGSF_yaw::update(const Vector3F &delAng,
     }
 
     // Always run the AHRS prediction cycle for each model
-    for (uint8_t mdl_idx = 0; mdl_idx < N_MODELS_EKFGSF; mdl_idx++) {
+    for (uint_fast8_t mdl_idx = 0; mdl_idx < N_MODELS_EKFGSF; mdl_idx++) {
         predict(mdl_idx);
     }
 
@@ -104,7 +104,7 @@ void EKFGSF_yaw::update(const Vector3F &delAng,
     // To avoid issues with angle wrapping, the yaw state is converted to a vector with legnth
     // equal to the weighting value before it is summed.
     Vector2F yaw_vector = {};
-    for (uint8_t mdl_idx = 0; mdl_idx < N_MODELS_EKFGSF; mdl_idx++) {
+    for (uint_fast8_t mdl_idx = 0; mdl_idx < N_MODELS_EKFGSF; mdl_idx++) {
         yaw_vector[0] += GSF.weights[mdl_idx] * cosF(EKF[mdl_idx].X[2]);
         yaw_vector[1] += GSF.weights[mdl_idx] * sinF(EKF[mdl_idx].X[2]);
     }
@@ -113,13 +113,13 @@ void EKFGSF_yaw::update(const Vector3F &delAng,
     // Example for future reference showing how a full GSF covariance matrix could be calculated if required
     /*
     memset(&GSF.P, 0, sizeof(GSF.P));
-    for (uint8_t mdl_idx = 0; mdl_idx < N_MODELS_EKFGSF; mdl_idx++) {
+    for (uint_fast8_t mdl_idx = 0; mdl_idx < N_MODELS_EKFGSF; mdl_idx++) {
         ftype delta[3];
-        for (uint8_t row = 0; row < 3; row++) {
+        for (uint_fast8_t row = 0; row < 3; row++) {
             delta[row] = EKF[mdl_idx].X[row] - GSF.X[row];
         }
-        for (uint8_t row = 0; row < 3; row++) {
-            for (uint8_t col = 0; col < 3; col++) {
+        for (uint_fast8_t row = 0; row < 3; row++) {
+            for (uint_fast8_t col = 0; col < 3; col++) {
                 GSF.P[row][col] +=  GSF.weights[mdl_idx] * (EKF[mdl_idx].P[row][col] + delta[row] * delta[col]);
             }
         }
@@ -127,7 +127,7 @@ void EKFGSF_yaw::update(const Vector3F &delAng,
     */
 
     GSF.yaw_variance = 0.0f;
-    for (uint8_t mdl_idx = 0; mdl_idx < N_MODELS_EKFGSF; mdl_idx++) {
+    for (uint_fast8_t mdl_idx = 0; mdl_idx < N_MODELS_EKFGSF; mdl_idx++) {
         ftype yawDelta = wrap_PI(EKF[mdl_idx].X[2] - GSF.yaw);
         GSF.yaw_variance +=  GSF.weights[mdl_idx] * (EKF[mdl_idx].P[2][2] + sq(yawDelta));
     }
@@ -143,7 +143,7 @@ void EKFGSF_yaw::fuseVelData(const Vector2F &vel, const ftype velAcc)
         if (!vel_fuse_running) {
             // Perform in-flight alignment
             resetEKFGSF();
-            for (uint8_t mdl_idx = 0; mdl_idx < N_MODELS_EKFGSF; mdl_idx++) {
+            for (uint_fast8_t mdl_idx = 0; mdl_idx < N_MODELS_EKFGSF; mdl_idx++) {
                 // Use the firstGPS  measurement to set the velocities and corresponding variances
                 EKF[mdl_idx].X[0] = vel[0];
                 EKF[mdl_idx].X[1] = vel[1];
@@ -156,7 +156,7 @@ void EKFGSF_yaw::fuseVelData(const Vector2F &vel, const ftype velAcc)
             ftype total_w = 0.0f;
             ftype newWeight[(uint8_t)N_MODELS_EKFGSF];
             bool state_update_failed = false;
-            for (uint8_t mdl_idx = 0; mdl_idx < N_MODELS_EKFGSF; mdl_idx++) {
+            for (uint_fast8_t mdl_idx = 0; mdl_idx < N_MODELS_EKFGSF; mdl_idx++) {
                 // Update states and covariances using GPS NE velocity measurements fused as direct state observations
                 if (!correct(mdl_idx, vel, velObsVar)) {
                     state_update_failed = true;
@@ -167,7 +167,7 @@ void EKFGSF_yaw::fuseVelData(const Vector2F &vel, const ftype velAcc)
                 // Calculate weighting for each model assuming a normal error distribution
                 const ftype min_weight = 1e-5f;
                 n_clips = 0;
-                for (uint8_t mdl_idx = 0; mdl_idx < N_MODELS_EKFGSF; mdl_idx++) {
+                for (uint_fast8_t mdl_idx = 0; mdl_idx < N_MODELS_EKFGSF; mdl_idx++) {
                     newWeight[mdl_idx] = gaussianDensity(mdl_idx) * GSF.weights[mdl_idx];
                     if (newWeight[mdl_idx] < min_weight) {
                         n_clips++;
@@ -180,7 +180,7 @@ void EKFGSF_yaw::fuseVelData(const Vector2F &vel, const ftype velAcc)
                 // Reset the filters if all weights have underflowed due to excessive innovation variances
                 if (vel_fuse_running && n_clips < N_MODELS_EKFGSF) {
                     ftype total_w_inv = 1.0f / total_w;
-                    for (uint8_t mdl_idx = 0; mdl_idx < N_MODELS_EKFGSF; mdl_idx++) {
+                    for (uint_fast8_t mdl_idx = 0; mdl_idx < N_MODELS_EKFGSF; mdl_idx++) {
                         GSF.weights[mdl_idx]  = newWeight[mdl_idx] * total_w_inv;
                     }
                 } else {
@@ -229,7 +229,7 @@ void EKFGSF_yaw::predictAHRS(const uint8_t mdl_idx)
     if (spinRate_squared < sq(0.175f)) {
         AHRS[mdl_idx].gyro_bias -= tilt_error_gyro_correction * (EKFGSF_gyroBiasGain * angle_dt);
 
-        for (uint8_t i = 0; i < 3; i++) {
+        for (uint_fast8_t i = 0; i < 3; i++) {
             AHRS[mdl_idx].gyro_bias[i] = constrain_ftype(AHRS[mdl_idx].gyro_bias[i], -gyro_bias_limit, gyro_bias_limit);
         }
     }
@@ -266,14 +266,14 @@ void EKFGSF_yaw::alignTilt()
     // We need the rotation matrix from body frame to earth frame so the earth frame unit vectors rotated into body
     // frame are copied into corresponding rows instead to create the transpose.
     Matrix3F R;
-    for (uint8_t col=0; col<3; col++) {
+    for (uint_fast8_t col=0; col<3; col++) {
         R[0][col] = north_in_bf[col];
         R[1][col] = east_in_bf[col];
         R[2][col] = down_in_bf[col];
     }
 
     // record alignment
-    for (uint8_t mdl_idx = 0; mdl_idx < N_MODELS_EKFGSF; mdl_idx++) {
+    for (uint_fast8_t mdl_idx = 0; mdl_idx < N_MODELS_EKFGSF; mdl_idx++) {
         AHRS[mdl_idx].R = R;
         AHRS[mdl_idx].aligned = true;
     }
@@ -282,7 +282,7 @@ void EKFGSF_yaw::alignTilt()
 void EKFGSF_yaw::alignYaw()
 {
     // Align yaw angle for each model
-    for (uint8_t mdl_idx = 0; mdl_idx < N_MODELS_EKFGSF; mdl_idx++) {
+    for (uint_fast8_t mdl_idx = 0; mdl_idx < N_MODELS_EKFGSF; mdl_idx++) {
         if (fabsF(AHRS[mdl_idx].R[2][0]) < fabsF(AHRS[mdl_idx].R[2][1])) {
             // get the roll, pitch, yaw estimates from the rotation matrix using a  321 Tait-Bryan rotation sequence
             ftype roll,pitch,yaw;
@@ -512,7 +512,7 @@ bool EKFGSF_yaw::correct(const uint8_t mdl_idx, const Vector2F &vel, const ftype
 
     // Apply state corrections and capture change in yaw angle
     const ftype yaw_prev = EKF[mdl_idx].X[2];
-    for (uint8_t obs_index = 0; obs_index < 2; obs_index++) {
+    for (uint_fast8_t obs_index = 0; obs_index < 2; obs_index++) {
         // apply the state corrections including the compression scale factor
         for (unsigned row = 0; row < 3; row++) {
             EKF[mdl_idx].X[row] -= K[row][obs_index] * EKF[mdl_idx].innov[obs_index] * innov_comp_scale_factor;
@@ -543,7 +543,7 @@ void EKFGSF_yaw::resetEKFGSF()
 
     memset(&EKF, 0, sizeof(EKF));
     const ftype yaw_increment = M_2PI / (ftype)N_MODELS_EKFGSF;
-    for (uint8_t mdl_idx = 0; mdl_idx < N_MODELS_EKFGSF; mdl_idx++) {
+    for (uint_fast8_t mdl_idx = 0; mdl_idx < N_MODELS_EKFGSF; mdl_idx++) {
         // evenly space initial yaw estimates in the region between +-Pi
         EKF[mdl_idx].X[2] = -M_PI + (0.5f * yaw_increment) + ((ftype)mdl_idx * yaw_increment);
 
@@ -611,7 +611,7 @@ Matrix3F EKFGSF_yaw::updateRotMat(const Matrix3F &R, const Vector3F &g) const
 
     // Renormalise rows
     ftype rowLengthSq;
-    for (uint8_t r = 0; r < 3; r++) {
+    for (uint_fast8_t r = 0; r < 3; r++) {
         rowLengthSq = ret[r][0] * ret[r][0] + ret[r][1] * ret[r][1] + ret[r][2] * ret[r][2];
         if (is_positive(rowLengthSq)) {
             // Use linear approximation for inverse sqrt taking advantage of the row length being close to 1.0
@@ -646,7 +646,7 @@ bool EKFGSF_yaw::getVelInnovLength(ftype &velInnovLength) const
         return false;
     }
     velInnovLength = 0.0f;
-    for (uint8_t mdl_idx = 0; mdl_idx < N_MODELS_EKFGSF; mdl_idx++) {
+    for (uint_fast8_t mdl_idx = 0; mdl_idx < N_MODELS_EKFGSF; mdl_idx++) {
         velInnovLength += GSF.weights[mdl_idx] * sqrtF((sq(EKF[mdl_idx].innov[0]) + sq(EKF[mdl_idx].innov[1])));
     }
     return true;
@@ -654,7 +654,7 @@ bool EKFGSF_yaw::getVelInnovLength(ftype &velInnovLength) const
 
 void EKFGSF_yaw::setGyroBias(Vector3f &gyroBias)
 {
-    for (uint8_t mdl_idx = 0; mdl_idx < N_MODELS_EKFGSF; mdl_idx++) {
+    for (uint_fast8_t mdl_idx = 0; mdl_idx < N_MODELS_EKFGSF; mdl_idx++) {
         AHRS[mdl_idx].gyro_bias = gyroBias.toftype();
     }
 }

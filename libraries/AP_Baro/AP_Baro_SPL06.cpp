@@ -109,7 +109,7 @@ bool AP_Baro_SPL06::_init()
 // protocol sensor(I2C and SPI), sometimes it takes one SPI operation to convert it to SPI mode after it starts up.
     bool is_SPL06 = false;
 
-    for (uint8_t i=0; i<5; i++) {
+    for (uint_fast8_t i=0; i<5; i++) {
         if (_dev->read_registers(SPL06_REG_CHIP_ID, &whoami, 1)  &&
             whoami == SPL06_CHIP_ID) {
             is_SPL06=true;

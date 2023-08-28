@@ -122,7 +122,7 @@ void RCOutput::set_serial_led_rgb_data(const uint16_t chan, int8_t led, uint8_t 
     }
     SITL::SIM *sitl = AP::sitl();
     if (led == -1) {
-        for (uint8_t i=0; i < sitl->led.num_leds[chan]; i++) {
+        for (uint_fast8_t i=0; i < sitl->led.num_leds[chan]; i++) {
             set_serial_led_rgb_data(chan, i, red, green, blue);
         }
         return;

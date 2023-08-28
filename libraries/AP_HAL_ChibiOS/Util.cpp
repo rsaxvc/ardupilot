@@ -344,7 +344,7 @@ Util::FlashBootloader Util::flash_bootloader()
     Debug("Flashing %s @%08x\n", fw_name, (unsigned int)addr);
     const uint8_t max_attempts = 10;
     hal.flash->keep_unlocked(true);
-    for (uint8_t i=0; i<max_attempts; i++) {
+    for (uint_fast8_t i=0; i<max_attempts; i++) {
         hal.scheduler->expect_delay_ms(1000);
         bool ok = hal.flash->write(addr, fw, fw_size);
         if (!ok) {
@@ -500,7 +500,7 @@ void Util::mem_info(ExpandingString &str)
     uint8_t num_heaps = malloc_get_heaps(&heaps, &regions);
 
     str.printf("MemInfoV1\n");
-    for (uint8_t i=0; i<num_heaps; i++) {
+    for (uint_fast8_t i=0; i<num_heaps; i++) {
         size_t totalp=0, largest=0;
         // get memory available on main heap
         chHeapStatus(i == 0 ? nullptr : &heaps[i], &totalp, &largest);
@@ -630,7 +630,7 @@ void Util::uart_info(ExpandingString &str)
 {
     // a header to allow for machine parsers to determine format
     str.printf("UARTV1\n");
-    for (uint8_t i = 0; i < HAL_UART_NUM_SERIAL_PORTS; i++) {
+    for (uint_fast8_t i = 0; i < HAL_UART_NUM_SERIAL_PORTS; i++) {
         auto *uart = hal.serial(i);
         if (uart) {
             str.printf("SERIAL%u ", i);

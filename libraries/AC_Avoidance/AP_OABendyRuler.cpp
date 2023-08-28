@@ -147,8 +147,8 @@ bool AP_OABendyRuler::search_xy_path(const Location& current_loc, const Location
     float best_margin = -FLT_MAX;
     float best_margin_bearing = best_bearing;
 
-    for (uint8_t i = 0; i <= (170 / OA_BENDYRULER_BEARING_INC_XY); i++) {
-        for (uint8_t bdir = 0; bdir <= 1; bdir++) {
+    for (uint_fast8_t i = 0; i <= (170 / OA_BENDYRULER_BEARING_INC_XY); i++) {
+        for (uint_fast8_t bdir = 0; bdir <= 1; bdir++) {
             // skip duplicate check of bearing straight towards destination
             if ((i==0) && (bdir > 0)) {
                 continue;
@@ -188,7 +188,7 @@ bool AP_OABendyRuler::search_xy_path(const Location& current_loc, const Location
                 const float test_bearings[] { 0.0f, 45.0f, -45.0f };
                 const float bearing_to_dest2 = test_loc.get_bearing_to(destination) * 0.01f;
                 float distance2 = constrain_float(lookahead_step2_dist, OA_BENDYRULER_LOOKAHEAD_STEP2_MIN, test_loc.get_distance(destination));
-                for (uint8_t j = 0; j < ARRAY_SIZE(test_bearings); j++) {
+                for (uint_fast8_t j = 0; j < ARRAY_SIZE(test_bearings); j++) {
                     float bearing_test2 = wrap_180(bearing_to_dest2 + test_bearings[j]);
                     Location test_loc2 = test_loc;
                     test_loc2.offset_bearing(bearing_test2, distance2);
@@ -253,8 +253,8 @@ bool AP_OABendyRuler::search_vertical_path(const Location &current_loc, const Lo
     float best_margin_pitch = best_pitch;
     const uint8_t angular_limit = 180 / OA_BENDYRULER_BEARING_INC_VERTICAL;
 
-    for (uint8_t i = 0; i <= angular_limit; i++) {
-        for (uint8_t bdir = 0; bdir <= 1; bdir++) {
+    for (uint_fast8_t i = 0; i <= angular_limit; i++) {
+        for (uint_fast8_t bdir = 0; bdir <= 1; bdir++) {
             // skip duplicate check of bearing straight towards destination or 180 degrees behind
             if (((i==0) && (bdir > 0)) || ((i == angular_limit) && (bdir > 0))) {
                 continue;
@@ -289,7 +289,7 @@ bool AP_OABendyRuler::search_vertical_path(const Location &current_loc, const Lo
                 }
                 float distance2 = constrain_float(lookahead_step2_dist, OA_BENDYRULER_LOOKAHEAD_STEP2_MIN, test_loc.get_distance(destination));
 
-                for (uint8_t j = 0; j < ARRAY_SIZE(test_pitch_step2); j++) {
+                for (uint_fast8_t j = 0; j < ARRAY_SIZE(test_pitch_step2); j++) {
                     float bearing_test2 = wrap_180(test_pitch_step2[j]);
                     Location test_loc2 = test_loc;
                     test_loc2.offset_bearing_and_pitch(bearing_to_dest2, bearing_test2, distance2);
@@ -303,7 +303,7 @@ bool AP_OABendyRuler::search_vertical_path(const Location &current_loc, const Lo
                         if (!active) {
                             // do a sub test for proximity obstacles to confirm if we should really turn of BendyRuler
                             const float sub_test_pitch_step2[] {-90.0f, 90.0f};
-                            for (uint8_t k = 0; k < ARRAY_SIZE(sub_test_pitch_step2); k++) {
+                            for (uint_fast8_t k = 0; k < ARRAY_SIZE(sub_test_pitch_step2); k++) {
                                 Location test_loc_sub_test = test_loc;
                                 test_loc_sub_test.offset_bearing_and_pitch(bearing_to_dest2, sub_test_pitch_step2[k], _margin_max);
                                 float margin_sub_test = calc_avoidance_margin(test_loc, test_loc_sub_test, true);
@@ -552,7 +552,7 @@ bool AP_OABendyRuler::calc_margin_from_inclusion_and_exclusion_polygons(const Lo
 
     // iterate through inclusion polygons and calculate minimum margin
     bool margin_updated = false;
-    for (uint8_t i = 0; i < num_inclusion_polygons; i++) {
+    for (uint_fast8_t i = 0; i < num_inclusion_polygons; i++) {
         uint16_t num_points;
         const Vector2f* boundary = fence->polyfence().get_inclusion_polygon(i, num_points);
      
@@ -568,7 +568,7 @@ bool AP_OABendyRuler::calc_margin_from_inclusion_and_exclusion_polygons(const Lo
     }
 
     // iterate through exclusion polygons and calculate minimum margin
-    for (uint8_t i = 0; i < num_exclusion_polygons; i++) {
+    for (uint_fast8_t i = 0; i < num_exclusion_polygons; i++) {
         uint16_t num_points;
         const Vector2f* boundary = fence->polyfence().get_exclusion_polygon(i, num_points);
    
@@ -623,7 +623,7 @@ bool AP_OABendyRuler::calc_margin_from_inclusion_and_exclusion_circles(const Loc
 
     // iterate through inclusion circles and calculate minimum margin
     bool margin_updated = false;
-    for (uint8_t i = 0; i < num_inclusion_circles; i++) {
+    for (uint_fast8_t i = 0; i < num_inclusion_circles; i++) {
         Vector2f center_pos_cm;
         float radius;
         if (fence->polyfence().get_inclusion_circle(i, center_pos_cm, radius)) {
@@ -644,7 +644,7 @@ bool AP_OABendyRuler::calc_margin_from_inclusion_and_exclusion_circles(const Loc
     }
 
     // iterate through exclusion circles and calculate minimum margin
-    for (uint8_t i = 0; i < num_exclusion_circles; i++) {
+    for (uint_fast8_t i = 0; i < num_exclusion_circles; i++) {
         Vector2f center_pos_cm;
         float radius;
         if (fence->polyfence().get_exclusion_circle(i, center_pos_cm, radius)) {
@@ -690,7 +690,7 @@ bool AP_OABendyRuler::calc_margin_from_object_database(const Location &start, co
 
     // check each obstacle's distance from segment
     float smallest_margin = FLT_MAX;
-    for (uint16_t i=0; i<oaDb->database_count(); i++) {
+    for (uint_fast16_t i=0; i<oaDb->database_count(); i++) {
         const AP_OADatabase::OA_DbItem& item = oaDb->get_item(i);
         const Vector3f point_cm = item.pos * 100.0f;
         // margin is distance between line segment and obstacle minus obstacle's radius

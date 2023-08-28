@@ -385,7 +385,7 @@ void AP_Motors6DOF::output_armed_stabilizing()
 
     _output_limited = constrain_float(_output_limited, 0.0f, 1.0f);
 
-    for (uint8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
+    for (uint_fast8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
         if (motor_enabled[i]) {
             _thrust_rpyt_out[i] *= _output_limited;
         }

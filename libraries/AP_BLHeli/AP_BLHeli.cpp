@@ -306,7 +306,7 @@ void AP_BLHeli::msp_send_reply(uint8_t cmd, const uint8_t *buf, uint8_t len)
     }
     b += len;
     uint8_t c = 0;
-    for (uint8_t i=0; i<len+2; i++) {
+    for (uint_fast8_t i=0; i<len+2; i++) {
         c ^= msp.buf[i+3];
     }
     *b++ = c;
@@ -469,7 +469,7 @@ void AP_BLHeli::msp_process_command(void)
         debug("MSP_MOTOR");
         // get the output going to each motor
         uint8_t buf[16] {};
-        for (uint8_t i = 0; i < num_motors; i++) {
+        for (uint_fast8_t i = 0; i < num_motors; i++) {
             // if we have a mix of reversible and normal report a PWM of zero, this allows BLHeliSuite to conect
             uint16_t v = mixed_type ? 0 : hal.rcout->read(motor_map[i]);
             putU16(&buf[2*i], v);
@@ -490,7 +490,7 @@ void AP_BLHeli::msp_process_command(void)
             motors_disabled = true;
             EXPECT_DELAY_MS(1000);
             hal.rcout->cork();
-            for (uint8_t i = 0; i < nmotors; i++) {
+            for (uint_fast8_t i = 0; i < nmotors; i++) {
                 if (i >= num_motors) {
                     break;
                 }
@@ -570,7 +570,7 @@ uint16_t AP_BLHeli::BL_CRC(const uint8_t *buf, uint16_t len)
     uint16_t crc = 0;
     while (len--) {
         uint8_t xb = *buf++;
-        for (uint8_t i = 0; i < 8; i++) {
+        for (uint_fast8_t i = 0; i < 8; i++) {
             if (((xb & 0x01) ^ (crc & 0x0001)) !=0 ) {
                 crc = crc >> 1;
                 crc = crc ^ 0xA001;
@@ -1219,7 +1219,7 @@ void AP_BLHeli::run_connection_test(uint8_t chan)
     blheli.chan = chan;
     GCS_SEND_TEXT(MAV_SEVERITY_INFO, "ESC: Running test on channel %u",  blheli.chan);
     bool passed = false;
-    for (uint8_t tries=0; tries<5; tries++) {
+    for (uint_fast8_t tries=0; tries<5; tries++) {
         EXPECT_DELAY_MS(3000);
         blheli.ack = ACK_OK;
         setDisconnected();
@@ -1259,7 +1259,7 @@ void AP_BLHeli::run_connection_test(uint8_t chan)
 void AP_BLHeli::update(void)
 {
     bool motor_control_active = false;
-    for (uint8_t i = 0; i < num_motors; i++) {
+    for (uint_fast8_t i = 0; i < num_motors; i++) {
         bool reversed = ((1U<< motor_map[i]) & channel_reversible_mask.get()) != 0;
         if (hal.rcout->read( motor_map[i]) != (reversed ? 1500 : 1000)) {
             motor_control_active = true;
@@ -1286,7 +1286,7 @@ void AP_BLHeli::update(void)
             uart_locked = false;
         }
         if (motor_control_active) {
-            for (uint8_t i = 0; i < num_motors; i++) {
+            for (uint_fast8_t i = 0; i < num_motors; i++) {
                 bool reversed = ((1U<<motor_map[i]) & channel_reversible_mask.get()) != 0;
                 hal.rcout->write(motor_map[i], reversed ? 1500 : 1000);
             }
@@ -1400,7 +1400,7 @@ void AP_BLHeli::init(uint32_t mask, AP_HAL::RCOutput::output_mode otype)
     hal.rcout->set_bidir_dshot_mask(uint32_t(channel_bidir_dshot_mask.get()) & digital_mask);
 #endif
     // add motors from channel mask
-    for (uint8_t i=0; i<16 && num_motors < max_motors; i++) {
+    for (uint_fast8_t i=0; i<16 && num_motors < max_motors; i++) {
         if (mask & (1U<<i)) {
             motor_map[num_motors] = i;
             num_motors++;
@@ -1434,7 +1434,7 @@ void AP_BLHeli::read_telemetry_packet(void)
 
     // calculate crc
     uint8_t crc = 0;
-    for (uint8_t i=0; i<telem_packet_size-1; i++) {    
+    for (uint_fast8_t i=0; i<telem_packet_size-1; i++) {    
         crc = crc8_dvb(buf[i], crc, 0x07);
     }
 

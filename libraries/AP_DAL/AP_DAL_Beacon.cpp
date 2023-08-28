@@ -11,7 +11,7 @@ AP_DAL_Beacon::AP_DAL_Beacon()
 #if !APM_BUILD_TYPE(APM_BUILD_AP_DAL_Standalone) && !APM_BUILD_TYPE(APM_BUILD_Replay)
     const auto *bcon = AP::beacon();
     _RBCH.count = bcon->count();
-    for (uint8_t i=0; i<ARRAY_SIZE(_RBCI); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(_RBCI); i++) {
         _RBCI[i].instance = i;
     }
 #endif
@@ -36,7 +36,7 @@ void AP_DAL_Beacon::start_frame()
         return;
     }
 
-    for (uint8_t i=0; i<ARRAY_SIZE(_RBCI); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(_RBCI); i++) {
         log_RBCI &RBCI = _RBCI[i];
         const log_RBCI old_RBCI = RBCI;
         RBCI.last_update_ms = bcon->beacon_last_update_ms(i);

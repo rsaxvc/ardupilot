@@ -70,7 +70,7 @@ uint8_t RCInput::read(uint16_t* periods, uint8_t len)
     if (len > num_channels()) {
         len = num_channels();
     }
-    for (uint8_t i=0; i < len; i++) {
+    for (uint_fast8_t i=0; i < len; i++) {
         periods[i] = read(i);
     }
     return len;

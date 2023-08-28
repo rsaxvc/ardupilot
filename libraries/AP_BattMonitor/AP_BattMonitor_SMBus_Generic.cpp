@@ -95,7 +95,7 @@ void AP_BattMonitor_SMBus_Generic::timer()
     static_assert(BATTMONITOR_SMBUS_NUM_CELLS_MAX <= ARRAY_SIZE(_state.cell_voltages.cells), "BATTMONITOR_SMBUS_NUM_CELLS_MAX must be <= number of cells in state voltages");
 
     // read cell voltages
-    for (uint8_t i = 0; i < (_cell_count_fixed ? _cell_count : BATTMONITOR_SMBUS_NUM_CELLS_MAX); i++) {
+    for (uint_fast8_t i = 0; i < (_cell_count_fixed ? _cell_count : BATTMONITOR_SMBUS_NUM_CELLS_MAX); i++) {
         if (read_word(smbus_cell_ids[i], data) && (data > 0) && (data < UINT16_MAX)) {
             _has_cell_voltages = true;
             _state.cell_voltages.cells[i] = data;

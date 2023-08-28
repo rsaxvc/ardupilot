@@ -216,7 +216,7 @@ void AP_MotorsHeli_Dual::set_update_rate( uint16_t speed_hz )
 
     // setup fast channels
     uint32_t mask = 0;
-    for (uint8_t i=0; i<AP_MOTORS_HELI_DUAL_NUM_SWASHPLATE_SERVOS; i++) {
+    for (uint_fast8_t i=0; i<AP_MOTORS_HELI_DUAL_NUM_SWASHPLATE_SERVOS; i++) {
         mask |= 1U << (AP_MOTORS_MOT_1+i);
     }
     if (_swashplate1.get_swash_type() == SWASHPLATE_TYPE_H4_90 || _swashplate1.get_swash_type() == SWASHPLATE_TYPE_H4_45) {
@@ -234,7 +234,7 @@ bool AP_MotorsHeli_Dual::init_outputs()
 {
     if (!initialised_ok()) {
         // make sure 6 output channels are mapped
-        for (uint8_t i=0; i<AP_MOTORS_HELI_DUAL_NUM_SWASHPLATE_SERVOS; i++) {
+        for (uint_fast8_t i=0; i<AP_MOTORS_HELI_DUAL_NUM_SWASHPLATE_SERVOS; i++) {
             add_motor_num(CH_1+i);
         }
         if (_swashplate1.get_swash_type() == SWASHPLATE_TYPE_H4_90 || _swashplate1.get_swash_type() == SWASHPLATE_TYPE_H4_45) {
@@ -250,7 +250,7 @@ bool AP_MotorsHeli_Dual::init_outputs()
     }
 
     // reset swash servo range and endpoints
-    for (uint8_t i=0; i<AP_MOTORS_HELI_DUAL_NUM_SWASHPLATE_SERVOS; i++) {
+    for (uint_fast8_t i=0; i<AP_MOTORS_HELI_DUAL_NUM_SWASHPLATE_SERVOS; i++) {
         reset_swash_servo(SRV_Channels::get_motor_function(i));
     }
     if (_swashplate1.get_swash_type() == SWASHPLATE_TYPE_H4_90 || _swashplate1.get_swash_type() == SWASHPLATE_TYPE_H4_45) {
@@ -469,7 +469,7 @@ uint32_t AP_MotorsHeli_Dual::get_motor_mask()
 {
     // dual heli uses channels 1,2,3,4,5,6 and 8
     uint32_t mask = 0;
-    for (uint8_t i=0; i<AP_MOTORS_HELI_DUAL_NUM_SWASHPLATE_SERVOS; i++) {
+    for (uint_fast8_t i=0; i<AP_MOTORS_HELI_DUAL_NUM_SWASHPLATE_SERVOS; i++) {
         mask |= 1U << (AP_MOTORS_MOT_1+i);
     }
     if (_swashplate1.get_swash_type() == SWASHPLATE_TYPE_H4_90 || _swashplate1.get_swash_type() == SWASHPLATE_TYPE_H4_45) {
@@ -651,7 +651,7 @@ void AP_MotorsHeli_Dual::output_to_motors()
         return;
     }
     // actually move the servos.  PWM is sent based on nominal 1500 center.  servo output shifts center based on trim value.
-    for (uint8_t i=0; i<AP_MOTORS_HELI_DUAL_NUM_SWASHPLATE_SERVOS; i++) {
+    for (uint_fast8_t i=0; i<AP_MOTORS_HELI_DUAL_NUM_SWASHPLATE_SERVOS; i++) {
         rc_write_swash(i, _servo_out[CH_1+i]);
     }
 

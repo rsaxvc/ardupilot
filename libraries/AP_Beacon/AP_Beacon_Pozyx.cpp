@@ -98,7 +98,7 @@ void AP_Beacon_Pozyx::parse_buffer()
     uint8_t checksum = 0;
     checksum ^= parse_msg_id;
     checksum ^= parse_msg_len;
-    for (uint8_t i=0; i<linebuf_len; i++) {
+    for (uint_fast8_t i=0; i<linebuf_len; i++) {
         checksum ^= linebuf[i];
     }
     // return if failed checksum check

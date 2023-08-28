@@ -257,7 +257,7 @@ AP_BattMonitor::init()
 #endif
 
     // create each instance
-    for (uint8_t instance=0; instance<AP_BATT_MONITOR_MAX_INSTANCES; instance++) {
+    for (uint_fast8_t instance=0; instance<AP_BATT_MONITOR_MAX_INSTANCES; instance++) {
         // clear out the cell voltages
         memset(&state[instance].cell_voltages, 0xFF, sizeof(cells));
 
@@ -467,7 +467,7 @@ void AP_BattMonitor::read()
     }
 #endif
 
-    for (uint8_t i=0; i<_num_instances; i++) {
+    for (uint_fast8_t i=0; i<_num_instances; i++) {
         if (drivers[i] != nullptr && get_type(i) != Type::NONE) {
             drivers[i]->read();
             drivers[i]->update_resistance_estimate();
@@ -587,7 +587,7 @@ int32_t AP_BattMonitor::pack_capacity_mah(uint8_t instance) const
 void AP_BattMonitor::check_failsafes(void)
 {
     if (hal.util->get_soft_armed()) {
-        for (uint8_t i = 0; i < _num_instances; i++) {
+        for (uint_fast8_t i = 0; i < _num_instances; i++) {
             if (drivers[i] == nullptr) {
                 continue;
             }
@@ -646,7 +646,7 @@ void AP_BattMonitor::check_failsafes(void)
 bool AP_BattMonitor::overpower_detected() const
 {
     bool result = false;
-    for (uint8_t instance = 0; instance < _num_instances; instance++) {
+    for (uint_fast8_t instance = 0; instance < _num_instances; instance++) {
         result |= overpower_detected(instance);
     }
     return result;
@@ -719,7 +719,7 @@ bool AP_BattMonitor::set_temperature(const float temperature, const uint8_t inst
 bool AP_BattMonitor::set_temperature_by_serial_number(const float temperature, const int32_t serial_number)
 {
     bool success = false;
-    for (uint8_t i = 0; i < _num_instances; i++) {
+    for (uint_fast8_t i = 0; i < _num_instances; i++) {
         if (drivers[i] != nullptr && get_serial_number(i) == serial_number) {
             success |= set_temperature(temperature, i);
         }
@@ -741,7 +741,7 @@ bool AP_BattMonitor::arming_checks(size_t buflen, char *buffer) const
 {
     char temp_buffer[MAVLINK_MSG_STATUSTEXT_FIELD_TEXT_LEN+1] {};
 
-    for (uint8_t i = 0; i < _num_instances; i++) {
+    for (uint_fast8_t i = 0; i < _num_instances; i++) {
         if (drivers[i] != nullptr && !(drivers[i]->arming_checks(temp_buffer, sizeof(temp_buffer)))) {
             hal.util->snprintf(buffer, buflen, "Battery %d %s", i + 1, temp_buffer);
             return false;
@@ -754,7 +754,7 @@ bool AP_BattMonitor::arming_checks(size_t buflen, char *buffer) const
 // Check's each smart battery instance for its powering off state and broadcasts notifications
 void AP_BattMonitor::checkPoweringOff(void)
 {
-    for (uint8_t i = 0; i < _num_instances; i++) {
+    for (uint_fast8_t i = 0; i < _num_instances; i++) {
         if (state[i].is_powering_off && !state[i].powerOffNotified) {
 #ifndef HAL_BUILD_AP_PERIPH
             // Set the AP_Notify flag, which plays the power off tones
@@ -785,7 +785,7 @@ bool AP_BattMonitor::reset_remaining_mask(uint16_t battery_mask, float percentag
     static_assert(AP_BATT_MONITOR_MAX_INSTANCES <= 16, "More batteries are enabled then can be reset");
     bool ret = true;
     Failsafe highest_failsafe = Failsafe::None;
-    for (uint8_t i = 0; i < _num_instances; i++) {
+    for (uint_fast8_t i = 0; i < _num_instances; i++) {
         if ((1U<<i) & battery_mask) {
             if (drivers[i] != nullptr) {
                 ret &= drivers[i]->reset_remaining(percentage);
@@ -848,7 +848,7 @@ uint32_t AP_BattMonitor::get_mavlink_fault_bitmask(const uint8_t instance) const
 // Enable/Disable (Turn on/off) MPPT power to all backends who are MPPTs
 void AP_BattMonitor::MPPT_set_powered_state_to_all(const bool power_on)
 {
-    for (uint8_t i=0; i < _num_instances; i++) {
+    for (uint_fast8_t i=0; i < _num_instances; i++) {
         MPPT_set_powered_state(i, power_on);
     }
 }
@@ -868,7 +868,7 @@ void AP_BattMonitor::MPPT_set_powered_state(const uint8_t instance, const bool p
  */
 bool AP_BattMonitor::healthy() const
 {
-    for (uint8_t i=0; i< _num_instances; i++) {
+    for (uint_fast8_t i=0; i< _num_instances; i++) {
         if (get_type(i) != Type::NONE && !healthy(i)) {
             return false;
         }

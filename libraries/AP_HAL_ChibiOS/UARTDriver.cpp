@@ -155,7 +155,7 @@ void UARTDriver::uart_rx_thread(void* arg)
     while (true) {
         hal.scheduler->delay_microseconds(1000);
 
-        for (uint8_t i=0; i<UART_MAX_DRIVERS; i++) {
+        for (uint_fast8_t i=0; i<UART_MAX_DRIVERS; i++) {
             if (uart_drivers[i] == nullptr) {
                 continue;
             }

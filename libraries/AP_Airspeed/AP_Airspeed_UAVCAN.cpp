@@ -60,7 +60,7 @@ AP_Airspeed_Backend* AP_Airspeed_UAVCAN::probe(AP_Airspeed &_frontend, uint8_t _
 
     AP_Airspeed_UAVCAN* backend = nullptr;
 
-    for (uint8_t i = 0; i < AIRSPEED_MAX_SENSORS; i++) {
+    for (uint_fast8_t i = 0; i < AIRSPEED_MAX_SENSORS; i++) {
         if (_detected_modules[i].driver == nullptr && _detected_modules[i].ap_uavcan != nullptr) {
             const auto bus_id = AP_HAL::Device::make_bus_id(AP_HAL::Device::BUS_TYPE_UAVCAN,
                                                             _detected_modules[i].ap_uavcan->get_driver_index(),
@@ -98,7 +98,7 @@ AP_Airspeed_UAVCAN* AP_Airspeed_UAVCAN::get_uavcan_backend(AP_UAVCAN* ap_uavcan,
         return nullptr;
     }
 
-    for (uint8_t i = 0; i < AIRSPEED_MAX_SENSORS; i++) {
+    for (uint_fast8_t i = 0; i < AIRSPEED_MAX_SENSORS; i++) {
         if (_detected_modules[i].driver != nullptr &&
             _detected_modules[i].ap_uavcan == ap_uavcan &&
             _detected_modules[i].node_id == node_id ) {
@@ -107,7 +107,7 @@ AP_Airspeed_UAVCAN* AP_Airspeed_UAVCAN::get_uavcan_backend(AP_UAVCAN* ap_uavcan,
     }
 
     bool detected = false;
-    for (uint8_t i = 0; i < AIRSPEED_MAX_SENSORS; i++) {
+    for (uint_fast8_t i = 0; i < AIRSPEED_MAX_SENSORS; i++) {
         if (_detected_modules[i].ap_uavcan == ap_uavcan && _detected_modules[i].node_id == node_id) {
             // detected
             detected = true;
@@ -116,7 +116,7 @@ AP_Airspeed_UAVCAN* AP_Airspeed_UAVCAN::get_uavcan_backend(AP_UAVCAN* ap_uavcan,
     }
 
     if (!detected) {
-        for (uint8_t i = 0; i < AIRSPEED_MAX_SENSORS; i++) {
+        for (uint_fast8_t i = 0; i < AIRSPEED_MAX_SENSORS; i++) {
             if (_detected_modules[i].ap_uavcan == nullptr) {
                 _detected_modules[i].ap_uavcan = ap_uavcan;
                 _detected_modules[i].node_id = node_id;

@@ -35,7 +35,7 @@ uint32_t RF_GYUS42v2::packet_for_alt(uint16_t alt_cm, uint8_t *buffer, uint8_t b
     buffer[4] = alt_cm >> 8;
     buffer[5] = alt_cm & 0xFF;
     buffer[6] = 0;
-    for (uint8_t i=0; i<6; i++) {
+    for (uint_fast8_t i=0; i<6; i++) {
         buffer[6] += buffer[i];
     }
 

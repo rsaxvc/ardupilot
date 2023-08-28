@@ -94,7 +94,7 @@ static struct {
 
 static void count_msg(const char *name)
 {
-    for (uint16_t i=0; i<ARRAY_SIZE(counters); i++) {
+    for (uint_fast16_t i=0; i<ARRAY_SIZE(counters); i++) {
         if (counters[i].msg_name == name) {
             counters[i].count++;
             break;
@@ -221,7 +221,7 @@ void UAVCAN_sniffer::loop(void)
 void UAVCAN_sniffer::print_stats(void)
 {
     hal.console->printf("%lu\n", (unsigned long)AP_HAL::micros());
-    for (uint16_t i=0;i<100;i++) {
+    for (uint_fast16_t i=0;i<100;i++) {
         if (counters[i].msg_name == nullptr) {
             break;
         }

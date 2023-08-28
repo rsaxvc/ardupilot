@@ -89,7 +89,7 @@ AP_CheckFirmware::bl_data *AP_CheckFirmware::read_bootloader(void)
     /*
       find first empty block
      */
-    for (uint16_t i=0; i<num_blocks; i++) {
+    for (uint_fast16_t i=0; i<num_blocks; i++) {
         if (empty_1k(&flash[block_size*i])) {
             break;
         }
@@ -250,7 +250,7 @@ bool AP_CheckFirmware::set_public_keys(uint8_t key_idx, uint8_t num_keys, const 
      */
     const uint8_t zero_key[AP_PUBLIC_KEY_LEN] {};
     uint8_t max_keys = AP_PUBLIC_KEY_MAX_KEYS;
-    for (uint8_t i=0; max_keys>1 && i<max_keys-1; i++) {
+    for (uint_fast8_t i=0; max_keys>1 && i<max_keys-1; i++) {
         if (memcmp(zero_key, sec_data->public_key[i].key, AP_PUBLIC_KEY_LEN) == 0) {
             memmove(sec_data->public_key[i].key, sec_data->public_key[i+1].key, AP_PUBLIC_KEY_LEN*(max_keys-(i+1)));
             max_keys--;

@@ -111,7 +111,7 @@ AP_Compass_UAVCAN* AP_Compass_UAVCAN::get_uavcan_backend(AP_UAVCAN* ap_uavcan, u
     if (ap_uavcan == nullptr) {
         return nullptr;
     }
-    for (uint8_t i=0; i<COMPASS_MAX_BACKEND; i++) {
+    for (uint_fast8_t i=0; i<COMPASS_MAX_BACKEND; i++) {
         if (_detected_modules[i].driver &&
             _detected_modules[i].ap_uavcan == ap_uavcan &&
             _detected_modules[i].node_id == node_id &&
@@ -122,7 +122,7 @@ AP_Compass_UAVCAN* AP_Compass_UAVCAN::get_uavcan_backend(AP_UAVCAN* ap_uavcan, u
 
     bool already_detected = false;
     // Check if there's an empty spot for possible registeration
-    for (uint8_t i = 0; i < COMPASS_MAX_BACKEND; i++) {
+    for (uint_fast8_t i = 0; i < COMPASS_MAX_BACKEND; i++) {
         if (_detected_modules[i].ap_uavcan == ap_uavcan && 
             _detected_modules[i].node_id == node_id &&
             _detected_modules[i].sensor_id == sensor_id) {
@@ -132,7 +132,7 @@ AP_Compass_UAVCAN* AP_Compass_UAVCAN::get_uavcan_backend(AP_UAVCAN* ap_uavcan, u
         }
     }
     if (!already_detected) {
-        for (uint8_t i = 0; i < COMPASS_MAX_BACKEND; i++) {
+        for (uint_fast8_t i = 0; i < COMPASS_MAX_BACKEND; i++) {
             if (nullptr == _detected_modules[i].ap_uavcan) {
                 _detected_modules[i].ap_uavcan = ap_uavcan;
                 _detected_modules[i].node_id = node_id;
@@ -151,8 +151,8 @@ AP_Compass_UAVCAN* AP_Compass_UAVCAN::get_uavcan_backend(AP_UAVCAN* ap_uavcan, u
     // we do this, so that we have repeatable compass
     // registration, especially in cases of extraneous
     // CAN compass is connected.
-    for (uint8_t i = 1; i < COMPASS_MAX_BACKEND; i++) {
-        for (uint8_t j = i; j > 0; j--) {
+    for (uint_fast8_t i = 1; i < COMPASS_MAX_BACKEND; i++) {
+        for (uint_fast8_t j = i; j > 0; j--) {
             if (_detected_modules[j].node_id > _detected_modules[j-1].node_id) {
                 tempslot = _detected_modules[j];
                 _detected_modules[j] = _detected_modules[j-1];

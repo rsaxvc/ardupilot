@@ -115,7 +115,7 @@ float AnalogSource::read_latest()
 float AnalogSource::_pin_scaler(void)
 {
     float scaling = VOLTAGE_SCALING;
-    for (uint8_t i=0; i<ADC_GRP1_NUM_CHANNELS; i++) {
+    for (uint_fast8_t i=0; i<ADC_GRP1_NUM_CHANNELS; i++) {
         if (AnalogIn::pin_config[i].channel == _pin) {
             scaling = AnalogIn::pin_config[i].scaling;
             break;
@@ -159,7 +159,7 @@ bool AnalogSource::set_pin(uint8_t pin)
     if (pin == ANALOG_SERVO_VRSSI_PIN) {
         found_pin = true;
     } else {
-        for (uint8_t i=0; i<ADC_GRP1_NUM_CHANNELS; i++) {
+        for (uint_fast8_t i=0; i<ADC_GRP1_NUM_CHANNELS; i++) {
             if (AnalogIn::pin_config[i].channel == pin) {
                 found_pin = true;
                 break;
@@ -214,8 +214,8 @@ void AnalogIn::adccallback(ADCDriver *adcp)
     const adcsample_t *buffer = samples;
 
     stm32_cacheBufferInvalidate(buffer, sizeof(adcsample_t)*ADC_DMA_BUF_DEPTH*ADC_GRP1_NUM_CHANNELS);
-    for (uint8_t i = 0; i < ADC_DMA_BUF_DEPTH; i++) {
-        for (uint8_t j = 0; j < ADC_GRP1_NUM_CHANNELS; j++) {
+    for (uint_fast8_t i = 0; i < ADC_DMA_BUF_DEPTH; i++) {
+        for (uint_fast8_t j = 0; j < ADC_GRP1_NUM_CHANNELS; j++) {
             sample_sum[j] += *buffer++;
         }
     }
@@ -252,7 +252,7 @@ void AnalogIn::init()
     adcgrpcfg.cr2 = ADC_CR2_SWSTART;
 #endif
 
-    for (uint8_t i=0; i<ADC_GRP1_NUM_CHANNELS; i++) {
+    for (uint_fast8_t i=0; i<ADC_GRP1_NUM_CHANNELS; i++) {
         uint8_t chan = pin_config[i].channel;
         // setup cycles per sample for the channel
 #if defined(STM32H7)
@@ -308,7 +308,7 @@ void AnalogIn::init()
 void AnalogIn::read_adc(uint32_t *val)
 {
     chSysLock();
-    for (uint8_t i = 0; i < ADC_GRP1_NUM_CHANNELS; i++) {
+    for (uint_fast8_t i = 0; i < ADC_GRP1_NUM_CHANNELS; i++) {
         val[i] = sample_sum[i] / sample_count;
     }
     memset(sample_sum, 0, sizeof(sample_sum));
@@ -345,8 +345,8 @@ void AnalogIn::adc3callback(ADCDriver *adcp)
     const adcsample_t *buffer = samples_adc3;
 
     stm32_cacheBufferInvalidate(buffer, sizeof(adcsample_t)*ADC_DMA_BUF_DEPTH*ADC3_GRP1_NUM_CHANNELS);
-    for (uint8_t i = 0; i < ADC_DMA_BUF_DEPTH; i++) {
-        for (uint8_t j = 0; j < ADC3_GRP1_NUM_CHANNELS; j++) {
+    for (uint_fast8_t i = 0; i < ADC_DMA_BUF_DEPTH; i++) {
+        for (uint_fast8_t j = 0; j < ADC3_GRP1_NUM_CHANNELS; j++) {
             const uint16_t v = *buffer++;
             sample_adc3_sum[j] += v;
             if (sample_adc3_min[j] == 0 ||
@@ -397,7 +397,7 @@ void AnalogIn::setup_adc3(void)
 
     const uint8_t channels[ADC3_GRP1_NUM_CHANNELS] = { ADC3_VBAT4_CHAN, ADC3_VSENSE_CHAN, ADC3_VREFINT_CHAN };
 
-    for (uint8_t i=0; i<ADC3_GRP1_NUM_CHANNELS; i++) {
+    for (uint_fast8_t i=0; i<ADC3_GRP1_NUM_CHANNELS; i++) {
         uint8_t chan = channels[i];
         // setup cycles per sample for the channel
         adc3grpcfg.pcsel |= (1<<chan);
@@ -419,7 +419,7 @@ void AnalogIn::setup_adc3(void)
 void AnalogIn::read_adc3(uint32_t *val, uint16_t *min, uint16_t *max)
 {
     chSysLock();
-    for (uint8_t i = 0; i < ADC3_GRP1_NUM_CHANNELS; i++) {
+    for (uint_fast8_t i = 0; i < ADC3_GRP1_NUM_CHANNELS; i++) {
         val[i] = sample_adc3_sum[i] / sample_adc3_count;
         min[i] = sample_adc3_min[i];
         max[i] = sample_adc3_max[i];
@@ -455,7 +455,7 @@ void AnalogIn::_timer_tick(void)
     update_power_flags();
 
     // match the incoming channels to the currently active pins
-    for (uint8_t i=0; i < ADC_GRP1_NUM_CHANNELS; i++) {
+    for (uint_fast8_t i=0; i < ADC_GRP1_NUM_CHANNELS; i++) {
 #ifdef ANALOG_VCC_5V_PIN
         if (pin_config[i].channel == ANALOG_VCC_5V_PIN) {
             // record the Vcc value for later use in
@@ -476,11 +476,11 @@ void AnalogIn::_timer_tick(void)
     _rssi_voltage = iomcu.get_vrssi_adc_count() * (VOLTAGE_SCALING *  HAL_IOMCU_VRSSI_SCALAR);
 #endif
 
-    for (uint8_t i=0; i<ADC_GRP1_NUM_CHANNELS; i++) {
+    for (uint_fast8_t i=0; i<ADC_GRP1_NUM_CHANNELS; i++) {
         Debug("chan %u value=%u\n",
               (unsigned)pin_config[i].channel,
               (unsigned)buf_adc[i]);
-        for (uint8_t j=0; j < ANALOG_MAX_CHANNELS; j++) {
+        for (uint_fast8_t j=0; j < ANALOG_MAX_CHANNELS; j++) {
             ChibiOS::AnalogSource *c = _channels[j];
             if (c != nullptr) {
                 if (pin_config[i].channel == c->_pin) {
@@ -523,7 +523,7 @@ void AnalogIn::_timer_tick(void)
 AP_HAL::AnalogSource* AnalogIn::channel(int16_t pin)
 {
     WITH_SEMAPHORE(_semaphore);
-    for (uint8_t j=0; j<ANALOG_MAX_CHANNELS; j++) {
+    for (uint_fast8_t j=0; j<ANALOG_MAX_CHANNELS; j++) {
         if (_channels[j] == nullptr) {
             _channels[j] = new AnalogSource(pin);
             return _channels[j];

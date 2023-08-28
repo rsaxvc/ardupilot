@@ -161,7 +161,7 @@ void AP_Proximity_MAV::handle_obstacle_distance_msg(const mavlink_message_t &msg
     frontend.boundary.reset();
 
     // iterate over message's sectors
-    for (uint8_t j = 0; j < total_distances; j++) {
+    for (uint_fast8_t j = 0; j < total_distances; j++) {
         const uint16_t distance_cm = packet.distances[j];
         const float packet_distance_m = distance_cm * 0.01f;
         const float mid_angle = wrap_360((float)j * increment + yaw_correction);

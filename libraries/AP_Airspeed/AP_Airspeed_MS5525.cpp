@@ -66,7 +66,7 @@ bool AP_Airspeed_MS5525::init()
 {
     const uint8_t addresses[] = { MS5525D0_I2C_ADDR_1, MS5525D0_I2C_ADDR_2 };
     bool found = false;
-    for (uint8_t i=0; i<ARRAY_SIZE(addresses); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(addresses); i++) {
         if (_address != MS5525_ADDR_AUTO && i != (uint8_t)_address) {
             continue;
         }
@@ -129,7 +129,7 @@ bool AP_Airspeed_MS5525::read_prom(void)
     hal.scheduler->delay(5);
 
     bool all_zero = true;
-    for (uint8_t i = 0; i < 8; i++) {
+    for (uint_fast8_t i = 0; i < 8; i++) {
         be16_t val;
         if (!dev->read_registers(REG_PROM_BASE+i*2, (uint8_t *) &val,
                                  sizeof(uint16_t))) {

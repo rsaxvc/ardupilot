@@ -66,7 +66,7 @@ bool AP_Airspeed_SDP3X::init()
     bool found = false;
     bool ret = false;
 
-    for (uint8_t i=0; i<ARRAY_SIZE(addresses) && !found; i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(addresses) && !found; i++) {
         _dev = hal.i2c_mgr->get_device(get_bus(), addresses[i]);
         if (!_dev) {
             continue;
@@ -337,9 +337,9 @@ bool AP_Airspeed_SDP3X::_crc(const uint8_t data[], uint8_t size, uint8_t checksu
     uint8_t crc_value = 0xff;
 
     // calculate 8-bit checksum with polynomial 0x31 (x^8 + x^5 + x^4 + 1)
-    for (uint8_t i = 0; i < size; i++) {
+    for (uint_fast8_t i = 0; i < size; i++) {
         crc_value ^= data[i];
-        for (uint8_t bit = 8; bit > 0; --bit) {
+        for (uint_fast8_t bit = 8; bit > 0; --bit) {
             if (crc_value & 0x80) {
                 crc_value = (crc_value << 1) ^ 0x31;
             } else {

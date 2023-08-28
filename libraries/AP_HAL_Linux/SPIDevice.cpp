@@ -447,7 +447,7 @@ SPIDeviceManager::get_device(const char *name)
     SPIDesc *desc = nullptr;
 
     /* Find the bus description in the table */
-    for (uint8_t i = 0; i < _n_device_desc; i++) {
+    for (uint_fast8_t i = 0; i < _n_device_desc; i++) {
         if (!strcmp(_device[i].name, name)) {
             desc = &_device[i];
             break;
@@ -459,7 +459,7 @@ SPIDeviceManager::get_device(const char *name)
     }
 
     /* Find if bus already exists */
-    for (uint8_t i = 0, n = _buses.size(); i < n; i++) {
+    for (uint_fast8_t i = 0, n = _buses.size(); i < n; i++) {
         if (_buses[i]->bus == desc->bus) {
             return _create_device(*_buses[i], *desc);
         }

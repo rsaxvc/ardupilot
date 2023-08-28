@@ -59,7 +59,7 @@ int SITL::TSYS01::rdwr(I2C::i2c_rdwr_ioctl_data *&data)
                 // this happens at startup
                 return -1;
             }
-            for (uint8_t i=0; i<ARRAY_SIZE(registers); i++) {
+            for (uint_fast8_t i=0; i<ARRAY_SIZE(registers); i++) {
                 data->msgs[1].buf[i] = registers[i];
             }
             break;

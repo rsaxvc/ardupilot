@@ -92,7 +92,7 @@ extern const AP_HAL::HAL& hal;
  */
 const AP_Filesystem::Backend &AP_Filesystem::backend_by_path(const char *&path) const
 {
-    for (uint8_t i=1; i<NUM_BACKENDS; i++) {
+    for (uint_fast8_t i=1; i<NUM_BACKENDS; i++) {
         const uint8_t plen = strlen(backends[i].prefix);
         if (strncmp(path, backends[i].prefix, plen) == 0) {
             path += plen;

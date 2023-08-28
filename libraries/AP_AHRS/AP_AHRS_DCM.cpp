@@ -652,7 +652,7 @@ AP_AHRS_DCM::drift_correction(float deltat)
     const AP_InertialSensor &_ins = AP::ins();
 
     // rotate accelerometer values into the earth frame
-    for (uint8_t i=0; i<_ins.get_accel_count(); i++) {
+    for (uint_fast8_t i=0; i<_ins.get_accel_count(); i++) {
         if (_ins.use_accel(i)) {
             /*
               by using get_delta_velocity() instead of get_accel() the
@@ -800,7 +800,7 @@ AP_AHRS_DCM::drift_correction(float deltat)
     Vector3f GA_b[INS_MAX_INSTANCES];
     int8_t besti = -1;
     float best_error = 0;
-    for (uint8_t i=0; i<_ins.get_accel_count(); i++) {
+    for (uint_fast8_t i=0; i<_ins.get_accel_count(); i++) {
         if (!_ins.get_accel_health(i)) {
             // only use healthy sensors
             continue;

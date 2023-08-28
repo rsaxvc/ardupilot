@@ -419,7 +419,7 @@ void AP_Notify::init(void)
 // main update function, called at 50Hz
 void AP_Notify::update(void)
 {
-    for (uint8_t i = 0; i < _num_devices; i++) {
+    for (uint_fast8_t i = 0; i < _num_devices; i++) {
         if (_devices[i] != nullptr) {
             _devices[i]->update();
         }
@@ -433,7 +433,7 @@ void AP_Notify::update(void)
 // handle a LED_CONTROL message
 void AP_Notify::handle_led_control(const mavlink_message_t &msg)
 {
-    for (uint8_t i = 0; i < _num_devices; i++) {
+    for (uint_fast8_t i = 0; i < _num_devices; i++) {
         if (_devices[i] != nullptr) {
             _devices[i]->handle_led_control(msg);
         }
@@ -444,7 +444,7 @@ void AP_Notify::handle_led_control(const mavlink_message_t &msg)
 // handle RGB from Scripting or AP_Periph
 void AP_Notify::handle_rgb(uint8_t r, uint8_t g, uint8_t b, uint8_t rate_hz)
 {
-    for (uint8_t i = 0; i < _num_devices; i++) {
+    for (uint_fast8_t i = 0; i < _num_devices; i++) {
         if (_devices[i] != nullptr) {
             _devices[i]->rgb_control(r, g, b, rate_hz);
         }
@@ -454,7 +454,7 @@ void AP_Notify::handle_rgb(uint8_t r, uint8_t g, uint8_t b, uint8_t rate_hz)
 // handle RGB Per led from Scripting
 void AP_Notify::handle_rgb_id(uint8_t r, uint8_t g, uint8_t b, uint8_t id)
 {
-    for (uint8_t i = 0; i < _num_devices; i++) {
+    for (uint_fast8_t i = 0; i < _num_devices; i++) {
         if (_devices[i] != nullptr) {
             _devices[i]->rgb_set_id(r, g, b, id);
         }
@@ -463,7 +463,7 @@ void AP_Notify::handle_rgb_id(uint8_t r, uint8_t g, uint8_t b, uint8_t id)
 
 void AP_Notify::play_tune(const char *tune)
 {
-    for (uint8_t i = 0; i < _num_devices; i++) {
+    for (uint_fast8_t i = 0; i < _num_devices; i++) {
         if (_devices[i] != nullptr) {
             _devices[i]->play_tune(tune);
         }

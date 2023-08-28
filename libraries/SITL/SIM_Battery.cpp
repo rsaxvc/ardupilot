@@ -74,7 +74,7 @@ static const struct {
 float Battery::get_resting_voltage(float charge_pct) const
 {
     const float max_cell_voltage = soc_table[0].volt_per_cell;
-    for (uint8_t i=1; i<ARRAY_SIZE(soc_table); i++) {
+    for (uint_fast8_t i=1; i<ARRAY_SIZE(soc_table); i++) {
         if (charge_pct >= soc_table[i].soc_pct) {
             // linear interpolation between table rows
             float dv1 = charge_pct - soc_table[i].soc_pct;
@@ -97,7 +97,7 @@ void Battery::set_initial_SoC(float voltage)
     const float max_cell_voltage = soc_table[0].volt_per_cell;
     float cell_volt = (voltage / max_voltage) * max_cell_voltage;
 
-    for (uint8_t i=1; i<ARRAY_SIZE(soc_table); i++) {
+    for (uint_fast8_t i=1; i<ARRAY_SIZE(soc_table); i++) {
         if (cell_volt >= soc_table[i].volt_per_cell) {
             // linear interpolation between table rows
             float dv1 = cell_volt - soc_table[i].volt_per_cell;

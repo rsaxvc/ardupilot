@@ -455,7 +455,7 @@ const char* SLCAN::CANIface::processCommand(char* cmd)
         char buf[uid_buf_len * 2 + 1] = {'\0'};
         char* pos = &buf[0];
         if (hal.util->get_system_id_unformatted(unique_id, uid_len)) {
-            for (uint8_t i = 0; i < uid_buf_len; i++) {
+            for (uint_fast8_t i = 0; i < uid_buf_len; i++) {
                 *pos++ = nibble2hex(unique_id[i] >> 4);
                 *pos++ = nibble2hex(unique_id[i]);
             }

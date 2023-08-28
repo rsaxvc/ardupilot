@@ -132,7 +132,7 @@ void Storage::_mark_dirty(uint16_t loc, uint16_t length)
         return;
     }
     uint16_t end = loc + length - 1;
-    for (uint16_t line=loc>>STORAGE_LINE_SHIFT;
+    for (uint_fast16_t line=loc>>STORAGE_LINE_SHIFT;
          line <= end>>STORAGE_LINE_SHIFT;
          line++) {
         _dirty_mask.set(line);

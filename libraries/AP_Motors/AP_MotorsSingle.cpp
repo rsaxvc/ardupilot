@@ -25,7 +25,7 @@ extern const AP_HAL::HAL& hal;
 void AP_MotorsSingle::init(motor_frame_class frame_class, motor_frame_type frame_type)
 {
     // make sure 6 output channels are mapped
-    for (uint8_t i = 0; i < 6; i++) {
+    for (uint_fast8_t i = 0; i < 6; i++) {
         add_motor_num(CH_1 + i);
     }
 
@@ -34,7 +34,7 @@ void AP_MotorsSingle::init(motor_frame_class frame_class, motor_frame_type frame
     motor_enabled[AP_MOTORS_MOT_6] = true;
 
     // setup actuator scaling
-    for (uint8_t i = 0; i < NUM_ACTUATORS; i++) {
+    for (uint_fast8_t i = 0; i < NUM_ACTUATORS; i++) {
         SRV_Channels::set_angle(SRV_Channels::get_motor_function(i), AP_MOTORS_SINGLE_SERVO_INPUT_RANGE);
     }
 
@@ -79,7 +79,7 @@ void AP_MotorsSingle::output_to_motors()
             break;
         case SpoolState::GROUND_IDLE:
             // sends output to motors when armed but not flying
-            for (uint8_t i = 0; i < NUM_ACTUATORS; i++) {
+            for (uint_fast8_t i = 0; i < NUM_ACTUATORS; i++) {
                 rc_write_angle(AP_MOTORS_MOT_1 + i, _spin_up_ratio * _actuator_out[i] * AP_MOTORS_SINGLE_SERVO_INPUT_RANGE);
             }
             set_actuator_with_slew(_actuator[AP_MOTORS_MOT_5], actuator_spin_up_to_ground_idle());
@@ -91,7 +91,7 @@ void AP_MotorsSingle::output_to_motors()
         case SpoolState::THROTTLE_UNLIMITED:
         case SpoolState::SPOOLING_DOWN:
             // set motor output based on thrust requests
-            for (uint8_t i = 0; i < NUM_ACTUATORS; i++) {
+            for (uint_fast8_t i = 0; i < NUM_ACTUATORS; i++) {
                 rc_write_angle(AP_MOTORS_MOT_1 + i, _actuator_out[i] * AP_MOTORS_SINGLE_SERVO_INPUT_RANGE);
             }
             set_actuator_with_slew(_actuator[AP_MOTORS_MOT_5], thrust_to_actuator(_thrust_out));
@@ -207,7 +207,7 @@ void AP_MotorsSingle::output_armed_stabilizing()
     float thrust_out_actuator = constrain_float(MAX(_throttle_hover * 0.5f, _thrust_out), 0.5f, 1.0f);
 
     // calculate the maximum allowed actuator output and maximum requested actuator output
-    for (uint8_t i = 0; i < NUM_ACTUATORS; i++) {
+    for (uint_fast8_t i = 0; i < NUM_ACTUATORS; i++) {
         if (actuator_max > fabsf(actuator[i])) {
             actuator_max = fabsf(actuator[i]);
         }
@@ -227,7 +227,7 @@ void AP_MotorsSingle::output_armed_stabilizing()
     // static thrust is proportional to the airflow velocity squared
     // therefore the torque of the roll and pitch actuators should be approximately proportional to
     // the angle of attack multiplied by the static thrust.
-    for (uint8_t i = 0; i < NUM_ACTUATORS; i++) {
+    for (uint_fast8_t i = 0; i < NUM_ACTUATORS; i++) {
         _actuator_out[i] = constrain_float(rp_scale * actuator[i] / thrust_out_actuator, -1.0f, 1.0f);
     }
 }

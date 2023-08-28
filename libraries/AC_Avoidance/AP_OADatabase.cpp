@@ -247,7 +247,7 @@ bool AP_OADatabase::process_queue()
         return false;
     }
 
-    for (uint16_t queue_index=0; queue_index<queue_available; queue_index++) {
+    for (uint_fast16_t queue_index=0; queue_index<queue_available; queue_index++) {
         OA_DbItem item;
 
         bool pop_success;
@@ -263,7 +263,7 @@ bool AP_OADatabase::process_queue()
 
         // compare item to all items in database. If found a similar item, update the existing, else add it as a new one
         bool found = false;
-        for (uint16_t i=0; i<_database.count; i++) {
+        for (uint_fast16_t i=0; i<_database.count; i++) {
             if (is_close_to_item_in_database(i, item)) {
                 database_item_refresh(i, item.timestamp_ms, item.radius);
                 found = true;
@@ -390,7 +390,7 @@ void AP_OADatabase::send_adsb_vehicle(mavlink_channel_t chan, uint16_t interval_
     _last_send_to_gcs_ms[chan] = now_ms;
 
     // send unsent objects until output buffer is full or have sent enough
-    for (uint16_t i=0; i < _database.count; i++) {
+    for (uint_fast16_t i=0; i < _database.count; i++) {
         if (!HAVE_PAYLOAD_SPACE(chan, ADSB_VEHICLE) || (num_sent >= num_to_send)) {
             // all done for now
             return;

@@ -64,7 +64,7 @@ bool AP_Airspeed_MS4525::init()
     static const uint8_t addresses[] = { MS4525D0_I2C_ADDR1, MS4525D0_I2C_ADDR2, MS4525D0_I2C_ADDR3 };
     if (bus_is_confgured()) {
         // the user has configured a specific bus
-        for (uint8_t addr : addresses) {
+        for (uint_fast8_t addr : addresses) {
             if (probe(get_bus(), addr)) {
                 goto found_sensor;
             }
@@ -73,14 +73,14 @@ bool AP_Airspeed_MS4525::init()
         // if bus is not configured then fall back to the old
         // behaviour of probing all buses, external first
         FOREACH_I2C_EXTERNAL(bus) {
-            for (uint8_t addr : addresses) {
+            for (uint_fast8_t addr : addresses) {
                 if (probe(bus, addr)) {
                     goto found_sensor;
                 }
             }
         }
         FOREACH_I2C_INTERNAL(bus) {
-            for (uint8_t addr : addresses) {
+            for (uint_fast8_t addr : addresses) {
                 if (probe(bus, addr)) {
                     goto found_sensor;
                 }

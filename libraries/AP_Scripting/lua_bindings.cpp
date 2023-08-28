@@ -94,7 +94,7 @@ int AP_Logger_Write(lua_State *L) {
     }
     // Count the number of commas
     uint8_t commas = 1;
-    for (uint8_t i=0; i<length; i++) {
+    for (uint_fast8_t i=0; i<length; i++) {
         if (labels[i] == ',') {
             commas++;
         }
@@ -187,7 +187,7 @@ int AP_Logger_Write(lua_State *L) {
     memcpy(&buffer[offset], &now, sizeof(uint64_t));
     offset += sizeof(uint64_t);
 
-    for (uint8_t i=field_start; i<=args; i++) {
+    for (uint_fast8_t i=field_start; i<=args; i++) {
         uint8_t charlen = 0;
         uint8_t index = have_units ? i-5 : i-3;
         uint8_t arg_index = i + arg_offset;
@@ -440,7 +440,7 @@ int AP_HAL__I2CDevice_read_registers(lua_State *L) {
         } else {
             // push to table
             lua_newtable(L);
-            for (uint8_t i=0; i < recv_length; i++) {
+            for (uint_fast8_t i=0; i < recv_length; i++) {
                 lua_pushinteger(L, i+1);
                 lua_pushinteger(L, data[i]);
                 lua_settable(L, -3);

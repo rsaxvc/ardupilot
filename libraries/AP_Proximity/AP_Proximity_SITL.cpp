@@ -59,7 +59,7 @@ void AP_Proximity_SITL::update(void)
     if (AP::fence()->polyfence().inclusion_boundary_available()) {
         set_status(AP_Proximity::Status::Good);
         // update distance in each sector
-        for (uint8_t sector=0; sector < PROXIMITY_NUM_SECTORS; sector++) {
+        for (uint_fast8_t sector=0; sector < PROXIMITY_NUM_SECTORS; sector++) {
             const float yaw_angle_deg = sector * 45.0f;
             AP_Proximity_Boundary_3D::Face face = frontend.boundary.get_face(yaw_angle_deg);
             float fence_distance;

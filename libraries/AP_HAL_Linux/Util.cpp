@@ -117,7 +117,7 @@ bool Util::get_system_id_unformatted(uint8_t buf[], uint8_t &len)
 
     // try first to use machine-id file. Most systems will have this
     const char *paths[] = { "/etc/machine-id", "/var/lib/dbus/machine-id" };
-    for (uint8_t i=0; i<ARRAY_SIZE(paths); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(paths); i++) {
         int fd = open(paths[i], O_RDONLY);
         if (fd == -1) {
             continue;
@@ -229,7 +229,7 @@ int Util::get_hw_arm32()
         if (strstr(buffer, "Hardware") == nullptr) {
             continue;
         }
-        for (uint8_t i = 0; i < UTIL_NUM_HARDWARES; i++) {
+        for (uint_fast8_t i = 0; i < UTIL_NUM_HARDWARES; i++) {
             if (strstr(buffer, _hw_names[i]) == nullptr) {
                 continue;
             }

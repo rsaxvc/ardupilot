@@ -44,7 +44,7 @@ void AP_BattMonitor_Backend::Log_Write_BCL(const uint8_t instance, const uint64_
     // many supported cells or the loop below will over-read
     static_assert(ARRAY_SIZE(_state.cell_voltages.cells) >= ARRAY_SIZE(cell_pkt.cell_voltages), "must have at least ARRAY_SIZE(log_BCL.cell_voltages) cells");
 
-    for (uint8_t i = 0; i < ARRAY_SIZE(cell_pkt.cell_voltages); i++) {
+    for (uint_fast8_t i = 0; i < ARRAY_SIZE(cell_pkt.cell_voltages); i++) {
         cell_pkt.cell_voltages[i] = _state.cell_voltages.cells[i] + 1; // add 1mv
     }
     AP::logger().WriteBlock(&cell_pkt, sizeof(cell_pkt));

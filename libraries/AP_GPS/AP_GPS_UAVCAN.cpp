@@ -184,7 +184,7 @@ AP_GPS_Backend* AP_GPS_UAVCAN::probe(AP_GPS &_gps, AP_GPS::GPS_State &_state)
                 continue; // This device doesn't match the correct node
             }
             last_match = found_match;
-            for (uint8_t j = 0; j < GPS_MAX_RECEIVERS; j++) {
+            for (uint_fast8_t j = 0; j < GPS_MAX_RECEIVERS; j++) {
                 if (_detected_modules[i].node_id == _gps._override_node_id[j] &&
                     (j != _state.instance)) {
                     //wrong instance
@@ -195,7 +195,7 @@ AP_GPS_Backend* AP_GPS_UAVCAN::probe(AP_GPS &_gps, AP_GPS::GPS_State &_state)
             }
 
             // Handle Duplicate overrides
-            for (uint8_t j = 0; j < GPS_MAX_RECEIVERS; j++) {
+            for (uint_fast8_t j = 0; j < GPS_MAX_RECEIVERS; j++) {
                 if (_gps._override_node_id[i] != 0 && (i != j) &&
                     _gps._override_node_id[i] == _gps._override_node_id[j]) {
                     bad_override_config = true;
@@ -250,7 +250,7 @@ AP_GPS_Backend* AP_GPS_UAVCAN::probe(AP_GPS &_gps, AP_GPS::GPS_State &_state)
                             _state.instance);
         snprintf(backend->_name, ARRAY_SIZE(backend->_name), "UAVCAN%u-%u", _detected_modules[found_match].ap_uavcan->get_driver_index()+1, _detected_modules[found_match].node_id);
         _detected_modules[found_match].instance = _state.instance;
-        for (uint8_t i=0; i < GPS_MAX_RECEIVERS; i++) {
+        for (uint_fast8_t i=0; i < GPS_MAX_RECEIVERS; i++) {
             if (_detected_modules[found_match].node_id == AP::gps()._node_id[i]) {
                 if (i == _state.instance) {
                     // Nothing to do here
@@ -277,14 +277,14 @@ AP_GPS_Backend* AP_GPS_UAVCAN::probe(AP_GPS &_gps, AP_GPS::GPS_State &_state)
 
 bool AP_GPS_UAVCAN::backends_healthy(char failure_msg[], uint16_t failure_msg_len)
 {
-    for (uint8_t i = 0; i < GPS_MAX_RECEIVERS; i++) {
+    for (uint_fast8_t i = 0; i < GPS_MAX_RECEIVERS; i++) {
         bool overriden_node_found = false;
         bool bad_override_config = false;
         if (AP::gps()._override_node_id[i] == 0) {
             //anything goes
             continue;
         }
-        for (uint8_t j = 0; j < GPS_MAX_RECEIVERS; j++) {
+        for (uint_fast8_t j = 0; j < GPS_MAX_RECEIVERS; j++) {
             if (AP::gps()._override_node_id[i] == AP::gps()._override_node_id[j] && (i != j)) {
                 bad_override_config = true;
                 break;
@@ -316,7 +316,7 @@ AP_GPS_UAVCAN* AP_GPS_UAVCAN::get_uavcan_backend(AP_UAVCAN* ap_uavcan, uint8_t n
         return nullptr;
     }
 
-    for (uint8_t i = 0; i < GPS_MAX_RECEIVERS; i++) {
+    for (uint_fast8_t i = 0; i < GPS_MAX_RECEIVERS; i++) {
         if (_detected_modules[i].driver != nullptr &&
             _detected_modules[i].ap_uavcan == ap_uavcan && 
             _detected_modules[i].node_id == node_id) {
@@ -326,7 +326,7 @@ AP_GPS_UAVCAN* AP_GPS_UAVCAN::get_uavcan_backend(AP_UAVCAN* ap_uavcan, uint8_t n
 
     bool already_detected = false;
     // Check if there's an empty spot for possible registeration
-    for (uint8_t i = 0; i < GPS_MAX_RECEIVERS; i++) {
+    for (uint_fast8_t i = 0; i < GPS_MAX_RECEIVERS; i++) {
         if (_detected_modules[i].ap_uavcan == ap_uavcan && _detected_modules[i].node_id == node_id) {
             // Already Detected
             already_detected = true;
@@ -334,7 +334,7 @@ AP_GPS_UAVCAN* AP_GPS_UAVCAN::get_uavcan_backend(AP_UAVCAN* ap_uavcan, uint8_t n
         }
     }
     if (!already_detected) {
-        for (uint8_t i = 0; i < GPS_MAX_RECEIVERS; i++) {
+        for (uint_fast8_t i = 0; i < GPS_MAX_RECEIVERS; i++) {
             if (_detected_modules[i].ap_uavcan == nullptr) {
                 _detected_modules[i].ap_uavcan = ap_uavcan;
                 _detected_modules[i].node_id = node_id;
@@ -349,8 +349,8 @@ AP_GPS_UAVCAN* AP_GPS_UAVCAN::get_uavcan_backend(AP_UAVCAN* ap_uavcan, uint8_t n
     // Sort based on the node_id, larger values first
     // we do this, so that we have repeatable GPS
     // registration
-    for (uint8_t i = 1; i < GPS_MAX_RECEIVERS; i++) {
-        for (uint8_t j = i; j > 0; j--) {
+    for (uint_fast8_t i = 1; i < GPS_MAX_RECEIVERS; i++) {
+        for (uint_fast8_t j = i; j > 0; j--) {
             if (_detected_modules[j].node_id > _detected_modules[j-1].node_id) {
                 tempslot = _detected_modules[j];
                 _detected_modules[j] = _detected_modules[j-1];
@@ -892,7 +892,7 @@ void AP_GPS_UAVCAN::handle_param_save_response(AP_UAVCAN* ap_uavcan, const uint8
 #if AP_DRONECAN_SEND_GPS
 bool AP_GPS_UAVCAN::instance_exists(const AP_UAVCAN* ap_uavcan)
 {
-    for (uint8_t i=0; i<ARRAY_SIZE(_detected_modules); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(_detected_modules); i++) {
         if (ap_uavcan == _detected_modules[i].ap_uavcan) {
             return true;
         }

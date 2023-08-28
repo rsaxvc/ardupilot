@@ -159,7 +159,7 @@ void AP_RobotisServo::add_stuffing(uint8_t *packet)
 
     uint8_t *packet_ptr;
     uint16_t packet_length_before_crc = packet_length_in - 2;
-    for (uint16_t i = 3; i < packet_length_before_crc; i++) {
+    for (uint_fast16_t i = 3; i < packet_length_before_crc; i++) {
         packet_ptr = &packet[i+PKT_INSTRUCTION-2];
         if (packet_ptr[0] == 0xFF && packet_ptr[1] == 0xFF && packet_ptr[2] == 0xFD) {
             packet_length_out++;
@@ -286,7 +286,7 @@ void AP_RobotisServo::read_bytes(void)
     if (n > sizeof(pktbuf) - pktbuf_ofs) {
         n = sizeof(pktbuf) - pktbuf_ofs;
     }
-    for (uint8_t i=0; i<n; i++) {
+    for (uint_fast8_t i=0; i<n; i++) {
         pktbuf[pktbuf_ofs++] = port->read();
     }
 
@@ -390,7 +390,7 @@ void AP_RobotisServo::update()
     delay_time_us = 0;
 
     // loop for all 16 channels
-    for (uint8_t i=0; i<NUM_SERVO_CHANNELS; i++) {
+    for (uint_fast8_t i=0; i<NUM_SERVO_CHANNELS; i++) {
         if (((1U<<i) & servo_mask) == 0) {
             continue;
         }

@@ -215,7 +215,7 @@ static struct gimbal_param {
  */
 struct gimbal_param *Gimbal::param_find(const char *name)
 {
-    for (uint8_t i=0; i<ARRAY_SIZE(gimbal_params); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(gimbal_params); i++) {
         if (strncmp(name, gimbal_params[i].name, 16) == 0) {
             return &gimbal_params[i];
         }
@@ -285,7 +285,7 @@ void Gimbal::send_report(void)
     ssize_t ret;
 
     while ((ret=mav_socket.recv(buf, sizeof(buf), 0)) > 0) {
-        for (uint8_t i=0; i<ret; i++) {
+        for (uint_fast8_t i=0; i<ret; i++) {
             mavlink_message_t msg;
             mavlink_status_t status;
             if (mavlink_frame_char_buffer(&mavlink.rxmsg, &mavlink.status,

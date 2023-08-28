@@ -7,7 +7,7 @@
 
 AP_DAL_Compass::AP_DAL_Compass()
 {
-    for (uint8_t i=0; i<ARRAY_SIZE(_RMGI); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(_RMGI); i++) {
         _RMGI[i].instance = i;
     }
 }
@@ -28,7 +28,7 @@ void AP_DAL_Compass::start_frame()
 
     WRITE_REPLAY_BLOCK_IFCHANGED(RMGH, _RMGH, old);
 
-    for (uint8_t i=0; i<_RMGH.count; i++) {
+    for (uint_fast8_t i=0; i<_RMGH.count; i++) {
         log_RMGI &RMGI = _RMGI[i];
         const log_RMGI old_RMGI = RMGI;
         RMGI.use_for_yaw = compass.use_for_yaw(i);

@@ -128,7 +128,7 @@ bool Compass::_start_calibration_mask(uint8_t mask, bool retry, bool autosave, f
     _compass_cal_autoreboot = autoreboot;
 
     bool at_least_one_started = false;
-    for (uint8_t i=0; i<COMPASS_MAX_INSTANCES; i++) {
+    for (uint_fast8_t i=0; i<COMPASS_MAX_INSTANCES; i++) {
         if ((1<<i) & mask) {
             if (!_start_calibration(i,retry,delay)) {
                 _cancel_calibration_mask(mask);
@@ -146,7 +146,7 @@ bool Compass::start_calibration_all(bool retry, bool autosave, float delay, bool
     _compass_cal_autoreboot = autoreboot;
 
     bool at_least_one_started = false;
-    for (uint8_t i=0; i<COMPASS_MAX_INSTANCES; i++) {
+    for (uint_fast8_t i=0; i<COMPASS_MAX_INSTANCES; i++) {
         // ignore any compasses that fail to start calibrating
         // start all should only calibrate compasses that are being used
         if (_start_calibration(i,retry,delay)) {
@@ -172,7 +172,7 @@ void Compass::_cancel_calibration(uint8_t i)
 
 void Compass::_cancel_calibration_mask(uint8_t mask)
 {
-    for (uint8_t i=0; i<COMPASS_MAX_INSTANCES; i++) {
+    for (uint_fast8_t i=0; i<COMPASS_MAX_INSTANCES; i++) {
         if ((1<<i) & mask) {
             _cancel_calibration(i);
         }
@@ -244,7 +244,7 @@ bool Compass::send_mag_cal_progress(const GCS_MAVLINK& link)
 {
     const mavlink_channel_t chan = link.get_chan();
 
-    for (uint8_t i = 0; i < COMPASS_MAX_INSTANCES; i++) {
+    for (uint_fast8_t i = 0; i < COMPASS_MAX_INSTANCES; i++) {
         const Priority compass_id = (next_cal_progress_idx[chan] + 1) % COMPASS_MAX_INSTANCES;
         
         auto& calibrator = _calibrator[compass_id];
@@ -283,7 +283,7 @@ bool Compass::send_mag_cal_report(const GCS_MAVLINK& link)
 {
     const mavlink_channel_t chan = link.get_chan();
 
-    for (uint8_t i = 0; i < COMPASS_MAX_INSTANCES; i++) {
+    for (uint_fast8_t i = 0; i < COMPASS_MAX_INSTANCES; i++) {
         const Priority compass_id = (next_cal_report_idx[chan] + 1) % COMPASS_MAX_INSTANCES;
 
         if (_calibrator[compass_id] == nullptr) {
@@ -538,7 +538,7 @@ MAV_RESULT Compass::mag_cal_fixed_yaw(float yaw_deg, uint8_t compass_mask,
     // Rotate into body frame using provided yaw
     field = dcm.transposed() * field;
 
-    for (uint8_t i=0; i<get_count(); i++) {
+    for (uint_fast8_t i=0; i<get_count(); i++) {
         if (compass_mask != 0 && ((1U<<i) & compass_mask) == 0) {
             // skip this compass
             continue;

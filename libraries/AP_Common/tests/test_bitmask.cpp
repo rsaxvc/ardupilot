@@ -52,7 +52,7 @@ TEST(Bitmask, Tests)
     EXPECT_EXIT(x.set(50), testing::KilledBySignal(SIGABRT), "AP_InternalError::error_t::bitmask_range");
 #endif
 
-    for (uint8_t i=0; i<49; i++) {
+    for (uint_fast8_t i=0; i<49; i++) {
         EXPECT_EQ(x2.get(i), x.get(i));
     }
 

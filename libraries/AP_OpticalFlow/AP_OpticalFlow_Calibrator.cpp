@@ -192,7 +192,7 @@ bool AP_OpticalFlow_Calibrator::calc_scalars(uint8_t axis, float& scalar, float&
 
     // calculate total absolute residual from all samples
     float total_abs_residual = 0;
-    for (uint8_t i = 0; i < num_samples; i++) {
+    for (uint_fast8_t i = 0; i < num_samples; i++) {
         const sample_t& samplei = _cal_data[axis].samples[i];
         total_abs_residual += fabsf(calc_sample_residual(samplei, 1.0));
     }
@@ -207,7 +207,7 @@ bool AP_OpticalFlow_Calibrator::calc_scalars(uint8_t axis, float& scalar, float&
 
     // for each sample calculate the residual and scalar that best reduces the residual
     float best_scalar_total = 0;
-    for (uint8_t i = 0; i < num_samples; i++) {
+    for (uint_fast8_t i = 0; i < num_samples; i++) {
         float sample_best_scalar;
         const sample_t& samplei = _cal_data[axis].samples[i];
         if (!calc_sample_best_scalar(samplei, sample_best_scalar)) {
@@ -284,7 +284,7 @@ float AP_OpticalFlow_Calibrator::calc_mean_squared_residuals(uint8_t axis, float
     // calculate and sum residuals of each sample
     float sum = 0.0f;
     uint16_t num_samples = 0;
-    for (uint8_t i = 0; i < _cal_data[axis].num_samples; i++) {
+    for (uint_fast8_t i = 0; i < _cal_data[axis].num_samples; i++) {
         sum += sq(calc_sample_residual(_cal_data[axis].samples[i], scalar));
         num_samples++;
     }

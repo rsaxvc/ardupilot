@@ -57,7 +57,7 @@ static bool check_result(const char *name, bool bytes, const uint16_t *values, u
         printf("%s: wrong number of channels %u should be %u\n", label, n, nvalues);
         return false;
     }
-    for (uint8_t i=0; i<n; i++) {
+    for (uint_fast8_t i=0; i<n; i++) {
         uint16_t v = rcprot->read(i);
         if (values[i] != v) {
             printf("%s: chan %u wrong value %u should be %u\n", label, i+1, v, values[i]);
@@ -78,8 +78,8 @@ static bool test_byte_protocol(const char *name, uint32_t baudrate,
                                uint8_t pause_at)
 {
     bool ret = true;
-    for (uint8_t repeat=0; repeat<repeats+4; repeat++) {
-        for (uint8_t i=0; i<nbytes; i++) {
+    for (uint_fast8_t repeat=0; repeat<repeats+4; repeat++) {
+        for (uint_fast8_t i=0; i<nbytes; i++) {
             if (pause_at > 0 && i > 0 && ((i % pause_at) == 0)) {
                 hal.scheduler->delay(10);
             }
@@ -123,7 +123,7 @@ static void send_byte(uint8_t b, uint32_t baudrate, bool inverted)
 {
     send_bit(0, baudrate, inverted); // start bit
     uint8_t parity = 0;
-    for (uint8_t i=0; i<8; i++) {
+    for (uint_fast8_t i=0; i<8; i++) {
         uint8_t bit = (b & (1U<<i))?1:0;
         send_bit(bit, baudrate, inverted);
         if (bit) {
@@ -161,9 +161,9 @@ static bool test_pulse_protocol(const char *name, uint32_t baudrate,
                                 bool inverted)
 {
     bool ret = true;
-    for (uint8_t repeat=0; repeat<repeats+4; repeat++) {
+    for (uint_fast8_t repeat=0; repeat<repeats+4; repeat++) {
         send_pause(1, baudrate, 6000, inverted);
-        for (uint8_t i=0; i<nbytes; i++) {
+        for (uint_fast8_t i=0; i<nbytes; i++) {
             if (pause_at > 0 && i > 0 && ((i % pause_at) == 0)) {
                 send_pause(1, baudrate, 10000, inverted);
             }

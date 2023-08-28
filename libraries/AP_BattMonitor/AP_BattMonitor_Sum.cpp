@@ -54,7 +54,7 @@ AP_BattMonitor_Sum::read()
     float current_sum = 0;
     uint8_t current_count = 0;
 
-    for (uint8_t i=0; i<_mon.num_instances(); i++) {
+    for (uint_fast8_t i=0; i<_mon.num_instances(); i++) {
         if (i == _instance) {
             // never include self
             continue;

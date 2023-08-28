@@ -44,7 +44,7 @@ AP_RangeFinder_UAVCAN* AP_RangeFinder_UAVCAN::get_uavcan_backend(AP_UAVCAN* ap_u
     AP_RangeFinder_UAVCAN* driver = nullptr;
     RangeFinder &frontend = *AP::rangefinder();
     //Scan through the Rangefinder params to find UAVCAN RFND with matching address.
-    for (uint8_t i = 0; i < RANGEFINDER_MAX_INSTANCES; i++) {
+    for (uint_fast8_t i = 0; i < RANGEFINDER_MAX_INSTANCES; i++) {
         if ((RangeFinder::Type)frontend.params[i].type.get() == RangeFinder::Type::UAVCAN &&
             frontend.params[i].address == address) {
             driver = (AP_RangeFinder_UAVCAN*)frontend.drivers[i];
@@ -63,7 +63,7 @@ AP_RangeFinder_UAVCAN* AP_RangeFinder_UAVCAN::get_uavcan_backend(AP_UAVCAN* ap_u
     }
     
     if (create_new) {
-        for (uint8_t i = 0; i < RANGEFINDER_MAX_INSTANCES; i++) {
+        for (uint_fast8_t i = 0; i < RANGEFINDER_MAX_INSTANCES; i++) {
             if ((RangeFinder::Type)frontend.params[i].type.get() == RangeFinder::Type::UAVCAN &&
                 frontend.params[i].address == address) {
                 WITH_SEMAPHORE(frontend.detect_sem);

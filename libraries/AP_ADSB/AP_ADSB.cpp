@@ -205,7 +205,7 @@ void AP_ADSB::init(void)
     }
 
     if (detected_num_instances == 0) {
-        for (uint8_t i=0; i<ADSB_MAX_INSTANCES; i++) {
+        for (uint_fast8_t i=0; i<ADSB_MAX_INSTANCES; i++) {
             detect_instance(i);
             if (_backend[i] == nullptr) {
                 continue;
@@ -233,7 +233,7 @@ bool AP_ADSB::check_startup()
     }
 
     bool all_backends_disabled = true;
-    for (uint8_t instance=0; instance<ADSB_MAX_INSTANCES; instance++) {
+    for (uint_fast8_t instance=0; instance<ADSB_MAX_INSTANCES; instance++) {
         if (_type[instance] > 0) {
             all_backends_disabled = false;
             break;
@@ -381,7 +381,7 @@ void AP_ADSB::update(void)
         out_state.last_config_ms = 0; // send now
     }
 
-    for (uint8_t i=0; i<detected_num_instances; i++) {
+    for (uint_fast8_t i=0; i<detected_num_instances; i++) {
         if (_backend[i] != nullptr && _type[i].get() != (int8_t)Type::None) {
             _backend[i]->update();
         }
@@ -398,7 +398,7 @@ void AP_ADSB::determine_furthest_aircraft(void)
     float max_distance = 0;
     uint16_t max_distance_index = 0;
 
-    for (uint16_t index = 0; index < in_state.vehicle_count; index++) {
+    for (uint_fast16_t index = 0; index < in_state.vehicle_count; index++) {
         if (is_special_vehicle(in_state.vehicle_list[index].info.ICAO_address)) {
             continue;
         }
@@ -458,7 +458,7 @@ void AP_ADSB::delete_vehicle(const uint16_t index)
  */
 bool AP_ADSB::find_index(const adsb_vehicle_t &vehicle, uint16_t *index) const
 {
-    for (uint16_t i = 0; i < in_state.vehicle_count; i++) {
+    for (uint_fast16_t i = 0; i < in_state.vehicle_count; i++) {
         if (in_state.vehicle_list[i].info.ICAO_address == vehicle.info.ICAO_address) {
             *index = i;
             return true;
@@ -679,7 +679,7 @@ void AP_ADSB::handle_transceiver_report(const mavlink_channel_t chan, const mavl
  */
 void AP_ADSB::send_adsb_out_status(const mavlink_channel_t chan) const
 {
-    for (uint8_t i=0; i < ADSB_MAX_INSTANCES; i++) {
+    for (uint_fast8_t i=0; i < ADSB_MAX_INSTANCES; i++) {
         if (_type[i] == (int8_t)(AP_ADSB::Type::uAvionix_UCP) || _type[i] == (int8_t)(AP_ADSB::Type::Sagetech_MXS)) {
             mavlink_msg_uavionix_adsb_out_status_send_struct(chan, &out_state.tx_status);
             return;
@@ -701,7 +701,7 @@ uint32_t AP_ADSB::genICAO(const Location &loc) const
     uint32_t timeSum = 0;
     const uint32_t M3 = 4096 * (loc.lat & 0x00000FFF) + (loc.lng & 0x00000FFF);
 
-    for (uint8_t i=0; i<24; i++) {
+    for (uint_fast8_t i=0; i<24; i++) {
         timeSum += (((gps_time & 0x00FFFFFF)>> i) & 0x00000001);
     }
     return( (timeSum ^ M3) & 0x00FFFFFF);
@@ -717,7 +717,7 @@ void AP_ADSB::set_callsign(const char* str, const bool append_icao)
 
     // copy str to cfg.callsign but we can't use strncpy because we need
     // to restrict values to only 'A' - 'Z' and '0' - '9' and pad
-    for (uint8_t i=0; i<sizeof(out_state.cfg.callsign)-1; i++) {
+    for (uint_fast8_t i=0; i<sizeof(out_state.cfg.callsign)-1; i++) {
         if (!str[i] || zero_char_pad) {
             // finish early. Either pad the rest with zero char or null terminate and call it a day
             if ((append_icao && i<4) || zero_char_pad) {
@@ -870,7 +870,7 @@ uint32_t AP_ADSB::convert_base_to_decimal(const uint8_t baseIn, uint32_t inputNu
         return inputNumber;
     }
     uint32_t outputNumber = 0;
-    for (uint8_t i=0; i < 10; i++) {
+    for (uint_fast8_t i=0; i < 10; i++) {
         outputNumber += (inputNumber % 10) * powf(baseIn, i);
         inputNumber /= 10;
         if (inputNumber == 0) break;

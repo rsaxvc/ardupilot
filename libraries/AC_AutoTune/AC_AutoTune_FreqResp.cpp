@@ -81,7 +81,7 @@ void AC_AutoTune_FreqResp::update(float command, float tgt_resp, float meas_resp
         float tgt_ampl = 0.0f;
         uint32_t meas_time = 0;
         uint32_t tgt_time = 0;
-        for (uint8_t i = 0;  i < AUTOTUNE_DWELL_CYCLES; i++) {
+        for (uint_fast8_t i = 0;  i < AUTOTUNE_DWELL_CYCLES; i++) {
             meas_cnt=0;
             tgt_cnt=0;
             pull_from_meas_buffer(meas_cnt, meas_ampl, meas_time);

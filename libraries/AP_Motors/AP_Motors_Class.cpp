@@ -168,7 +168,7 @@ void AP_Motors::rc_set_freq(uint32_t motor_mask, uint16_t freq_hz)
           the SERVOn_MIN/MAX values per channel
          */
         _motor_pwm_range_mask |= motor_mask;
-        for (uint8_t i=0; i<16; i++) {
+        for (uint_fast8_t i=0; i<16; i++) {
             if ((1U<<i) & motor_mask) {
                 SRV_Channels::set_range(SRV_Channels::get_motor_function(i), 1000);
             }
@@ -189,7 +189,7 @@ void AP_Motors::rc_set_freq(uint32_t motor_mask, uint16_t freq_hz)
 uint32_t AP_Motors::motor_mask_to_srv_channel_mask(uint32_t mask) const
 {
     uint32_t mask2 = 0;
-    for (uint8_t i = 0; i < 32; i++) {
+    for (uint_fast8_t i = 0; i < 32; i++) {
         uint32_t bit = 1UL << i;
         if (mask & bit) {
             SRV_Channel::Aux_servo_function_t function = SRV_Channels::get_motor_function(i);

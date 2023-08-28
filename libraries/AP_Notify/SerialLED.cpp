@@ -42,13 +42,13 @@ bool SerialLED::hw_set_rgb(uint8_t red, uint8_t green, uint8_t blue)
         return false;
     }
 
-    for (uint16_t chan=0; chan<16; chan++) {
+    for (uint_fast16_t chan=0; chan<16; chan++) {
         if ((1U<<chan) & enable_mask) {
             led->set_RGB(chan+1, -1, red, green, blue);
         }
     }
 
-    for (uint16_t chan=0; chan<16; chan++) {
+    for (uint_fast16_t chan=0; chan<16; chan++) {
         if ((1U<<chan) & enable_mask) {
             led->send(chan+1);
         }

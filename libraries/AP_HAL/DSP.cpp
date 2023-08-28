@@ -66,7 +66,7 @@ DSP::FFTWindowState::FFTWindowState(uint16_t window_size, uint16_t sample_rate, 
 
     // create the Hanning window
     // https://holometer.fnal.gov/GH_FFT.pdf - equation 19
-    for (uint16_t i = 0; i < window_size; i++) {
+    for (uint_fast16_t i = 0; i < window_size; i++) {
         _hanning_window[i] = (0.5f - 0.5f * cosf(2.0f * M_PI * i / ((float)window_size - 1)));
         _window_scale += _hanning_window[i];
     }
@@ -119,7 +119,7 @@ void DSP::step_cmplx_mag(FFTWindowState* fft, uint16_t start_bin, uint16_t end_b
     uint16_t numpeaks = find_peaks(&freq_data[start_bin], bin_range, fft->_derivative_freq_bins, peaks, MAX_TRACKED_PEAKS, 0.0f, -1.0f, smoothwidth, 2);
     //hal.console->printf("found %d peaks\n", numpeaks);
 
-    for (uint16_t i = 0; i < MAX_TRACKED_PEAKS; i++) {
+    for (uint_fast16_t i = 0; i < MAX_TRACKED_PEAKS; i++) {
         fft->_peak_data[i]._bin = peaks[i] + start_bin;
     }
 
@@ -152,7 +152,7 @@ float DSP::find_noise_width(float* freq_bins, uint16_t start_bin, uint16_t end_b
 
     // -attenuation/2 dB point above the center bin
     if (max_energy_bin < end_bin) {
-        for (uint16_t b = max_energy_bin + 1; b <= end_bin; b++) {
+        for (uint_fast16_t b = max_energy_bin + 1; b <= end_bin; b++) {
             if (freq_bins[b] < freq_bins[max_energy_bin] * cutoff) {
                 // we assume that the 3dB point is in the middle of the final shoulder bin
                 noise_width_hz += (b - max_energy_bin - 0.5f);
@@ -163,7 +163,7 @@ float DSP::find_noise_width(float* freq_bins, uint16_t start_bin, uint16_t end_b
     }
     // -attenuation/2 dB point below the center bin
     if (max_energy_bin > start_bin) {
-        for (uint16_t b = max_energy_bin - 1; b >= start_bin; b--) {
+        for (uint_fast16_t b = max_energy_bin - 1; b >= start_bin; b--) {
             if (freq_bins[b] < freq_bins[max_energy_bin] * cutoff) {
                 // we assume that the 3dB point is in the middle of the final shoulder bin
                 noise_width_hz += (max_energy_bin - b - 0.5f);
@@ -206,7 +206,7 @@ void DSP::update_average_from_sliding_window(FFTWindowState* fft)
 
     const float inv_ssize = 1.0f / fft->_sliding_window_size;
 
-    for (uint16_t i = 0; i < fft->_bin_count; i++) {
+    for (uint_fast16_t i = 0; i < fft->_bin_count; i++) {
         slice[i] = fft->_freq_bins[i] * fft->_window_scale * inv_ssize;
         fft->_avg_freq_bins[i] = fft->_avg_freq_bins[i] + slice[i] - old_slice[i];
     }
@@ -361,7 +361,7 @@ uint16_t DSP::fft_stop_average(FFTWindowState* fft, uint16_t start_bin, uint16_t
     numpeaks = MIN(numpeaks, uint16_t(MAX_TRACKED_PEAKS));
 
     // now try and find the lowest harmonic
-    for (uint16_t i = 0; i < numpeaks; i++) {
+    for (uint_fast16_t i = 0; i < numpeaks; i++) {
         const uint16_t bin = peaks[i] + start_bin;
         float d = calculate_jains_estimator(fft, fft->_avg_freq_bins, bin);
         freqs[i] = (bin + d) * fft->_bin_resolution;
@@ -395,10 +395,10 @@ uint16_t DSP::find_peaks(const float* input, uint16_t length, float* d, uint16_t
     memset(xx, 0, peakgroup * sizeof(uint16_t));
     memset(yy, 0, peakgroup * sizeof(float));
 
-    for (uint16_t j = (halfw << 1) - 2; j < length - smoothwidth - 1; j++) {
+    for (uint_fast16_t j = (halfw << 1) - 2; j < length - smoothwidth - 1; j++) {
         if (d[j] >= 0 && d[j + 1] <= 0 && !is_equal(d[j], d[j + 1])) { // detect zero crossing
             if ((d[j] - d[j + 1]) > slopeThreshold) {
-                for (uint16_t k = 0; k < peakgroup; k++) {
+                for (uint_fast16_t k = 0; k < peakgroup; k++) {
                     uint16_t groupIndex = j + k - n + 2;
                     groupIndex = constrain_int16(groupIndex, 0, length - 1);
                     xx[k] = groupIndex;
@@ -442,7 +442,7 @@ uint16_t DSP::val2index(const float* vector, uint16_t n, float val) const
 {
     float minval = FLT_MAX;
     uint16_t minidx = 0;
-    for (uint16_t i = 0; i < n; i++) {
+    for (uint_fast16_t i = 0; i < n; i++) {
         float dif = fabsf(vector[i] - val);
         if (dif < minval) {
             minval = dif;
@@ -457,7 +457,7 @@ void DSP::derivative(const float* input, float* output, uint16_t n) const
 {
     output[0] = input[1] - input[0];
     output[n - 1] = input[n - 1] - input[n - 2];
-    for (uint16_t i = 1; i < n - 1; i++) {
+    for (uint_fast16_t i = 1; i < n - 1; i++) {
         output[i] = (input[i + 1] - input[i - 1]) / 2.0f;
     }
 }

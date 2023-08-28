@@ -139,7 +139,7 @@ static void run_test()
         }
 
         // loop and print each sensor
-        for (uint8_t ii = 0; ii < ins_count; ii++) {
+        for (uint_fast8_t ii = 0; ii < ins_count; ii++) {
             char state;
 
             if (ii > accel_count - 1) {

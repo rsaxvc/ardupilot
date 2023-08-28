@@ -415,7 +415,7 @@ void AP_OSD_ParamSetting::copy_name_camel_case(char* name, size_t len) const
     _param->copy_name_token(_current_token, buf, 17);
     buf[16] = 0;
     name[0] = buf[0];
-    for (uint8_t i = 1, n = 1; i < len; i++, n++) {
+    for (uint_fast8_t i = 1, n = 1; i < len; i++, n++) {
         if (buf[i] == '_') {
             name[n] = buf[i+1];
             i++;

@@ -192,7 +192,7 @@ int RCOutput_Bebop::read_obs_data(BebopBLDC_ObsData &obs)
     memset(&obs, 0, sizeof(obs));
     
     /* fill obs class */
-    for (uint8_t i = 0; i < _n_motors; i++) {
+    for (uint_fast8_t i = 0; i < _n_motors; i++) {
         /* extract 'rpm saturation bit' */
         obs.rpm_saturated[i] = (data.rpm[i] & (1 << 7)) ? 1 : 0;
         /* clear 'rpm saturation bit' */

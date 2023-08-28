@@ -21,7 +21,7 @@ extern const AP_HAL::HAL& hal;
 AP_ExpandingArrayGeneric::~AP_ExpandingArrayGeneric(void)
 {
     // free chunks
-    for (uint16_t i=0; i<chunk_count; i++) {
+    for (uint_fast16_t i=0; i<chunk_count; i++) {
         free(chunk_ptrs[i]);
     }
     // free chunks_ptrs array
@@ -49,7 +49,7 @@ bool AP_ExpandingArrayGeneric::expand(uint16_t num_chunks)
     }
 
     // allocate new chunks
-    for (uint16_t i = 0; i < num_chunks; i++) {
+    for (uint_fast16_t i = 0; i < num_chunks; i++) {
         if (hal.util->available_memory() < 100U + (chunk_size * elem_size)) {
             // fail if reallocating would leave less than 100 bytes of memory free
             return false;

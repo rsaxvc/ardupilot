@@ -208,7 +208,7 @@ void AP_Compass_QMC5883L::read()
 void AP_Compass_QMC5883L::_dump_registers()
 {
 	  printf("QMC5883L registers dump\n");
-	    for (uint8_t reg = QMC5883L_REG_DATA_OUTPUT_X; reg <= 0x30; reg++) {
+	    for (uint_fast8_t reg = QMC5883L_REG_DATA_OUTPUT_X; reg <= 0x30; reg++) {
 	        uint8_t v;
 	        _dev->read_registers(reg,&v,1);
 	        printf("%02x:%02x ", (unsigned)reg, (unsigned)v);

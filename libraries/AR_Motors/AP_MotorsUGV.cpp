@@ -171,7 +171,7 @@ void AP_MotorsUGV::setup_servo_output()
     SRV_Channels::set_angle(SRV_Channel::k_throttleRight, 1000);
 
     // omni motors set in power percent so -100 ... 100
-    for (uint8_t i=0; i<AP_MOTORS_NUM_MOTORS_MAX; i++) {
+    for (uint_fast8_t i=0; i<AP_MOTORS_NUM_MOTORS_MAX; i++) {
         SRV_Channel::Aux_servo_function_t function = SRV_Channels::get_motor_function(i);
         SRV_Channels::set_angle(function, 100);
     }
@@ -465,7 +465,7 @@ bool AP_MotorsUGV::pre_arm_check(bool report) const
         return false;
     }
     // check all omni motor outputs have been configured
-    for (uint8_t i=0; i<_motors_num; i++) {
+    for (uint_fast8_t i=0; i<_motors_num; i++) {
         SRV_Channel::Aux_servo_function_t function = SRV_Channels::get_motor_function(i);
         if (!SRV_Channels::function_assigned(function)) {
             if (report) {
@@ -496,7 +496,7 @@ void AP_MotorsUGV::setup_pwm_type()
     _motor_mask |= SRV_Channels::get_output_channel_mask(SRV_Channel::k_throttle);
     _motor_mask |= SRV_Channels::get_output_channel_mask(SRV_Channel::k_throttleLeft);
     _motor_mask |= SRV_Channels::get_output_channel_mask(SRV_Channel::k_throttleRight);
-    for (uint8_t i=0; i<_motors_num; i++) {
+    for (uint_fast8_t i=0; i<_motors_num; i++) {
         _motor_mask |= SRV_Channels::get_output_channel_mask(SRV_Channels::get_motor_function(i));
     }
 
@@ -794,7 +794,7 @@ void AP_MotorsUGV::output_omni(bool armed, float steering, float throttle, float
 
         float thr_str_ltr_out[AP_MOTORS_NUM_MOTORS_MAX];
         float thr_str_ltr_max = 1;
-        for (uint8_t i=0; i<_motors_num; i++) {
+        for (uint_fast8_t i=0; i<_motors_num; i++) {
             // Each motor outputs throttle + steering + lateral
             thr_str_ltr_out[i] = (scaled_throttle * _throttle_factor[i]) +
                               (scaled_steering * _steering_factor[i]) +
@@ -806,7 +806,7 @@ void AP_MotorsUGV::output_omni(bool armed, float steering, float throttle, float
         }
         // Scale all outputs back evenly such that the lagest fits
         const float output_scale = 1 / thr_str_ltr_max;
-        for (uint8_t i=0; i<_motors_num; i++) {
+        for (uint_fast8_t i=0; i<_motors_num; i++) {
             // send output for each motor
             output_throttle(SRV_Channels::get_motor_function(i), thr_str_ltr_out[i] * 100.0f * output_scale);
         }
@@ -820,11 +820,11 @@ void AP_MotorsUGV::output_omni(bool armed, float steering, float throttle, float
     } else {
         // handle disarmed case
         if (_disarm_disable_pwm) {
-            for (uint8_t i=0; i<_motors_num; i++) {
+            for (uint_fast8_t i=0; i<_motors_num; i++) {
                 SRV_Channels::set_output_limit(SRV_Channels::get_motor_function(i), SRV_Channel::Limit::ZERO_PWM);
             }
         } else {
-            for (uint8_t i=0; i<_motors_num; i++) {
+            for (uint_fast8_t i=0; i<_motors_num; i++) {
                 SRV_Channels::set_output_limit(SRV_Channels::get_motor_function(i), SRV_Channel::Limit::TRIM);
             }
         }

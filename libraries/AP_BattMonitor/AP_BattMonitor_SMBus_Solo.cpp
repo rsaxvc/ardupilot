@@ -46,7 +46,7 @@ void AP_BattMonitor_SMBus_Solo::timer()
     // read cell voltages
     if (read_block(BATTMONITOR_SMBUS_SOLO_CELL_VOLTAGE, buff, 8)) {
         float pack_voltage_mv = 0.0f;
-        for (uint8_t i = 0; i < BATTMONITOR_SMBUS_SOLO_NUM_CELLS; i++) {
+        for (uint_fast8_t i = 0; i < BATTMONITOR_SMBUS_SOLO_NUM_CELLS; i++) {
             uint16_t cell = buff[(i * 2) + 1] << 8 | buff[i * 2];
             _state.cell_voltages.cells[i] = cell;
             pack_voltage_mv += (float)cell;

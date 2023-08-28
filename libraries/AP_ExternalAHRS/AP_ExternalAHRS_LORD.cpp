@@ -210,7 +210,7 @@ void AP_ExternalAHRS_LORD::handle_imu(const LORD_Packet& packet)
     last_ins_pkt = AP_HAL::millis();
 
     // Iterate through fields of varying lengths in INS packet
-    for (uint8_t i = 0; i < packet.header[3]; i +=  packet.payload[i]) {
+    for (uint_fast8_t i = 0; i < packet.header[3]; i +=  packet.payload[i]) {
         switch ((INSPacketField) packet.payload[i+1]) {
         // Scaled Ambient Pressure
         case INSPacketField::PRESSURE: {
@@ -290,7 +290,7 @@ void AP_ExternalAHRS_LORD::handle_gnss(const LORD_Packet &packet)
     last_gps_pkt = AP_HAL::millis();
 
     // Iterate through fields of varying lengths in GNSS packet
-    for (uint8_t i = 0; i < packet.header[3]; i += packet.payload[i]) {
+    for (uint_fast8_t i = 0; i < packet.header[3]; i += packet.payload[i]) {
         switch ((GNSSPacketField) packet.payload[i+1]) {
         // GPS Time
         case GNSSPacketField::GPS_TIME: {
@@ -356,7 +356,7 @@ void AP_ExternalAHRS_LORD::handle_filter(const LORD_Packet &packet)
     last_filter_pkt = AP_HAL::millis();
 
     // Iterate through fields of varying lengths in filter packet
-    for (uint8_t i = 0; i < packet.header[3]; i += packet.payload[i]) {
+    for (uint_fast8_t i = 0; i < packet.header[3]; i += packet.payload[i]) {
         switch ((FilterPacketField) packet.payload[i+1]) {
         // GPS Timestamp
         case FilterPacketField::GPS_TIME: {

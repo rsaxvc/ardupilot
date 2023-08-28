@@ -30,7 +30,7 @@ I2CBus I2CDeviceManager::businfo[ARRAY_SIZE(i2c_bus_desc)];
 
 I2CDeviceManager::I2CDeviceManager(void)
 {
-    for (uint8_t i=0; i<ARRAY_SIZE(i2c_bus_desc); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(i2c_bus_desc); i++) {
         if (i2c_bus_desc[i].soft) {
             businfo[i].sw_handle.sda = i2c_bus_desc[i].sda;
             businfo[i].sw_handle.scl = i2c_bus_desc[i].scl;

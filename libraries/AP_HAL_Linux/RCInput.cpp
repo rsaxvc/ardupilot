@@ -79,7 +79,7 @@ void RCInput::_process_ppmsum_pulse(uint16_t width_usec)
         // a long pulse indicates the end of a frame. Reset the
         // channel counter so next pulse is channel 0
         if (ppm_state._channel_counter >= MIN_NUM_CHANNELS) {
-            for (uint8_t i=0; i<ppm_state._channel_counter; i++) {
+            for (uint_fast8_t i=0; i<ppm_state._channel_counter; i++) {
                 _pwm_values[i] = ppm_state._pulse_capt[i];
             }
             _num_channels = ppm_state._channel_counter;
@@ -110,7 +110,7 @@ void RCInput::_process_ppmsum_pulse(uint16_t width_usec)
     // if we have reached the maximum supported channels then
     // mark as unsynchronised, so we wait for a wide pulse
     if (ppm_state._channel_counter >= LINUX_RC_INPUT_NUM_CHANNELS) {
-        for (uint8_t i=0; i<ppm_state._channel_counter; i++) {
+        for (uint_fast8_t i=0; i<ppm_state._channel_counter; i++) {
             _pwm_values[i] = ppm_state._pulse_capt[i];
         }
         _num_channels = ppm_state._channel_counter;
@@ -374,7 +374,7 @@ bool RCInput::add_dsm_input(const uint8_t *bytes, size_t nbytes)
             if (dsm_decode(AP_HAL::micros64(), dsm.frame, values, &num_values, 16) &&
                 num_values >= MIN_NUM_CHANNELS &&
                 nbytes == 0) {
-                for (uint8_t i=0; i<num_values; i++) {
+                for (uint_fast8_t i=0; i<num_values; i++) {
                     if (values[i] != 0) {
                         _pwm_values[i] = values[i];
                     }
@@ -417,7 +417,7 @@ bool RCInput::add_sumd_input(const uint8_t *bytes, size_t nbytes)
             if (channel_count > LINUX_RC_INPUT_NUM_CHANNELS) {
                 continue;
             }
-            for (uint8_t i=0; i<channel_count; i++) {
+            for (uint_fast8_t i=0; i<channel_count; i++) {
                 if (values[i] != 0) {
                     _pwm_values[i] = values[i];
                 }
@@ -448,7 +448,7 @@ bool RCInput::add_st24_input(const uint8_t *bytes, size_t nbytes)
             if (channel_count > LINUX_RC_INPUT_NUM_CHANNELS) {
                 continue;
             }
-            for (uint8_t i=0; i<channel_count; i++) {
+            for (uint_fast8_t i=0; i<channel_count; i++) {
                 if (values[i] != 0) {
                     _pwm_values[i] = values[i];
                 }
@@ -479,7 +479,7 @@ bool RCInput::add_srxl_input(const uint8_t *bytes, size_t nbytes)
             if (channel_count > LINUX_RC_INPUT_NUM_CHANNELS) {
                 continue;
             }
-            for (uint8_t i=0; i<channel_count; i++) {
+            for (uint_fast8_t i=0; i<channel_count; i++) {
                 _pwm_values[i] = values[i];
             }
             _num_channels = channel_count;
@@ -531,7 +531,7 @@ void RCInput::add_sbus_input(const uint8_t *bytes, size_t nbytes)
             bool sbus_frame_drop;
             if (sbus_decode(sbus.frame, values, &num_values, &sbus_failsafe, &sbus_frame_drop, 16) &&
                 num_values >= MIN_NUM_CHANNELS) {
-                for (uint8_t i=0; i<num_values; i++) {
+                for (uint_fast8_t i=0; i<num_values; i++) {
                     if (values[i] != 0) {
                         _pwm_values[i] = values[i];
                     }

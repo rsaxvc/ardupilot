@@ -55,7 +55,7 @@ bool NCP5623::write(uint8_t reg, uint8_t data)
 bool NCP5623::write_pwm(uint8_t _rgb[3])
 {
     uint8_t reg = NCP5623_LED_PWM0;
-    for (uint8_t i=0; i<3; i++) {
+    for (uint_fast8_t i=0; i<3; i++) {
         if (!write(reg+i*0x20, _rgb[i])) {
             return false;
         }
@@ -66,7 +66,7 @@ bool NCP5623::write_pwm(uint8_t _rgb[3])
 bool NCP5623::init(void)
 {
     uint8_t addrs[] = { NCP5623_LED_I2C_ADDR, NCP5623_C_LED_I2C_ADDR };
-    for (uint8_t i=0; i<ARRAY_SIZE(addrs); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(addrs); i++) {
         // first look for led on external bus
         _dev = std::move(hal.i2c_mgr->get_device(_bus, addrs[i]));
         if (!_dev) {

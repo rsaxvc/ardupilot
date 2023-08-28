@@ -66,7 +66,7 @@ void AP_InertialSensor_NONE::generate_accel()
 {
     Vector3f accel_accum;
     uint8_t nsamples = enable_fast_sampling(accel_instance) ? 4 : 1;
-    for (uint8_t j = 0; j < nsamples; j++) {
+    for (uint_fast8_t j = 0; j < nsamples; j++) {
 
         // add accel bias and noise
         //Vector3f accel_bias = Vector3f{0.01,0.01,0.01}; 
@@ -113,7 +113,7 @@ void AP_InertialSensor_NONE::generate_accel()
 
         // VIB_MOT_MAX is a rpm-scaled vibration applied to each axis
         if ( motors_on) {
-            for (uint8_t i = 0; i < 4; i++) {
+            for (uint_fast8_t i = 0; i < 4; i++) {
                 float &phase = accel_motor_phase[i];
                 float motor_freq = 50;
                 float phase_incr = motor_freq * 2 * M_PI / (accel_sample_hz * nsamples);
@@ -178,7 +178,7 @@ void AP_InertialSensor_NONE::generate_gyro()
     Vector3f gyro_accum;
     uint8_t nsamples = enable_fast_sampling(gyro_instance) ? 8 : 1;
 
-    for (uint8_t j = 0; j < nsamples; j++) {
+    for (uint_fast8_t j = 0; j < nsamples; j++) {
         float p = radians(0.01) + gyro_drift();
         float q = radians(0.01) + gyro_drift();
         float r = radians(0.01) + gyro_drift();
@@ -220,7 +220,7 @@ void AP_InertialSensor_NONE::generate_gyro()
 
         // VIB_MOT_MAX is a rpm-scaled vibration applied to each axis
         if ( motors_on) {
-            for (uint8_t i = 0; i < 4; i++) {
+            for (uint_fast8_t i = 0; i < 4; i++) {
                 float motor_freq = calculate_noise(0.01 / 60.0f, freq_variation);
                 float phase_incr = motor_freq * 2 * M_PI / (gyro_sample_hz * nsamples);
                 float &phase = gyro_motor_phase[i];

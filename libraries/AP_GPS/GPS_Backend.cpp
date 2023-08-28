@@ -496,7 +496,7 @@ void AP_GPS_Backend::logging_loop(void)
     while (true) {
         hal.scheduler->delay(10);
         static uint16_t lognum;
-        for (uint8_t instance=0; instance<2; instance++) {
+        for (uint_fast8_t instance=0; instance<2; instance++) {
             if (logging[instance].fd == -1 && logging[instance].buf.available()) {
                 char fname[] = "gpsN_XXX.log";
                 fname[3] = '1' + instance;

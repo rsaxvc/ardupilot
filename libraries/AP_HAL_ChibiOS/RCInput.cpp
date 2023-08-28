@@ -208,7 +208,7 @@ void RCInput::_timer_tick(void)
         _rcin_timestamp_last_signal = last_radio_us;
         _num_channels = radio->num_channels();
         _num_channels = MIN(_num_channels, RC_INPUT_MAX_CHANNELS);
-        for (uint8_t i=0; i<_num_channels; i++) {
+        for (uint_fast8_t i=0; i<_num_channels; i++) {
             _rc_values[i] = radio->read(i);
         }
 #ifndef HAL_NO_UARTDRIVER

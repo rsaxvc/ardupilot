@@ -382,7 +382,7 @@ void AP_InertialSensor::TCal::Learn::reset(float temperature)
     memset((void*)&state[0], 0, sizeof(state));
     start_tmax = tcal.temp_max;
     accel_start.zero();
-    for (uint8_t i=0; i<ARRAY_SIZE(state); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(state); i++) {
         state[i].temp_filter.set_cutoff_frequency(1000, 0.5);
         state[i].temp_filter.reset(temperature);
         state[i].last_temp = temperature;
@@ -417,22 +417,22 @@ bool AP_InertialSensor::TCal::Learn::save_calibration(float temperature)
     if (!state[0].pfit.get_polynomial(p)) {
         return false;
     }
-    for (uint8_t k=0; k<3; k++) {
+    for (uint_fast8_t k=0; k<3; k++) {
         coefficients[k] = p[2-k] * SCALE_FACTOR;
     }
 
-    for (uint8_t k=0; k<3; k++) {
+    for (uint_fast8_t k=0; k<3; k++) {
         tcal.accel_coeff[k].set_and_save_ifchanged(coefficients[k]);
     }
 
     if (!state[1].pfit.get_polynomial(p)) {
         return false;
     }
-    for (uint8_t k=0; k<3; k++) {
+    for (uint_fast8_t k=0; k<3; k++) {
         coefficients[k] = p[2-k] * SCALE_FACTOR;
     }
 
-    for (uint8_t k=0; k<3; k++) {
+    for (uint_fast8_t k=0; k<3; k++) {
         tcal.gyro_coeff[k].set_and_save_ifchanged(coefficients[k]);
     }
     tcal.temp_min.set_and_save_ifchanged(start_temp);
@@ -457,7 +457,7 @@ void AP_InertialSensor::TCal::get_persistent_params(ExpandingString &str) const
     str.printf("INS_TCAL%u_ENABLE=1\n", imu);
     str.printf("INS_TCAL%u_TMIN=%.2f\n", imu, temp_min.get());
     str.printf("INS_TCAL%u_TMAX=%.2f\n", imu, temp_max.get());
-    for (uint8_t k=0; k<3; k++) {
+    for (uint_fast8_t k=0; k<3; k++) {
         const Vector3f &acc = accel_coeff[k].get();
         const Vector3f &gyr = gyro_coeff[k].get();
         str.printf("INS_TCAL%u_ACC%u_X=%f\n", imu, k+1, acc.x);
@@ -478,7 +478,7 @@ void AP_InertialSensor::get_persistent_params(ExpandingString &str) const
     bool save_options = false;
     if (uint32_t(tcal_options.get()) & uint32_t(TCalOptions::PERSIST_ACCEL_CAL)) {
         save_options = true;
-        for (uint8_t i=0; i<INS_MAX_INSTANCES; i++) {
+        for (uint_fast8_t i=0; i<INS_MAX_INSTANCES; i++) {
             const uint8_t imu = i+1;
             const Vector3f &aoff = _accel_offset[i].get();
             const Vector3f &ascl = _accel_scale[i].get();

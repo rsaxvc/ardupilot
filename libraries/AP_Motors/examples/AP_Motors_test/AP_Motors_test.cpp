@@ -119,10 +119,10 @@ void stability_test()
 #endif
 
     // run stability test
-    for (uint8_t y=0; y<rpy_tests_num; y++) {
-        for (uint8_t p=0; p<rpy_tests_num; p++) {
-            for (uint8_t r=0; r<rpy_tests_num; r++) {
-                for (uint8_t t=0; t<throttle_tests_num; t++) {
+    for (uint_fast8_t y=0; y<rpy_tests_num; y++) {
+        for (uint_fast8_t p=0; p<rpy_tests_num; p++) {
+            for (uint_fast8_t r=0; r<rpy_tests_num; r++) {
+                for (uint_fast8_t t=0; t<throttle_tests_num; t++) {
                     roll_in = rpy_tests[r];
                     pitch_in = rpy_tests[p];
                     yaw_in = rpy_tests[y];
@@ -182,7 +182,7 @@ void stability_test()
 void update_motors()
 {
     // call update motors 1000 times to get any ramp limiting complete
-    for (uint16_t i=0; i<1000; i++) {
+    for (uint_fast16_t i=0; i<1000; i++) {
         motors.output();
     }
 }

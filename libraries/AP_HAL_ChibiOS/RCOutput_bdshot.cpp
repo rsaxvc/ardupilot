@@ -45,7 +45,7 @@ void RCOutput::set_bidir_dshot_mask(uint32_t mask)
 {
     _bdshot.mask = (mask >> chan_offset);
     // we now need to reconfigure the DMA channels since they are affected by the value of the mask
-    for (uint8_t i = 0; i < NUM_GROUPS; i++ ) {
+    for (uint_fast8_t i = 0; i < NUM_GROUPS; i++ ) {
         pwm_group &group = pwm_group_list[i];
         if (((group.ch_mask << chan_offset) & mask) == 0) {
             // this group is not affected
@@ -63,7 +63,7 @@ bool RCOutput::bdshot_setup_group_ic_DMA(pwm_group &group)
     }
 
     // allocate input capture DMA handles
-    for (uint8_t i = 0; i < 4; i++) {
+    for (uint_fast8_t i = 0; i < 4; i++) {
         if (!group.is_chan_enabled(i) ||
             !group.dma_ch[i].have_dma || !(_bdshot.mask & (1 << group.chan[i]))) {
             continue;
@@ -92,7 +92,7 @@ bool RCOutput::bdshot_setup_group_ic_DMA(pwm_group &group)
 
     // We might need to do sharing of timers for telemetry feedback
     // due to lack of available DMA channels
-    for (uint8_t i = 0; i < 4; i++) {
+    for (uint_fast8_t i = 0; i < 4; i++) {
         // we must pull all the allocated channels high to prevent them going low
         // when the pwm peripheral is stopped
         if (group.chan[i] != CHAN_DISABLED && _bdshot.mask & group.ch_mask) {
@@ -151,7 +151,7 @@ bool RCOutput::bdshot_setup_group_ic_DMA(pwm_group &group)
     }
 
     // now allocate the starting channel
-    for (uint8_t i = 0; i < 4; i++) {
+    for (uint_fast8_t i = 0; i < 4; i++) {
         if (group.chan[i] != CHAN_DISABLED && group.bdshot.ic_dma_handle[i] != nullptr) {
             group.bdshot.curr_telem_chan = i;
             break;
@@ -166,9 +166,9 @@ bool RCOutput::bdshot_setup_group_ic_DMA(pwm_group &group)
  */
 void RCOutput::bdshot_ic_dma_allocate(Shared_DMA *ctx)
 {
-    for (uint8_t i = 0; i < NUM_GROUPS; i++ ) {
+    for (uint_fast8_t i = 0; i < NUM_GROUPS; i++ ) {
         pwm_group &group = pwm_group_list[i];
-        for (uint8_t icuch = 0; icuch < 4; icuch++) {
+        for (uint_fast8_t icuch = 0; icuch < 4; icuch++) {
             if (group.bdshot.ic_dma_handle[icuch] == ctx && group.bdshot.ic_dma[icuch] == nullptr) {
                 chSysLock();
                 group.bdshot.ic_dma[icuch] = dmaStreamAllocI(group.dma_ch[icuch].stream_id, 10, bdshot_dma_ic_irq_callback, &group);
@@ -188,9 +188,9 @@ void RCOutput::bdshot_ic_dma_allocate(Shared_DMA *ctx)
  */
 void RCOutput::bdshot_ic_dma_deallocate(Shared_DMA *ctx)
 {
-    for (uint8_t i = 0; i < NUM_GROUPS; i++ ) {
+    for (uint_fast8_t i = 0; i < NUM_GROUPS; i++ ) {
         pwm_group &group = pwm_group_list[i];
-        for (uint8_t icuch = 0; icuch < 4; icuch++) {
+        for (uint_fast8_t icuch = 0; icuch < 4; icuch++) {
             if (group.bdshot.ic_dma_handle[icuch] == ctx && group.bdshot.ic_dma[icuch] != nullptr) {
                 chSysLock();
                 dmaStreamFreeI(group.bdshot.ic_dma[icuch]);
@@ -446,7 +446,7 @@ bool RCOutput::bdshot_decode_dshot_telemetry(pwm_group& group, uint8_t chan)
         hal.console->printf("TELEM: %d <%d Hz, %.1f%% err>", group.bdshot.erpm[chan], group.bdshot.telem_rate[chan],
             100.0f * float(group.bdshot.telem_err_rate[chan]) / (group.bdshot.telem_err_rate[chan] + group.bdshot.telem_rate[chan]));
         hal.console->printf(" %ld ", group.bdshot.dma_buffer_copy[0]);
-        for (uint8_t l = 1; l < group.bdshot.dma_tx_size; l++) {
+        for (uint_fast8_t l = 1; l < group.bdshot.dma_tx_size; l++) {
             hal.console->printf(" +%ld ", group.bdshot.dma_buffer_copy[l] - group.bdshot.dma_buffer_copy[l-1]);
         }
         hal.console->printf("\n");
@@ -463,7 +463,7 @@ bool RCOutput::bdshot_decode_dshot_telemetry(pwm_group& group, uint8_t chan)
 uint8_t RCOutput::bdshot_find_next_ic_channel(const pwm_group& group)
 {
     uint8_t chan = group.bdshot.curr_telem_chan;
-    for (uint8_t i = 1; i < 4; i++) {
+    for (uint_fast8_t i = 1; i < 4; i++) {
         const uint8_t next_chan = (chan + i) % 4;
         if (group.is_chan_enabled(next_chan) &&
             group.bdshot.ic_dma_handle[next_chan] != nullptr) {

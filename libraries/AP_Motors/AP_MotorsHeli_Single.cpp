@@ -165,7 +165,7 @@ bool AP_MotorsHeli_Single::init_outputs()
 {
     if (!initialised_ok()) {
         // map primary swash servos
-        for (uint8_t i=0; i<AP_MOTORS_HELI_SINGLE_NUM_SWASHPLATE_SERVOS; i++) {
+        for (uint_fast8_t i=0; i<AP_MOTORS_HELI_SINGLE_NUM_SWASHPLATE_SERVOS; i++) {
             add_motor_num(CH_1+i);
         }
         if (_swashplate.get_swash_type() == SWASHPLATE_TYPE_H4_90 || _swashplate.get_swash_type() == SWASHPLATE_TYPE_H4_45) {
@@ -192,7 +192,7 @@ bool AP_MotorsHeli_Single::init_outputs()
     }
 
     // reset swash servo range and endpoints
-    for (uint8_t i=0; i<AP_MOTORS_HELI_SINGLE_NUM_SWASHPLATE_SERVOS; i++) {
+    for (uint_fast8_t i=0; i<AP_MOTORS_HELI_SINGLE_NUM_SWASHPLATE_SERVOS; i++) {
         reset_swash_servo(SRV_Channels::get_motor_function(i));
     }
     if (_swashplate.get_swash_type() == SWASHPLATE_TYPE_H4_90 || _swashplate.get_swash_type() == SWASHPLATE_TYPE_H4_45) {

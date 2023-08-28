@@ -406,7 +406,7 @@ read_fifo_read_data:
     }
 
     num_samples = num_bytes / sizeof(struct RawData);
-    for (uint8_t i = 0; i < num_samples; i++) {
+    for (uint_fast8_t i = 0; i < num_samples; i++) {
         Vector3f accel{(float)(int16_t)le16toh(raw_data[i].accel.x),
                        (float)(int16_t)le16toh(raw_data[i].accel.y),
                        (float)(int16_t)le16toh(raw_data[i].accel.z)};

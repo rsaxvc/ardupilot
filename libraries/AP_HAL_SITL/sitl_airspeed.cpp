@@ -46,7 +46,7 @@ static float get_EAS2TAS(float altitude)
  */
 void SITL_State::_update_airspeed(float true_airspeed)
 {
-    for (uint8_t i=0; i<AIRSPEED_MAX_SENSORS; i++) {
+    for (uint_fast8_t i=0; i<AIRSPEED_MAX_SENSORS; i++) {
         const auto &arspd = _sitl->airspeed[i];
         float airspeed = true_airspeed / get_EAS2TAS(_sitl->state.altitude);
         const float diff_pressure = sq(airspeed) / arspd.ratio;

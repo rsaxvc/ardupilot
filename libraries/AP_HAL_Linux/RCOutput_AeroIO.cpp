@@ -115,7 +115,7 @@ void RCOutput_AeroIO::init()
     // Reset all channels to default value
     cork();
     set_freq(ALL_CHAN_MASK, DEFAULT_FREQ);
-    for (uint8_t i = 0; i < PWM_CHAN_COUNT; i++) {
+    for (uint_fast8_t i = 0; i < PWM_CHAN_COUNT; i++) {
         write(i, DEFAULT_DUTY);
     }
     push();
@@ -125,7 +125,7 @@ void RCOutput_AeroIO::set_freq(uint32_t chmask, uint16_t freq_hz)
 {
     _pending_freq_write_mask |= chmask;
 
-    for (uint8_t i = 0; i < PWM_CHAN_COUNT; i++) {
+    for (uint_fast8_t i = 0; i < PWM_CHAN_COUNT; i++) {
         if ((chmask >> i) & 0x01) {
             _freq_buffer[i] = freq_hz;
         }
@@ -189,13 +189,13 @@ void RCOutput_AeroIO::push()
     }
     _corking = false;
 
-    for (uint8_t i = 0; i < PWM_CHAN_COUNT; i++) {
+    for (uint_fast8_t i = 0; i < PWM_CHAN_COUNT; i++) {
         if ((_pending_freq_write_mask >> i) & 0x01) {
             _hw_write(2 * i + 1, _freq_buffer[i]);
         }
     }
 
-    for (uint8_t i = 0; i < PWM_CHAN_COUNT; i++) {
+    for (uint_fast8_t i = 0; i < PWM_CHAN_COUNT; i++) {
         if ((_pending_duty_write_mask >> i) & 0x01) {
             _hw_write(2 * i, _usec_to_hw(_freq_buffer[i], _duty_buffer[i]));
         }
@@ -218,7 +218,7 @@ uint16_t RCOutput_AeroIO::read(uint8_t ch)
 
 void RCOutput_AeroIO::read(uint16_t *period_us, uint8_t len)
 {
-    for (uint8_t i = 0; i < len; i++) {
+    for (uint_fast8_t i = 0; i < len; i++) {
         period_us[i] = read(i);
     }
 }

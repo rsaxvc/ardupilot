@@ -173,7 +173,7 @@ bool AP_OSD_MAX7456::update_font()
         return false;
     }
 
-    for (uint16_t chr=0; chr < 256; chr++) {
+    for (uint_fast16_t chr=0; chr < 256; chr++) {
         const uint8_t* chr_font_data = font_data + chr*NVM_RAM_SIZE;
         //check if char already up to date
         if (!check_font_char(chr, chr_font_data)) {
@@ -197,7 +197,7 @@ bool AP_OSD_MAX7456::check_font_char(uint8_t chr, const uint8_t* font_data)
     buffer_add_cmd(MAX7456ADD_VM0, 0);
     buffer_add_cmd(MAX7456ADD_CMAH, chr);
     buffer_add_cmd(MAX7456ADD_CMM, READ_NVR);
-    for (uint16_t x = 0; x < NVM_RAM_SIZE; x++) {
+    for (uint_fast16_t x = 0; x < NVM_RAM_SIZE; x++) {
         buffer_add_cmd(MAX7456ADD_CMAL, x);
         buffer_add_cmd(MAX7456ADD_CMDO, 0xFF);
     }
@@ -207,7 +207,7 @@ bool AP_OSD_MAX7456::check_font_char(uint8_t chr, const uint8_t* font_data)
 
     //skip response from MAX7456ADD_VM0/MAX7456ADD_CMAH...
     buffer_offset = 9;
-    for (uint16_t x = 0; x < NVM_RAM_SIZE; x++) {
+    for (uint_fast16_t x = 0; x < NVM_RAM_SIZE; x++) {
         if (buffer[buffer_offset] != font_data[x]) {
             return false;
         }
@@ -223,7 +223,7 @@ bool AP_OSD_MAX7456::update_font_char(uint8_t chr, const uint8_t* font_data)
     buffer_offset = 0;
     buffer_add_cmd(MAX7456ADD_VM0, 0);
     buffer_add_cmd(MAX7456ADD_CMAH, chr);
-    for (uint16_t x = 0; x < NVM_RAM_SIZE; x++) {
+    for (uint_fast16_t x = 0; x < NVM_RAM_SIZE; x++) {
         buffer_add_cmd(MAX7456ADD_CMAL, x);
         buffer_add_cmd(MAX7456ADD_CMDI, font_data[x]);
     }
@@ -332,7 +332,7 @@ void AP_OSD_MAX7456::reinit()
     }
 
     // set all rows to same character black/white level
-    for (uint8_t x = 0; x < video_lines_pal; x++) {
+    for (uint_fast8_t x = 0; x < video_lines_pal; x++) {
         _dev->write_register(MAX7456ADD_RB0 + x, BWBRIGHTNESS);
     }
 
@@ -390,8 +390,8 @@ void AP_OSD_MAX7456::transfer_frame()
     }
 
     buffer_offset = 0;
-    for (uint8_t y=0; y<video_lines; y++) {
-        for (uint8_t x=0; x<video_columns; x++) {
+    for (uint_fast8_t y=0; y<video_lines; y++) {
+        for (uint_fast8_t x=0; x<video_columns; x++) {
             if (!is_dirty(x, y)) {
                 continue;
             }

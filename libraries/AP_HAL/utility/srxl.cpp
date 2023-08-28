@@ -157,7 +157,7 @@ static int srxl_channels_get_v5(uint16_t max_values, uint8_t *num_values, uint16
     // up to 7 channel values per packet. Each channel value is 16
     // bits, with 11 bits of data and 4 bits of channel number. The
     // top bit indicates a special X-Plus channel
-    for (uint8_t i=0; i<7; i++) {
+    for (uint_fast8_t i=0; i<7; i++) {
         uint16_t b = buffer[i*2+2] << 8 | buffer[i*2+3];
         uint16_t c = b >> 11; // channel number
         int32_t v = b & 0x7FF;
@@ -408,7 +408,7 @@ int main(int argc, const char *argv[])
         if (srxl_decode(micros64(), b, &num_values, values, sizeof(values)/sizeof(values[0]), &failsafe_state) == 0) {
 #if 1
             printf("%u: ", num_values);
-            for (uint8_t i=0; i<num_values; i++) {
+            for (uint_fast8_t i=0; i<num_values; i++) {
                 printf("%u:%4u ", i+1, values[i]);
             }
             printf("%s\n", failsafe_state?"FAIL":"OK");
@@ -474,12 +474,12 @@ int main(int argc, const char *argv[])
         }
         t += 11000;
 
-        for (uint8_t i=0; i<sizeof(u); i++) {
+        for (uint_fast8_t i=0; i<sizeof(u); i++) {
             b = u[i];
 
             if (srxl_decode(t, b, &num_values, values, sizeof(values)/sizeof(values[0]), &failsafe_state) == 0) {
                 printf("%u: ", num_values);
-                for (uint8_t i=0; i<num_values; i++) {
+                for (uint_fast8_t i=0; i<num_values; i++) {
                     printf("%u:%4u ", i+1, values[i]);
                 }
                 printf("%s\n", failsafe_state?"FAIL":"OK");

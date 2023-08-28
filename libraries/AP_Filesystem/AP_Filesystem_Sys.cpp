@@ -55,7 +55,7 @@ static const SysFileList sysfs_file_list[] = {
 };
 
 int8_t AP_Filesystem_Sys::file_in_sysfs(const char *fname) {
-    for (uint8_t i = 0; i <  ARRAY_SIZE(sysfs_file_list); i++) {
+    for (uint_fast8_t i = 0; i <  ARRAY_SIZE(sysfs_file_list); i++) {
         if (strcmp(fname, sysfs_file_list[i].name) == 0) {
             return i;
         }

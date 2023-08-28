@@ -141,7 +141,7 @@ void GCS_MAVLINK::handle_request_data_stream(const mavlink_message_t &msg)
     streams stream_id = NUM_STREAMS;
     switch (packet.req_stream_id) {
     case MAV_DATA_STREAM_ALL:
-        for (uint8_t i=0; i<NUM_STREAMS; i++) {
+        for (uint_fast8_t i=0; i<NUM_STREAMS; i++) {
             if (i == STREAM_PARAMS) {
                 // don't touch parameter streaming rate; it is
                 // considered "internal".

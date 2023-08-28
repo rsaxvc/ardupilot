@@ -59,7 +59,7 @@ void AP_CustomRotations::init()
     }
 
     // make sure all custom rotations are allocated
-    for (uint8_t i = 0; i < NUM_CUST_ROT; i++) {
+    for (uint_fast8_t i = 0; i < NUM_CUST_ROT; i++) {
         AP_CustomRotation* rot = get_rotation(Rotation(i + ROTATION_CUSTOM_1));
         if (rot == nullptr) {
             AP_BoardConfig::allocation_error("Custom Rotations");

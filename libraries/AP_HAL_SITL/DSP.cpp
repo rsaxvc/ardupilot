@@ -94,18 +94,18 @@ void DSP::step_hanning(FFTWindowStateSITL* fft, FloatBuffer& samples, uint16_t a
 // step 2: perform an in-place FFT on the windowed data
 void DSP::step_fft(FFTWindowStateSITL* fft)
 {
-    for (uint16_t i = 0; i < fft->_window_size; i++) {
+    for (uint_fast16_t i = 0; i < fft->_window_size; i++) {
         fft->buf[i] = complexf(fft->_freq_bins[i], 0);
     }
 
     calculate_fft(fft->buf, fft->_window_size);
 
-    for (uint16_t i = 0; i < fft->_bin_count; i++) {
+    for (uint_fast16_t i = 0; i < fft->_bin_count; i++) {
         fft->_freq_bins[i] = std::norm(fft->buf[i]);
     }
 
     // components at the nyquist frequency are real only
-    for (uint16_t i = 0, j = 0; i <= fft->_bin_count; i++, j += 2) {
+    for (uint_fast16_t i = 0, j = 0; i <= fft->_bin_count; i++, j += 2) {
         fft->_rfft_data[j] = fft->buf[i].real();
         fft->_rfft_data[j+1] = fft->buf[i].imag();
     }
@@ -113,7 +113,7 @@ void DSP::step_fft(FFTWindowStateSITL* fft)
 
 void DSP::mult_f32(const float* v1, const float* v2, float* vout, uint16_t len)
 {
-    for (uint16_t i = 0; i < len; i++) {
+    for (uint_fast16_t i = 0; i < len; i++) {
         vout[i] = v1[i] * v2[i];
     }
 }
@@ -122,7 +122,7 @@ void DSP::vector_max_float(const float* vin, uint16_t len, float* maxValue, uint
 {
     *maxValue = vin[0];
     *maxIndex = 0;
-    for (uint16_t i = 1; i < len; i++) {
+    for (uint_fast16_t i = 1; i < len; i++) {
         if (vin[i] > *maxValue) {
             *maxValue = vin[i];
             *maxIndex = i;
@@ -132,14 +132,14 @@ void DSP::vector_max_float(const float* vin, uint16_t len, float* maxValue, uint
 
 void DSP::vector_scale_float(const float* vin, float scale, float* vout, uint16_t len) const
 {
-    for (uint16_t i = 0; i < len; i++) {
+    for (uint_fast16_t i = 0; i < len; i++) {
         vout[i] = vin[i] * scale;
     }
 }
 
 void DSP::vector_add_float(const float* vin1, const float* vin2, float* vout, uint16_t len) const
 {
-    for (uint16_t i = 0; i < len; i++) {
+    for (uint_fast16_t i = 0; i < len; i++) {
         vout[i] = vin1[i] + vin2[i];
     }
 }
@@ -147,7 +147,7 @@ void DSP::vector_add_float(const float* vin1, const float* vin2, float* vout, ui
 float DSP::vector_mean_float(const float* vin, uint16_t len) const
 {
     float mean_value = 0.0f;
-    for (uint16_t i = 0; i < len; i++) {
+    for (uint_fast16_t i = 0; i < len; i++) {
         mean_value += vin[i];
     }
     mean_value /= len;
@@ -171,10 +171,10 @@ void DSP::calculate_fft(complexf *samples, uint16_t fftlen)
 {
     uint16_t m = fft_log2(fftlen);
     // shuffle data using bit reversed addressing ***
-    for (uint16_t k = 0; k < fftlen; k++) {
+    for (uint_fast16_t k = 0; k < fftlen; k++) {
         // generate a bit reversed address for samples[k] ***
         uint16_t ki = k, kr = 0;
-        for (uint16_t i=1; i<=m; i++) {
+        for (uint_fast16_t i=1; i<=m; i++) {
             kr <<= 1; //  left shift result kr by 1 bit
             if (ki % 2 == 1) {
                 kr++;
@@ -194,10 +194,10 @@ void DSP::calculate_fft(complexf *samples, uint16_t fftlen)
     while (istep <= fftlen) {// layers 2,4,8,16, ... ,n
         uint16_t is2 = istep / 2;
         uint16_t astep = fftlen / istep;
-        for (uint16_t km = 0; km < is2; km++) { // outer row loop
+        for (uint_fast16_t km = 0; km < is2; km++) { // outer row loop
             uint16_t a  = km * astep; // twiddle angle index
             complexf w(sinf(2 * M_PI * (a+(fftlen/4)) / fftlen), sinf(2 * M_PI * a / fftlen));
-            for (uint16_t ki = 0; ki <= (fftlen - istep); ki += istep) { // inner column loop
+            for (uint_fast16_t ki = 0; ki <= (fftlen - istep); ki += istep) { // inner column loop
                 uint16_t i = km + ki;
                 uint16_t j = is2 + i;
                 complexf t = w * samples[j];

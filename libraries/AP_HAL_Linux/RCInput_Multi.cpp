@@ -36,7 +36,7 @@ RCInput_Multi::RCInput_Multi(uint8_t _num_inputs, ...) :
         AP_HAL::panic("failed to allocated RCInput array");
     }
     va_start(ap, _num_inputs);
-    for (uint8_t i=0; i<num_inputs; i++) {
+    for (uint_fast8_t i=0; i<num_inputs; i++) {
         inputs[i] = va_arg(ap, RCInput *);
         if (inputs[i] == nullptr) {
             AP_HAL::panic("Bad RCInput object");
@@ -47,14 +47,14 @@ RCInput_Multi::RCInput_Multi(uint8_t _num_inputs, ...) :
 
 void RCInput_Multi::init()
 {
-    for (uint8_t i=0; i<num_inputs; i++) {
+    for (uint_fast8_t i=0; i<num_inputs; i++) {
         inputs[i]->init();
     }
 }
 
 void RCInput_Multi::_timer_tick(void)
 {
-    for (uint8_t i=0; i<num_inputs; i++) {
+    for (uint_fast8_t i=0; i<num_inputs; i++) {
         inputs[i]->_timer_tick();
         if (inputs[i]->new_input()) {
             inputs[i]->read(_pwm_values, inputs[i]->num_channels());

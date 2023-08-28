@@ -58,7 +58,7 @@ void AP_LoggerTest::setup(void)
     logger.Write_Message("AP_Logger Test");
 #ifdef DEBUG_RATES
     hal.console->printf("| Type | Size | 10Hz(bs) | 25Hz(bs) | 400Hz(Kbs) |\n");
-    for (uint16_t i = 0; i < ARRAY_SIZE(log_structure); i++) {
+    for (uint_fast16_t i = 0; i < ARRAY_SIZE(log_structure); i++) {
         LogStructure log = log_structure[i];
         hal.console->printf("| %-6s | %3d | %4d | %4d | %2dk |\n", log.name, log.msg_len,
             log.msg_len * 10, log.msg_len * 25, log.msg_len * 400 / 1000);

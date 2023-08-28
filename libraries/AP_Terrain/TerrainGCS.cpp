@@ -89,7 +89,7 @@ bool AP_Terrain::request_missing(mavlink_channel_t chan, const struct grid_info 
  */
 bool AP_Terrain::send_cache_request(mavlink_channel_t chan)
 {
-    for (uint16_t i=0; i<cache_size; i++) {
+    for (uint_fast16_t i=0; i<cache_size; i++) {
         if (cache[i].state >= GRID_CACHE_VALID) {
             if (request_missing(chan, cache[i])) {
                 return true;
@@ -169,7 +169,7 @@ void AP_Terrain::get_statistics(uint16_t &pending, uint16_t &loaded) const
 {
     pending = 0;
     loaded = 0;
-    for (uint16_t i=0; i<cache_size; i++) {
+    for (uint_fast16_t i=0; i<cache_size; i++) {
         if (cache[i].grid.spacing != grid_spacing) {
             continue;
         }
@@ -290,8 +290,8 @@ void AP_Terrain::handle_terrain_data(const mavlink_message_t &msg)
     uint8_t idx_y = (packet.gridbit % TERRAIN_GRID_BLOCK_MUL_Y) * TERRAIN_GRID_MAVLINK_SIZE;
     ASSERT_RANGE(idx_x,0,(TERRAIN_GRID_BLOCK_MUL_X-1)*TERRAIN_GRID_MAVLINK_SIZE);
     ASSERT_RANGE(idx_y,0,(TERRAIN_GRID_BLOCK_MUL_Y-1)*TERRAIN_GRID_MAVLINK_SIZE);
-    for (uint8_t x=0; x<TERRAIN_GRID_MAVLINK_SIZE; x++) {
-        for (uint8_t y=0; y<TERRAIN_GRID_MAVLINK_SIZE; y++) {
+    for (uint_fast8_t x=0; x<TERRAIN_GRID_MAVLINK_SIZE; x++) {
+        for (uint_fast8_t y=0; y<TERRAIN_GRID_MAVLINK_SIZE; y++) {
             grid.height[idx_x+x][idx_y+y] = packet.data[x*TERRAIN_GRID_MAVLINK_SIZE+y];
         }
     }

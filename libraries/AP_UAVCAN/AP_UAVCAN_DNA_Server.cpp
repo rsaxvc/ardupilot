@@ -98,7 +98,7 @@ void AP_UAVCAN_DNA_Server::getHash(NodeData &node_data, const uint8_t unique_id[
     hash = (hash>>56) ^ (hash&(((uint64_t)1<<56)-1));
 
     // write it to ret
-    for (uint8_t i=0; i<6; i++) {
+    for (uint_fast8_t i=0; i<6; i++) {
         node_data.hwid_hash[i] = (hash >> (8*i)) & 0xff;
     }
 }
@@ -294,7 +294,7 @@ bool AP_UAVCAN_DNA_Server::init()
 
     /* Go through our records and look for valid NodeData, to initialise
     occupation mask */
-    for (uint8_t i = 0; i <= MAX_NODE_ID; i++) {
+    for (uint_fast8_t i = 0; i <= MAX_NODE_ID; i++) {
         if (isValidNodeDataAvailable(i)) {
             occupation_mask.set(i);
         }
@@ -363,7 +363,7 @@ void AP_UAVCAN_DNA_Server::reset()
     occupation_mask.clearall();
 
     //Just write empty Node Data to the Records
-    for (uint8_t i = 0; i <= MAX_NODE_ID; i++) {
+    for (uint_fast8_t i = 0; i <= MAX_NODE_ID; i++) {
         writeNodeData(node_data, i);
     }
     WITH_SEMAPHORE(storage_sem);
@@ -454,7 +454,7 @@ void AP_UAVCAN_DNA_Server::verify_nodes()
 
     last_verification_request = now;
     //Find the next registered Node ID to be verified.
-    for (uint8_t i = 0; i <= MAX_NODE_ID; i++) {
+    for (uint_fast8_t i = 0; i <= MAX_NODE_ID; i++) {
         curr_verifying_node = (curr_verifying_node + 1) % (MAX_NODE_ID + 1);
         if (isNodeSeen(curr_verifying_node)) {
             break;
@@ -646,7 +646,7 @@ void AP_UAVCAN_DNA_Server::handleAllocation(uint8_t node_id, const AllocationCb 
     }
 
     //copy over the unique_id
-    for (uint8_t i=rcvd_unique_id_offset; i<(rcvd_unique_id_offset + cb.msg->unique_id.size()); i++) {
+    for (uint_fast8_t i=rcvd_unique_id_offset; i<(rcvd_unique_id_offset + cb.msg->unique_id.size()); i++) {
         rcvd_unique_id[i] = cb.msg->unique_id[i - rcvd_unique_id_offset];
     }
     rcvd_unique_id_offset += cb.msg->unique_id.size();
@@ -656,7 +656,7 @@ void AP_UAVCAN_DNA_Server::handleAllocation(uint8_t node_id, const AllocationCb 
 
     /* Respond with the message containing the received unique ID so far
     or with node id if we successfully allocated one. */
-    for (uint8_t i = 0; i < rcvd_unique_id_offset; i++) {
+    for (uint_fast8_t i = 0; i < rcvd_unique_id_offset; i++) {
         msg.unique_id.push_back(rcvd_unique_id[i]);
     }
 

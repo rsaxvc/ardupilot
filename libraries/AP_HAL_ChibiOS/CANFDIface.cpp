@@ -378,7 +378,7 @@ int16_t CANIface::send(const AP_HAL::CANFrame& frame, uint64_t tx_deadline,
         // Write Frame to the message RAM
         const uint8_t data_length = AP_HAL::CANFrame::dlcToDataLength(frame.dlc);
         uint32_t *data_ptr = &buffer[2];
-        for (uint8_t i = 0; i < (data_length+3)/4; i++) {
+        for (uint_fast8_t i = 0; i < (data_length+3)/4; i++) {
             data_ptr[i] = frame.data_32[i];
         }
 
@@ -440,7 +440,7 @@ bool CANIface::configureFilters(const CanFilterConfig* filter_configs,
         return false;
     }
     //count number of frames of each type
-    for (uint8_t i = 0; i < num_configs; i++) {
+    for (uint_fast8_t i = 0; i < num_configs; i++) {
         const CanFilterConfig* const cfg = filter_configs + i;
         if ((cfg->id & AP_HAL::CANFrame::FlagEFF) || !(cfg->mask & AP_HAL::CANFrame::FlagEFF)) {
             num_extid++;
@@ -477,7 +477,7 @@ bool CANIface::configureFilters(const CanFilterConfig* filter_configs,
         num_stdid = 0;  //reset list count
         filter_ptr = (uint32_t*)MessageRam_.StandardFilterSA;
         //Run through the filter list and setup standard id filter list
-        for (uint8_t i = 0; i < num_configs; i++) {
+        for (uint_fast8_t i = 0; i < num_configs; i++) {
             uint32_t id = 0;
             uint32_t mask = 0;
             const CanFilterConfig* const cfg = filter_configs + i;
@@ -516,7 +516,7 @@ bool CANIface::configureFilters(const CanFilterConfig* filter_configs,
         num_extid = 0;
         filter_ptr = (uint32_t*)MessageRam_.ExtendedFilterSA;
         //Run through the filter list and setup extended id filter list
-        for (uint8_t i = 0; i < num_configs; i++) {
+        for (uint_fast8_t i = 0; i < num_configs; i++) {
             uint32_t id = 0;
             uint32_t mask = 0;
             const CanFilterConfig* const cfg = filter_configs + i;
@@ -786,7 +786,7 @@ void CANIface::setupMessageRam()
 
 void CANIface::handleTxCompleteInterrupt(const uint64_t timestamp_us)
 {
-    for (uint8_t i = 0; i < NumTxMailboxes; i++) {
+    for (uint_fast8_t i = 0; i < NumTxMailboxes; i++) {
         if ((can_->TXBTO & (1UL << i))) {
 
             if (!pending_tx_[i].pushed) {
@@ -887,7 +887,7 @@ bool CANIface::readRxFIFO(uint8_t fifo_index)
     frame.dlc = (frame_ptr[1] & DLC_MASK) >> 16;
     uint8_t *data = (uint8_t*)&frame_ptr[2];
 
-    for (uint8_t i = 0; i < AP_HAL::CANFrame::dlcToDataLength(frame.dlc); i++) {
+    for (uint_fast8_t i = 0; i < AP_HAL::CANFrame::dlcToDataLength(frame.dlc); i++) {
         frame.data[i] = data[i];
     }
 

@@ -294,7 +294,7 @@ bool AP_Arming::airspeed_checks(bool report)
             // not an airspeed capable vehicle
             return true;
         }
-        for (uint8_t i=0; i<AIRSPEED_MAX_SENSORS; i++) {
+        for (uint_fast8_t i=0; i<AIRSPEED_MAX_SENSORS; i++) {
             if (airspeed->enabled(i) && airspeed->use(i) && !airspeed->healthy(i)) {
                 check_failed(ARMING_CHECK_AIRSPEED, report, "Airspeed %d not healthy", i + 1);
                 return false;
@@ -338,7 +338,7 @@ bool AP_Arming::ins_accels_consistent(const AP_InertialSensor &ins)
 
     const Vector3f &prime_accel_vec = ins.get_accel();
     const uint32_t now = AP_HAL::millis();
-    for(uint8_t i=0; i<accel_count; i++) {
+    for (uint_fast8_t i=0; i<accel_count; i++) {
         if (!ins.use_accel(i)) {
             continue;
         }
@@ -390,7 +390,7 @@ bool AP_Arming::ins_gyros_consistent(const AP_InertialSensor &ins)
 
     const Vector3f &prime_gyro_vec = ins.get_gyro();
     const uint32_t now = AP_HAL::millis();
-    for(uint8_t i=0; i<gyro_count; i++) {
+    for (uint_fast8_t i=0; i<gyro_count; i++) {
         if (!ins.use_gyro(i)) {
             continue;
         }
@@ -575,7 +575,7 @@ bool AP_Arming::gps_checks(bool report)
             return false;
         }
 
-        for (uint8_t i = 0; i < gps.num_sensors(); i++) {
+        for (uint_fast8_t i = 0; i < gps.num_sensors(); i++) {
 #if defined(GPS_BLENDED_INSTANCE)
             if ((i != GPS_BLENDED_INSTANCE) &&
 #else
@@ -706,7 +706,7 @@ bool AP_Arming::rc_arm_checks(AP_Arming::Method method)
         if (!rc().arming_skip_checks_rpy()) {
             const char *names[3] = {"Roll", "Pitch", "Yaw"};
             const uint8_t channels[3] = {rcmap->roll(), rcmap->pitch(), rcmap->yaw()};
-            for (uint8_t i = 0; i < ARRAY_SIZE(channels); i++) {
+            for (uint_fast8_t i = 0; i < ARRAY_SIZE(channels); i++) {
                 const RC_Channel *c = rc().channel(channels[i] - 1);
                 if (c == nullptr) {
                     continue;
@@ -747,7 +747,7 @@ bool AP_Arming::rc_calibration_checks(bool report)
 {
     bool check_passed = true;
     const uint8_t num_channels = RC_Channels::get_valid_channel_count();
-    for (uint8_t i = 0; i < NUM_RC_CHANNELS; i++) {
+    for (uint_fast8_t i = 0; i < NUM_RC_CHANNELS; i++) {
         const RC_Channel *c = rc().channel(i);
         if (c == nullptr) {
             continue;
@@ -816,7 +816,7 @@ bool AP_Arming::mission_checks(bool report)
           {MIS_ITEM_CHECK_VTOL_TAKEOFF,  MAV_CMD_NAV_VTOL_TAKEOFF,   "vtol takeoff"},
           {MIS_ITEM_CHECK_RETURN_TO_LAUNCH,  MAV_CMD_NAV_RETURN_TO_LAUNCH,   "RTL"},
         };
-        for (uint8_t i = 0; i < ARRAY_SIZE(misChecks); i++) {
+        for (uint_fast8_t i = 0; i < ARRAY_SIZE(misChecks); i++) {
             if (_required_mission_items & misChecks[i].check) {
                 if (!mission->contains_item(misChecks[i].mis_item_type)) {
                     check_failed(ARMING_CHECK_MISSION, report, "Missing mission item: %s", misChecks[i].type);
@@ -880,7 +880,7 @@ bool AP_Arming::servo_checks(bool report) const
 {
 #if NUM_SERVO_CHANNELS
     bool check_passed = true;
-    for (uint8_t i = 0; i < NUM_SERVO_CHANNELS; i++) {
+    for (uint_fast8_t i = 0; i < NUM_SERVO_CHANNELS; i++) {
         const SRV_Channel *c = SRV_Channels::srv_channel(i);
         if (c == nullptr || c->get_function() <= SRV_Channel::k_none) {
             continue;
@@ -1140,7 +1140,7 @@ bool AP_Arming::can_checks(bool report)
         (void)fail_msg; // might be left unused
         uint8_t num_drivers = AP::can().get_num_drivers();
 
-        for (uint8_t i = 0; i < num_drivers; i++) {
+        for (uint_fast8_t i = 0; i < num_drivers; i++) {
             switch (AP::can().get_driver_type(i)) {
                 case AP_CANManager::Driver_Type_KDECAN: {
 // To be replaced with macro saying if KDECAN library is included
@@ -1353,7 +1353,7 @@ void AP_Arming::set_aux_auth_failed(uint8_t auth_id, const char* fail_msg)
     aux_auth_state[auth_id] = AuxAuthStates::AUTH_FAILED;
 
     // store failure message if this authoriser has the lowest auth_id
-    for (uint8_t i = 0; i < auth_id; i++) {
+    for (uint_fast8_t i = 0; i < auth_id; i++) {
         if (aux_auth_state[i] == AuxAuthStates::AUTH_FAILED) {
             return;
         }
@@ -1386,7 +1386,7 @@ bool AP_Arming::aux_auth_checks(bool display_failure)
     bool some_failures = false;
     bool failure_msg_sent = false;
     bool waiting_for_responses = false;
-    for (uint8_t i = 0; i < aux_auth_count; i++) {
+    for (uint_fast8_t i = 0; i < aux_auth_count; i++) {
         switch (aux_auth_state[i]) {
         case AuxAuthStates::NO_RESPONSE:
             waiting_for_responses = true;
@@ -1672,7 +1672,7 @@ bool AP_Arming::rc_checks_copter_sub(const bool display_failure, const RC_Channe
 
     const char *channel_names[] = { "Roll", "Pitch", "Throttle", "Yaw" };
 
-    for (uint8_t i=0; i<ARRAY_SIZE(channel_names);i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(channel_names);i++) {
         const RC_Channel *channel = channels[i];
         const char *channel_name = channel_names[i];
         // check if radio has been calibrated

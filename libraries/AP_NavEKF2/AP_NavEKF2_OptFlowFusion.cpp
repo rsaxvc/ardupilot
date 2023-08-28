@@ -303,7 +303,7 @@ void NavEKF2_core::FuseOptFlow()
     SH_LOS[13] = 1.0f/(SH_LOS[12]*SH_LOS[12]);
 
     // Fuse X and Y axis measurements sequentially assuming observation errors are uncorrelated
-    for (uint8_t obsIndex=0; obsIndex<=1; obsIndex++) { // fuse X axis data first
+    for (uint_fast8_t obsIndex=0; obsIndex<=1; obsIndex++) { // fuse X axis data first
         // calculate range from ground plane to centre of sensor fov assuming flat earth
         ftype range = constrain_ftype((heightAboveGndEst/prevTnb.c.z),rngOnGnd,1000.0f);
 
@@ -480,7 +480,7 @@ void NavEKF2_core::FuseOptFlow()
                 Kfusion[20] = t62*(-P[20][0]*t8-P[20][5]*t100+P[20][3]*t101+P[20][1]*t102+P[20][2]*t103+P[20][8]*t104-P[20][4]*t105);
                 Kfusion[21] = t62*(-P[21][0]*t8-P[21][5]*t100+P[21][3]*t101+P[21][1]*t102+P[21][2]*t103+P[21][8]*t104-P[21][4]*t105);
             } else {
-                for (uint8_t i = 16; i <= 21; i++) {
+                for (uint_fast8_t i = 16; i <= 21; i++) {
                     Kfusion[i] = 0.0f;
                 }
             }
@@ -634,7 +634,7 @@ void NavEKF2_core::FuseOptFlow()
                 Kfusion[20] = -t62*(P[20][1]*t9+P[20][5]*t100+P[20][0]*t105-P[20][4]*t101-P[20][2]*t102-P[20][3]*t103+P[20][8]*t104);
                 Kfusion[21] = -t62*(P[21][1]*t9+P[21][5]*t100+P[21][0]*t105-P[21][4]*t101-P[21][2]*t102-P[21][3]*t103+P[21][8]*t104);
             } else {
-                for (uint8_t i = 16; i <= 21; i++) {
+                for (uint_fast8_t i = 16; i <= 21; i++) {
                     Kfusion[i] = 0.0f;
                 }
             }
@@ -679,7 +679,7 @@ void NavEKF2_core::FuseOptFlow()
 
             // Check that we are not going to drive any variances negative and skip the update if so
             bool healthyFusion = true;
-            for (uint8_t i= 0; i<=stateIndexLim; i++) {
+            for (uint_fast8_t i= 0; i<=stateIndexLim; i++) {
                 if (KHP[i][i] > P[i][i]) {
                     healthyFusion = false;
                 }
@@ -687,8 +687,8 @@ void NavEKF2_core::FuseOptFlow()
 
             if (healthyFusion) {
                 // update the covariance matrix
-                for (uint8_t i= 0; i<=stateIndexLim; i++) {
-                    for (uint8_t j= 0; j<=stateIndexLim; j++) {
+                for (uint_fast8_t i= 0; i<=stateIndexLim; i++) {
+                    for (uint_fast8_t j= 0; j<=stateIndexLim; j++) {
                         P[i][j] = P[i][j] - KHP[i][j];
                     }
                 }
@@ -701,7 +701,7 @@ void NavEKF2_core::FuseOptFlow()
                 stateStruct.angErr.zero();
 
                 // correct the state vector
-                for (uint8_t j= 0; j<=stateIndexLim; j++) {
+                for (uint_fast8_t j= 0; j<=stateIndexLim; j++) {
                     statesArray[j] = statesArray[j] - Kfusion[j] * innovOptFlow[obsIndex];
                 }
 

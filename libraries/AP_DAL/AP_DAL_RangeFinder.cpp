@@ -16,10 +16,10 @@ AP_DAL_RangeFinder::AP_DAL_RangeFinder()
     if (!_RRNI || !_backend) {
         goto failed;
     }
-    for (uint8_t i=0; i<_RRNH.num_sensors; i++) {
+    for (uint_fast8_t i=0; i<_RRNH.num_sensors; i++) {
         _RRNI[i].instance = i;
     }
-    for (uint8_t i=0; i<_RRNH.num_sensors; i++) {
+    for (uint_fast8_t i=0; i<_RRNH.num_sensors; i++) {
         // this avoids having to discard a const....
         _backend[i] = new AP_DAL_RangeFinder_Backend(_RRNI[i]);
         if (!_backend[i]) {
@@ -76,7 +76,7 @@ void AP_DAL_RangeFinder::start_frame()
 
     WRITE_REPLAY_BLOCK_IFCHANGED(RRNH, _RRNH, old);
 
-    for (uint8_t i=0; i<_RRNH.num_sensors; i++) {
+    for (uint_fast8_t i=0; i<_RRNH.num_sensors; i++) {
         auto *backend = rangefinder->get_backend(i);
         if (backend == nullptr) {
             continue;
@@ -105,7 +105,7 @@ void AP_DAL_RangeFinder_Backend::start_frame(AP_RangeFinder_Backend *backend) {
 // return true if we have a range finder with the specified orientation
 bool AP_DAL_RangeFinder::has_orientation(enum Rotation orientation) const
 {
-    for (uint8_t i=0; i<_RRNH.num_sensors; i++) {
+    for (uint_fast8_t i=0; i<_RRNH.num_sensors; i++) {
         if (_RRNI[i].orientation == orientation) {
             return true;
         }

@@ -95,7 +95,7 @@ void Helicopter::update(const struct sitl_input &input)
 
 
     if (_time_delay == 0) {
-        for (uint8_t i = 0; i < 6; i++) {
+        for (uint_fast8_t i = 0; i < 6; i++) {
             _servos_delayed[i] = input.servos[i];
         }
     } else if (servos_stored_buffer == nullptr) {
@@ -104,7 +104,7 @@ void Helicopter::update(const struct sitl_input &input)
         while (servos_stored_buffer->space() != 0) {
             push_to_buffer(input.servos);
         }
-        for (uint8_t i = 0; i < 6; i++) {
+        for (uint_fast8_t i = 0; i < 6; i++) {
             _servos_delayed[i] = input.servos[i];
         }
     } else {

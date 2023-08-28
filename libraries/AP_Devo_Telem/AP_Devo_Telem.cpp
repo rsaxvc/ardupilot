@@ -120,7 +120,7 @@ void AP_DEVO_Telem::send_frames()
     // as we go.  Note we are stepping backwards through the structure
     // - presumably to get endianness correct on the entries!
     uint8_t *b = (uint8_t *)&devoPacket;
-    for (uint8_t i = sizeof(devoPacket)-1; i !=0; i--) {
+    for (uint_fast8_t i = sizeof(devoPacket)-1; i !=0; i--) {
         _port->write(b, 1);
         devoPacket.checksum8 += *b++; // Add Checksum
     }

@@ -51,7 +51,7 @@ AnalogIn_ADS1115::AnalogIn_ADS1115()
 AP_HAL::AnalogSource* AnalogIn_ADS1115::channel(int16_t pin)
 {
     WITH_SEMAPHORE(_semaphore);
-    for (uint8_t j = 0; j < _channels_number; j++) {
+    for (uint_fast8_t j = 0; j < _channels_number; j++) {
         if (_channels[j] == nullptr) {
             _channels[j] = new AnalogSource_ADS1115(pin);
             return _channels[j];
@@ -80,7 +80,7 @@ void AnalogIn_ADS1115::_update()
     size_t rc = _adc->read(reports, 6);
 
     for (size_t i = 0; i < rc; i++) {
-        for (uint8_t j=0; j < rc; j++) {
+        for (uint_fast8_t j=0; j < rc; j++) {
             AnalogSource_ADS1115 *source = _channels[j];
 
             if (source != nullptr && reports[i].id == source->_pin) {

@@ -483,7 +483,7 @@ void AC_PrecLand::run_estimator(float rangefinder_alt_m, bool rangefinder_alt_va
     switch ((EstimatorType)_estimator_type.get()) {
         case EstimatorType::RAW_SENSOR: {
             // Return if there's any invalid velocity data
-            for (uint8_t i=0; i<_inertial_history->available(); i++) {
+            for (uint_fast8_t i=0; i<_inertial_history->available(); i++) {
                 const struct inertial_data_frame_s *inertial_data = (*_inertial_history)[i];
                 if (!inertial_data->inertialNavVelocityValid) {
                     _target_acquired = false;
@@ -686,7 +686,7 @@ void AC_PrecLand::run_output_prediction()
     _target_vel_rel_out_NE = _target_vel_rel_est_NE;
 
     // Predict forward from delayed time horizon
-    for (uint8_t i=1; i<_inertial_history->available(); i++) {
+    for (uint_fast8_t i=1; i<_inertial_history->available(); i++) {
         const struct inertial_data_frame_s *inertial_data = (*_inertial_history)[i];
         _target_vel_rel_out_NE.x -= inertial_data->correctedVehicleDeltaVelocityNED.x;
         _target_vel_rel_out_NE.y -= inertial_data->correctedVehicleDeltaVelocityNED.y;

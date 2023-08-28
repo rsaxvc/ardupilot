@@ -418,7 +418,7 @@ uint16_t AP_ADSB_uAvionix_UCP::gdl90Transmit(GDL90_TX_MESSAGE &message, const ui
     uint16_t frameIndex = 1;
     
     // Copy and stuff all payload bytes into frame buffer
-    for (uint16_t i = 0; i < length+2; i++) {
+    for (uint_fast16_t i = 0; i < length+2; i++) {
         // Check for overflow of frame buffer
         if (frameIndex >= GDL90_TX_MAX_FRAME_LENGTH) {
             return 0;

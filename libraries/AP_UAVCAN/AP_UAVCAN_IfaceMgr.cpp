@@ -172,7 +172,7 @@ uint8_t CanIfaceMgr::getNumIfaces() const
 CanSelectMasks CanIfaceMgr::makeSelectMasks(const CanSelectMasks in_mask, const CanFrame* (& pending_tx)[MaxCanIfaces]) const
 {
     CanSelectMasks msk;
-    for (uint8_t i = 0; i < num_ifaces; i++) {
+    for (uint_fast8_t i = 0; i < num_ifaces; i++) {
         bool read = in_mask.read & (1 << i);
         bool write = in_mask.write & (1 << i);
         CanIface* iface = ifaces[i];

@@ -67,7 +67,7 @@ JSON::JSON(const char *frame_str) :
         target_ip = colon+1;
     }
 
-    for (uint8_t i=0; i<ARRAY_SIZE(sim_defaults); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(sim_defaults); i++) {
     AP_Param::set_default_by_name(sim_defaults[i].name, sim_defaults[i].value);
         if (sim_defaults[i].save) {
             enum ap_var_type ptype;
@@ -103,7 +103,7 @@ void JSON::output_servos(const struct sitl_input &input)
     servo_packet pkt;
     pkt.frame_rate = rate_hz;
     pkt.frame_count = frame_counter;
-    for (uint8_t i=0; i<16; i++) {
+    for (uint_fast8_t i=0; i<16; i++) {
         pkt.pwm[i] = input.servos[i];
     }
 
@@ -131,7 +131,7 @@ uint32_t JSON::parse_sensors(const char *json)
     uint32_t received_bitmask = 0;
 
     //printf("%s\n", json);
-    for (uint16_t i=0; i<ARRAY_SIZE(keytable); i++) {
+    for (uint_fast16_t i=0; i<ARRAY_SIZE(keytable); i++) {
         struct keytable &key = keytable[i];
 
         /* look for section header */
@@ -269,7 +269,7 @@ void JSON::recv_fdm(const struct sitl_input &input)
     if (received_bitmask != last_received_bitmask) {
         // some change in the message we have received, print what we got
         printf("\nJSON received:\n");
-        for (uint16_t i=0; i<ARRAY_SIZE(keytable); i++) {
+        for (uint_fast16_t i=0; i<ARRAY_SIZE(keytable); i++) {
             struct keytable &key = keytable[i];
             if ((received_bitmask &  1U << i) == 0) {
                 continue;
@@ -322,7 +322,7 @@ void JSON::recv_fdm(const struct sitl_input &input)
     update_position();
 
     // update range finder distances
-    for (uint8_t i=7; i<13; i++) {
+    for (uint_fast8_t i=7; i<13; i++) {
         if ((received_bitmask &  1U << i) == 0) {
             continue;
         }

@@ -50,7 +50,7 @@ void drive(uint16_t hz_speed) {
     hal.rcout->set_freq(0xFF, hz_speed);
 
     while (1) {
-        for (uint8_t i = 0; i < 14; i++) {
+        for (uint_fast8_t i = 0; i < 14; i++) {
             hal.rcout->write(i, pwm);
             pwm += delta;
             if (delta > 0 && pwm >= 2000) {
@@ -91,7 +91,7 @@ void setup(void) {
 #if CONFIG_HAL_BOARD == HAL_BOARD_CHIBIOS
     BoardConfig.init();
 #endif
-    for (uint8_t i = 0; i < 14; i++) {
+    for (uint_fast8_t i = 0; i < 14; i++) {
         hal.rcout->enable_ch(i);
     }
 }

@@ -471,12 +471,12 @@ void SPIDevice::test_clock_freq(void)
 {
     // delay for USB to come up
     DEV_PRINTF("Waiting for USB\n");
-    for (uint8_t i=0; i<3; i++) {
+    for (uint_fast8_t i=0; i<3; i++) {
         hal.scheduler->delay(1000);
         DEV_PRINTF("Waiting %u\n", (unsigned)AP_HAL::millis());
     }
     DEV_PRINTF("CLOCKS=\n");
-    for (uint8_t i=0; i<ARRAY_SIZE(bus_clocks); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(bus_clocks); i++) {
         DEV_PRINTF("%u:%u ", unsigned(i+1), unsigned(bus_clocks[i]));
     }
     DEV_PRINTF("\n");
@@ -486,7 +486,7 @@ void SPIDevice::test_clock_freq(void)
     uint16_t len = 1024;
     uint8_t *buf1 = (uint8_t *)hal.util->malloc_type(len, AP_HAL::Util::MEM_DMA_SAFE);
     uint8_t *buf2 = (uint8_t *)hal.util->malloc_type(len, AP_HAL::Util::MEM_DMA_SAFE);
-    for (uint8_t i=0; i<ARRAY_SIZE(spi_devices); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(spi_devices); i++) {
         SPIConfig spicfg {};
         const uint32_t target_freq = 2000000UL;
         // use a clock divisor of 256 for maximum resolution

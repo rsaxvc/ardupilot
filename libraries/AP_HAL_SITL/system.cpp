@@ -63,7 +63,7 @@ static void run_command_on_ownpid(const char *commandname)
         "../Tools/scripts/%s", // when run from e.g. ArduCopter subdirectory
     };
     char buffer[60];
-    for (uint8_t i=0; i<ARRAY_SIZE(paths); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(paths); i++) {
         // form up a filepath from each path and commandname; if it
         // exists, use it
         snprintf(buffer, sizeof(buffer), paths[i], commandname);

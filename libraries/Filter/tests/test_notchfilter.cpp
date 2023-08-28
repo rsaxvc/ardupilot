@@ -102,8 +102,8 @@ TEST(NotchFilterTest, HarmonicNotchTest)
         }
     } integrals[num_test_freq] {};
 
-    for (uint8_t i=0; i<num_test_freq; i++) {
-        for (uint8_t c=0; c<chained_filters; c++) {
+    for (uint_fast8_t i=0; i<num_test_freq; i++) {
+        for (uint_fast8_t c=0; c<chained_filters; c++) {
             auto &f = filters[i][c];
             f.allocate_filters(num_harmonics, harmonics, double_notch?2:1);
             f.init(rate_hz, base_freq, bandwidth, attenuation_dB);
@@ -113,11 +113,11 @@ TEST(NotchFilterTest, HarmonicNotchTest)
     for (uint32_t s=0; s<samples; s++) {
         const double t = s * dt;
 
-        for (uint8_t i=0; i<num_test_freq; i++) {
+        for (uint_fast8_t i=0; i<num_test_freq; i++) {
             const float freq = i+1;
             const double sample = sin(freq * t * 2 * M_PI) * test_amplitude;
             float v = sample;
-            for (uint8_t c=0; c<chained_filters; c++) {
+            for (uint_fast8_t c=0; c<chained_filters; c++) {
                 auto &f = filters[i][c];
                 v = f.apply(v);
             }
@@ -139,7 +139,7 @@ TEST(NotchFilterTest, HarmonicNotchTest)
     const char *csv_file = "harmonicnotch_test.csv";
     FILE *f = fopen(csv_file, "w");
     fprintf(f, "Freq(Hz),Ratio,Lag(deg)\n");
-    for (uint8_t i=0; i<num_test_freq; i++) {
+    for (uint_fast8_t i=0; i<num_test_freq; i++) {
         const float freq = i+1;
         const float lag_degrees = integrals[i].get_lag_degrees(freq);
         fprintf(f, "%.1f,%f,%f\n", freq, integrals[i].out/integrals[i].in, lag_degrees);

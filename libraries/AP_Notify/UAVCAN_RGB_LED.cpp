@@ -46,7 +46,7 @@ UAVCAN_RGB_LED::UAVCAN_RGB_LED(uint8_t led_index, uint8_t led_off,
 bool UAVCAN_RGB_LED::init()
 {
     const uint8_t can_num_drivers = AP::can().get_num_drivers();
-    for (uint8_t i = 0; i < can_num_drivers; i++) {
+    for (uint_fast8_t i = 0; i < can_num_drivers; i++) {
         AP_UAVCAN *uavcan = AP_UAVCAN::get_uavcan(i);
         if (uavcan != nullptr) {
             return true;
@@ -62,7 +62,7 @@ bool UAVCAN_RGB_LED::hw_set_rgb(uint8_t red, uint8_t green, uint8_t blue)
     bool success = false;
     uint8_t can_num_drivers = AP::can().get_num_drivers();
 
-    for (uint8_t i = 0; i < can_num_drivers; i++) {
+    for (uint_fast8_t i = 0; i < can_num_drivers; i++) {
         AP_UAVCAN *uavcan = AP_UAVCAN::get_uavcan(i);
         if (uavcan != nullptr) {
             success = uavcan->led_write(_led_index, red, green, blue) || success;

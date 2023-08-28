@@ -100,7 +100,7 @@ void loop()
     }
 
     rc().read_input();
-    for (uint8_t i=0; i<RC_CHANNELS_TO_DISPLAY; i++) {
+    for (uint_fast8_t i=0; i<RC_CHANNELS_TO_DISPLAY; i++) {
 	    hal.console->printf("%5d ", (int)rc().channel(i)->get_control_in());
 	    // hal.console->printf("%4d ", (int)rc().channel(i)->percent_input());
     }

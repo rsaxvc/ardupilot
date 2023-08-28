@@ -281,7 +281,7 @@ AP_Baro::AP_Baro()
 void AP_Baro::calibrate(bool save)
 {
     // start by assuming all sensors are calibrated (for healthy() test)
-    for (uint8_t i=0; i<_num_sensors; i++) {
+    for (uint_fast8_t i=0; i<_num_sensors; i++) {
         sensors[i].calibrated = true;
         sensors[i].alt_ok = true;
     }
@@ -313,7 +313,7 @@ void AP_Baro::calibrate(bool save)
     // let the barometer settle for a full second after startup
     // the MS5611 reads quite a long way off for the first second,
     // leading to about 1m of error if we don't wait
-    for (uint8_t i = 0; i < 10; i++) {
+    for (uint_fast8_t i = 0; i < 10; i++) {
         uint32_t tstart = AP_HAL::millis();
         do {
             update();
@@ -330,7 +330,7 @@ void AP_Baro::calibrate(bool save)
     uint8_t count[BARO_MAX_INSTANCES] = {0};
     const uint8_t num_samples = 5;
 
-    for (uint8_t c = 0; c < num_samples; c++) {
+    for (uint_fast8_t c = 0; c < num_samples; c++) {
         uint32_t tstart = AP_HAL::millis();
         do {
             update();
@@ -338,7 +338,7 @@ void AP_Baro::calibrate(bool save)
                 AP_BoardConfig::config_error("Baro: unable to calibrate");
             }
         } while (!healthy());
-        for (uint8_t i=0; i<_num_sensors; i++) {
+        for (uint_fast8_t i=0; i<_num_sensors; i++) {
             if (healthy(i)) {
                 sum_pressure[i] += sensors[i].pressure;
                 count[i] += 1;
@@ -346,7 +346,7 @@ void AP_Baro::calibrate(bool save)
         }
         hal.scheduler->delay(100);
     }
-    for (uint8_t i=0; i<_num_sensors; i++) {
+    for (uint_fast8_t i=0; i<_num_sensors; i++) {
         if (count[i] == 0) {
             sensors[i].calibrated = false;
         } else {
@@ -361,7 +361,7 @@ void AP_Baro::calibrate(bool save)
 
     // panic if all sensors are not calibrated
     uint8_t num_calibrated = 0;
-    for (uint8_t i=0; i<_num_sensors; i++) {
+    for (uint_fast8_t i=0; i<_num_sensors; i++) {
         if (sensors[i].calibrated) {
             BARO_SEND_TEXT(MAV_SEVERITY_INFO, "Barometer %u calibration complete", i+1);
             num_calibrated++;
@@ -385,7 +385,7 @@ void AP_Baro::update_calibration()
     if (do_notify) {
         _last_notify_ms = now;
     }
-    for (uint8_t i=0; i<_num_sensors; i++) {
+    for (uint_fast8_t i=0; i<_num_sensors; i++) {
         if (healthy(i)) {
             float corrected_pressure = get_sealevel_pressure(get_pressure(i) + sensors[i].p_correction);
             sensors[i].ground_pressure.set(corrected_pressure);
@@ -596,7 +596,7 @@ void AP_Baro::init(void)
     }
 
     // zero bus IDs before probing
-    for (uint8_t i = 0; i < BARO_MAX_INSTANCES; i++) {
+    for (uint_fast8_t i = 0; i < BARO_MAX_INSTANCES; i++) {
         sensors[i].bus_id.set(0);
     }
 
@@ -605,14 +605,14 @@ void AP_Baro::init(void)
     if (sitl == nullptr) {
         AP_HAL::panic("No SITL pointer");
     }
-    for(uint8_t i = 0; i < sitl->baro_count; i++) {
+    for (uint_fast8_t i = 0; i < sitl->baro_count; i++) {
         ADD_BACKEND(new AP_Baro_SITL(*this));
     }
 #endif
 
 #if AP_BARO_UAVCAN_ENABLED
     // Detect UAVCAN Modules, try as many times as there are driver slots
-    for (uint8_t i = 0; i < BARO_MAX_DRIVERS; i++) {
+    for (uint_fast8_t i = 0; i < BARO_MAX_DRIVERS; i++) {
         ADD_BACKEND(AP_Baro_UAVCAN::probe(*this));
     }
 #endif
@@ -772,7 +772,7 @@ void AP_Baro::init(void)
         // allow for late addition of MSP sensor
         msp_instance_mask |= 1;
     }
-    for (uint8_t i=0; i<8; i++) {
+    for (uint_fast8_t i=0; i<8; i++) {
         if (msp_instance_mask & (1U<<i)) {
             ADD_BACKEND(new AP_Baro_MSP(*this, i));
         }
@@ -792,7 +792,7 @@ void AP_Baro::init(void)
 #ifdef HAL_BUILD_AP_PERIPH
     // AP_Periph always is set calibrated. We only want the pressure,
     // so ground calibration is unnecessary
-    for (uint8_t i=0; i<_num_sensors; i++) {
+    for (uint_fast8_t i=0; i<_num_sensors; i++) {
         sensors[i].calibrated = true;
         sensors[i].alt_ok = true;
     }
@@ -912,11 +912,11 @@ void AP_Baro::update(void)
     bool old_primary_healthy = sensors[_primary].healthy;
 #endif
 
-    for (uint8_t i=0; i<_num_drivers; i++) {
+    for (uint_fast8_t i=0; i<_num_drivers; i++) {
         drivers[i]->backend_update(i);
     }
 
-    for (uint8_t i=0; i<_num_sensors; i++) {
+    for (uint_fast8_t i=0; i<_num_sensors; i++) {
         if (sensors[i].healthy) {
             // update altitude calculation
             float ground_pressure = sensors[i].ground_pressure;
@@ -953,7 +953,7 @@ void AP_Baro::update(void)
         _primary = _primary_baro;
     } else {
         _primary = 0;
-        for (uint8_t i=0; i<_num_sensors; i++) {
+        for (uint_fast8_t i=0; i<_num_sensors; i++) {
             if (healthy(i)) {
                 _primary = i;
                 break;
@@ -1025,7 +1025,7 @@ void AP_Baro::update_field_elevation(void)
  */
 void AP_Baro::accumulate(void)
 {
-    for (uint8_t i=0; i<_num_drivers; i++) {
+    for (uint_fast8_t i=0; i<_num_drivers; i++) {
         drivers[i]->accumulate();
     }
 }
@@ -1048,7 +1048,7 @@ uint8_t AP_Baro::register_sensor(void)
  */
 bool AP_Baro::all_healthy(void) const
 {
-     for (uint8_t i=0; i<_num_sensors; i++) {
+     for (uint_fast8_t i=0; i<_num_sensors; i++) {
          if (!healthy(i)) {
              return false;
          }
@@ -1076,7 +1076,7 @@ void AP_Baro::handle_msp(const MSP::msp_baro_data_message_t &pkt)
     if (!init_done) {
         msp_instance_mask |= 1U<<pkt.instance;
     } else if (msp_instance_mask != 0) {
-        for (uint8_t i=0; i<_num_drivers; i++) {
+        for (uint_fast8_t i=0; i<_num_drivers; i++) {
             drivers[i]->handle_msp(pkt);
         }
     }
@@ -1089,7 +1089,7 @@ void AP_Baro::handle_msp(const MSP::msp_baro_data_message_t &pkt)
  */
 void AP_Baro::handle_external(const AP_ExternalAHRS::baro_data_message_t &pkt)
 {
-    for (uint8_t i=0; i<_num_drivers; i++) {
+    for (uint_fast8_t i=0; i<_num_drivers; i++) {
         drivers[i]->handle_external(pkt);
     }
 }

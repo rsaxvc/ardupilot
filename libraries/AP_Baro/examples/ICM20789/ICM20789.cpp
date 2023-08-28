@@ -169,7 +169,7 @@ static void spi_init()
     // dump registers
     printf("ICM20789 registers\n");
 #if 0
-    for (uint8_t reg = 0; reg<0x80; reg++) {
+    for (uint_fast8_t reg = 0; reg<0x80; reg++) {
         v=0;
         spi_dev->read_registers(reg, &v, 1);
         printf("%02x:%02x ", (unsigned)reg, (unsigned)v);
@@ -204,7 +204,7 @@ static bool read_calibration_data(void)
     if (!i2c_dev->transfer(cmd, sizeof(cmd), nullptr, 0)) {
         return false;
     }
-    for (uint8_t i=0; i<4; i++) {
+    for (uint_fast8_t i=0; i<4; i++) {
         if (!send_cmd16(0xC7F7)) {
             return false;
         }
@@ -250,7 +250,7 @@ static void i2c_init(void)
     dev->get_semaphore()->take_blocking();
 
     uint8_t regs[3] = { 0xC0, 0xC1, 0xC2 };
-    for (uint8_t i=0; i<ARRAY_SIZE(regs); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(regs); i++) {
         uint8_t v = 0;
         dev->read_registers(regs[i], &v, 1);
         printf("0x%02x : 0x%02x\n", regs[i], v);

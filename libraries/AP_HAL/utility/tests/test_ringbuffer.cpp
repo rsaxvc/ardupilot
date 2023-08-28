@@ -106,7 +106,7 @@ TEST(ObjectBufferTest, PeekTest)
 {
     ByteBuffer bb(128);
     uint8_t seven[7] {1,2,3,4,5,6,7};
-    for (uint8_t i=0; i<100; i++) {
+    for (uint_fast8_t i=0; i<100; i++) {
         bb.write(seven, 7);
         ByteBuffer::IoVec vec[2];
         uint8_t nvec = bb.peekiovec(vec, 7);

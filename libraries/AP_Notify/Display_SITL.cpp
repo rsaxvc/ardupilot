@@ -81,8 +81,8 @@ void Display_SITL::update_thread(void)
                 }
                 w->clear();
 
-                for (uint16_t y=0; y<ROWS; y++) {
-                    for (uint16_t x=0; x<COLUMNS; x++) {
+                for (uint_fast16_t y=0; y<ROWS; y++) {
+                    for (uint_fast16_t x=0; x<COLUMNS; x++) {
                         if (buffer2[x+y/8*COLUMNS] & 1<<y%8) {
                             image.setPixel(x, y, color_white);
                         } else {

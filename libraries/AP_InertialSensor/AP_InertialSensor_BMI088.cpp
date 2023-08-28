@@ -143,7 +143,7 @@ bool AP_InertialSensor_BMI088::read_accel_registers(uint8_t reg, uint8_t *data, 
 */
 bool AP_InertialSensor_BMI088::write_accel_register(uint8_t reg, uint8_t v)
 {
-    for (uint8_t i=0; i<8; i++) {
+    for (uint_fast8_t i=0; i<8; i++) {
         dev_accel->write_register(reg, v);
         uint8_t v2 = 0;
         if (read_accel_registers(reg, &v2, 1) && v2 == v) {
@@ -175,7 +175,7 @@ bool AP_InertialSensor_BMI088::setup_accel_config(void)
         return true;
     }
     accel_config_count++;
-    for (uint8_t i=0; i<ARRAY_SIZE(accel_config); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(accel_config); i++) {
         uint8_t v;
         if (!read_accel_registers(accel_config[i].reg, &v, 1)) {
             return false;
@@ -427,7 +427,7 @@ void AP_InertialSensor_BMI088::read_fifo_gyro(void)
     }
 
     // data is 16 bits with 2000dps range
-    for (uint8_t i = 0; i < num_frames; i++) {
+    for (uint_fast8_t i = 0; i < num_frames; i++) {
         if (data[i] == bad_frame) {
             continue;
         }

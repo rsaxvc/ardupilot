@@ -56,7 +56,7 @@ AP_Baro_Backend* AP_Baro_UAVCAN::probe(AP_Baro &baro)
     WITH_SEMAPHORE(_sem_registry);
 
     AP_Baro_UAVCAN* backend = nullptr;
-    for (uint8_t i = 0; i < BARO_MAX_DRIVERS; i++) {
+    for (uint_fast8_t i = 0; i < BARO_MAX_DRIVERS; i++) {
         if (_detected_modules[i].driver == nullptr && _detected_modules[i].ap_uavcan != nullptr) {
             backend = new AP_Baro_UAVCAN(baro);
             if (backend == nullptr) {
@@ -94,7 +94,7 @@ AP_Baro_UAVCAN* AP_Baro_UAVCAN::get_uavcan_backend(AP_UAVCAN* ap_uavcan, uint8_t
     if (ap_uavcan == nullptr) {
         return nullptr;
     }
-    for (uint8_t i = 0; i < BARO_MAX_DRIVERS; i++) {
+    for (uint_fast8_t i = 0; i < BARO_MAX_DRIVERS; i++) {
         if (_detected_modules[i].driver != nullptr &&
             _detected_modules[i].ap_uavcan == ap_uavcan && 
             _detected_modules[i].node_id == node_id) {
@@ -105,7 +105,7 @@ AP_Baro_UAVCAN* AP_Baro_UAVCAN::get_uavcan_backend(AP_UAVCAN* ap_uavcan, uint8_t
     if (create_new) {
         bool already_detected = false;
         //Check if there's an empty spot for possible registeration
-        for (uint8_t i = 0; i < BARO_MAX_DRIVERS; i++) {
+        for (uint_fast8_t i = 0; i < BARO_MAX_DRIVERS; i++) {
             if (_detected_modules[i].ap_uavcan == ap_uavcan && _detected_modules[i].node_id == node_id) {
                 //Already Detected
                 already_detected = true;
@@ -113,7 +113,7 @@ AP_Baro_UAVCAN* AP_Baro_UAVCAN::get_uavcan_backend(AP_UAVCAN* ap_uavcan, uint8_t
             }
         }
         if (!already_detected) {
-            for (uint8_t i = 0; i < BARO_MAX_DRIVERS; i++) {
+            for (uint_fast8_t i = 0; i < BARO_MAX_DRIVERS; i++) {
                 if (_detected_modules[i].ap_uavcan == nullptr) {
                     _detected_modules[i].ap_uavcan = ap_uavcan;
                     _detected_modules[i].node_id = node_id;

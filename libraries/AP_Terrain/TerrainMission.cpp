@@ -62,7 +62,7 @@ void AP_Terrain::update_mission_data(void)
 
     // don't do more than 20 waypoints at a time, to prevent too much
     // CPU usage
-    for (uint8_t i=0; i<20; i++) {
+    for (uint_fast8_t i=0; i<20; i++) {
         // get next mission command
         AP_Mission::Mission_Command cmd;
         if (!mission->read_cmd_from_storage(next_mission_index, cmd)) {

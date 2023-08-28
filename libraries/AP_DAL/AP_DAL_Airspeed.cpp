@@ -6,7 +6,7 @@
 AP_DAL_Airspeed::AP_DAL_Airspeed()
 {
 #if AP_AIRSPEED_ENABLED
-    for (uint8_t i=0; i<ARRAY_SIZE(_RASI); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(_RASI); i++) {
         _RASI[i].instance = i;
     }
 #endif
@@ -25,7 +25,7 @@ void AP_DAL_Airspeed::start_frame()
     _RASH.primary = airspeed->get_primary();
     WRITE_REPLAY_BLOCK_IFCHANGED(RASH, _RASH, old);
 
-    for (uint8_t i=0; i<ARRAY_SIZE(_RASI); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(_RASI); i++) {
         log_RASI &RASI = _RASI[i];
         log_RASI old_RASI = RASI;
         RASI.last_update_ms = airspeed->last_update_ms(i);

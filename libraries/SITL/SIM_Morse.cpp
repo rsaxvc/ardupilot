@@ -119,7 +119,7 @@ Morse::Morse(const char *frame_str) :
         output_type = OUTPUT_ROVER_REGULAR;
     }
 
-    for (uint8_t i=0; i<ARRAY_SIZE(sim_defaults); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(sim_defaults); i++) {
         AP_Param::set_default_by_name(sim_defaults[i].name, sim_defaults[i].value);
         if (sim_defaults[i].save) {
             enum ap_var_type ptype;
@@ -144,7 +144,7 @@ Morse::Morse(const char *frame_str) :
 bool Morse::parse_sensors(const char *json)
 {
     //printf("%s\n", json);
-    for (uint16_t i=0; i<ARRAY_SIZE(keytable); i++) {
+    for (uint_fast16_t i=0; i<ARRAY_SIZE(keytable); i++) {
         struct keytable &key = keytable[i];
 
         /* look for section header */
@@ -408,7 +408,7 @@ void Morse::output_quad(const struct sitl_input &input)
 {
     const float max_thrust = 1500;
     float motors[4];
-    for (uint8_t i=0; i<4; i++) {
+    for (uint_fast8_t i=0; i<4; i++) {
         motors[i] = constrain_float(((input.servos[i]-1000)/1000.0f) * max_thrust, 0, max_thrust);
     }
     const float &m_right = motors[0];
@@ -632,7 +632,7 @@ void Morse::send_report(void)
         packet.angle_offset = 180;
         packet.increment_f = (-5);  // NOTE! This is negative because the distances[] arc is counter-clockwise
 
-        for (uint8_t i=0; i<MAVLINK_MSG_OBSTACLE_DISTANCE_FIELD_DISTANCES_LEN; i++) {
+        for (uint_fast8_t i=0; i<MAVLINK_MSG_OBSTACLE_DISTANCE_FIELD_DISTANCES_LEN; i++) {
 
             if (i >= scanner.points.length) {
                 packet.distances[i] = 65535;

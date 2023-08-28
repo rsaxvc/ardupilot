@@ -38,7 +38,7 @@ bool AP_PoolAllocator::init(void)
     if (pool_nodes == nullptr) {
         return false;
     }
-    for (uint16_t i=0; i<(num_blocks-1); i++) {
+    for (uint_fast16_t i=0; i<(num_blocks-1); i++) {
         pool_nodes[i].next = &pool_nodes[i+1];
     }
     free_list = &pool_nodes[0];

@@ -30,7 +30,7 @@ uint16_t crc_crc4(uint16_t *data)
     uint16_t n_rem = 0;
     uint8_t n_bit;
 
-    for (uint8_t cnt = 0; cnt < 16; cnt++) {
+    for (uint_fast8_t cnt = 0; cnt < 16; cnt++) {
         /* uneven bytes */
         if (cnt & 1) {
             n_rem ^= (uint8_t)((data[cnt >> 1]) & 0x00FF);
@@ -100,7 +100,7 @@ uint8_t crc8_dvb_s2(uint8_t crc, uint8_t a)
 uint8_t crc8_dvb(uint8_t crc, uint8_t a, uint8_t seed)
 {
     crc ^= a;
-    for (uint8_t i = 0; i < 8; ++i) {
+    for (uint_fast8_t i = 0; i < 8; ++i) {
         if (crc & 0x80) {
             crc = (crc << 1) ^ seed;
         } else {
@@ -125,7 +125,7 @@ uint8_t crc8_dvb_s2_update(uint8_t crc, const void *data, uint32_t length)
 // copied from AP_FETtecOneWire.cpp
 uint8_t crc8_dvb_update(uint8_t crc, const uint8_t* buf, const uint16_t buf_len)
 {
-    for (uint16_t i = 0; i < buf_len; i++) {
+    for (uint_fast16_t i = 0; i < buf_len; i++) {
         crc = crc8_dvb(buf[i], crc, 0x7);
     }
     return crc;
@@ -189,7 +189,7 @@ uint8_t crc8_maxim(const uint8_t *data, uint16_t length)
 uint16_t crc_xmodem_update(uint16_t crc, uint8_t data)
 {
 	crc = crc ^ ((uint16_t)data << 8);
-	for (uint16_t i=0; i<8; i++)
+	for (uint_fast16_t i=0; i<8; i++)
 	{
 		if(crc & 0x8000) {
 			crc = (crc << 1) ^ 0x1021;
@@ -204,7 +204,7 @@ uint16_t crc_xmodem_update(uint16_t crc, uint8_t data)
 uint16_t crc_xmodem(const uint8_t *data, uint16_t len)
 {
     uint16_t crc = 0;
-    for (uint16_t i=0; i<len; i++) {
+    for (uint_fast16_t i=0; i<len; i++) {
         crc = crc_xmodem_update(crc, data[i]);
     }
     return crc;
@@ -275,7 +275,7 @@ uint32_t crc32_small(uint32_t crc, const uint8_t *buf, uint32_t size)
     while (size--) {
         const uint8_t byte = *buf++;
         crc ^= byte;
-        for (uint8_t i=0; i<8; i++) {
+        for (uint_fast8_t i=0; i<8; i++) {
             const uint32_t mask = -(crc & 1);
             crc >>= 1;
             crc ^= (0xEDB88320 & mask);
@@ -357,9 +357,9 @@ uint16_t crc16_ccitt_GDL90(const uint8_t *buf, uint32_t len, uint16_t crc)
 uint16_t calc_crc_modbus(uint8_t *buf, uint16_t len)
 {
     uint16_t crc = 0xFFFF;
-    for (uint16_t pos = 0; pos < len; pos++) {
+    for (uint_fast16_t pos = 0; pos < len; pos++) {
         crc ^= (uint16_t) buf[pos]; // XOR byte into least sig. byte of crc
-        for (uint8_t i = 8; i != 0; i--) { // Loop over each bit
+        for (uint_fast8_t i = 8; i != 0; i--) { // Loop over each bit
             if ((crc & 0x0001) != 0) { // If the LSB is set
                 crc >>= 1; // Shift right and XOR 0xA001
                 crc ^= 0xA001;
@@ -392,7 +392,7 @@ uint32_t crc_crc24(const uint8_t *bytes, uint16_t len)
         uint8_t b = *bytes++;
         const uint8_t idx = (crc>>16) ^ b;
         uint32_t crct = idx<<16;
-        for (uint8_t j=0; j<8; j++) {
+        for (uint_fast8_t j=0; j<8; j++) {
             crct <<= 1;
             if (crct & 0x1000000) {
                 crct ^= POLYCRC24;
@@ -407,7 +407,7 @@ uint32_t crc_crc24(const uint8_t *bytes, uint16_t len)
 uint8_t crc_sum8(const uint8_t *p, uint8_t len)
 {
     uint16_t sum = 0;
-    for (uint8_t i=0; i<len; i++) {
+    for (uint_fast8_t i=0; i<len; i++) {
         sum += p[i];
         sum += sum >> 8;
         sum &= 0xFF;              
@@ -461,7 +461,7 @@ uint16_t crc_crc16_ibm(uint16_t crc_accum, uint8_t *data_blk_ptr, uint16_t data_
                                             0x0234, 0x8231, 0x8213, 0x0216, 0x021C, 0x8219, 0x0208,
                                             0x820D, 0x8207, 0x0202 };
 
-    for (uint16_t j = 0; j < data_blk_size; j++) {
+    for (uint_fast16_t j = 0; j < data_blk_size; j++) {
         i = ((uint16_t)(crc_accum >> 8) ^ *data_blk_ptr++) & 0xFF;
         crc_accum = (crc_accum << 8) ^ crc_table[i];
     }
@@ -478,10 +478,10 @@ uint64_t crc_crc64(const uint32_t *data, uint16_t num_words)
     uint64_t crc = ~(0ULL);
     while (num_words--) {
         uint32_t value = *data++;
-        for (uint8_t j = 0; j < 4; j++) {
+        for (uint_fast8_t j = 0; j < 4; j++) {
             uint8_t byte = ((uint8_t *)&value)[j];
             crc ^= (uint64_t)byte << 56u;
-            for (uint8_t i = 0; i < 8; i++) {
+            for (uint_fast8_t i = 0; i < 8; i++) {
                 if (crc & (1ull << 63u)) {
                     crc = (uint64_t)(crc << 1u) ^ poly;
                 } else {

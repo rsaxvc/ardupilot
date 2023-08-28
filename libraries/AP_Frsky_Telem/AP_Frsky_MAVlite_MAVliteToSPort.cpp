@@ -38,7 +38,7 @@ bool AP_Frsky_MAVlite_MAVliteToSPort::process(ObjectBuffer_TS<AP_Frsky_SPort::sp
     process_byte(msg.len, queue);
     process_byte(msg.msgid, queue);
 
-    for (uint8_t i=0; i<msg.len; i++) {
+    for (uint_fast8_t i=0; i<msg.len; i++) {
         process_byte(msg.payload[i], queue);
     }
 

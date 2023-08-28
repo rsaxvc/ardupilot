@@ -217,7 +217,7 @@ bool AP_BoardConfig::check_ms5611(const char* devname) {
 
     uint16_t prom[8];
     bool all_zero = true;
-    for (uint8_t i = 0; i < 8; i++) {
+    for (uint_fast8_t i = 0; i < 8; i++) {
         const uint8_t reg = CMD_MS56XX_PROM + (i << 1);
         uint8_t val[2];
         if (!dev->transfer(&reg, 1, val, sizeof(val))) {
@@ -451,7 +451,7 @@ void AP_BoardConfig::board_setup_sbus(void)
             { 7, 300 }
         };
         uint16_t rate = 300;
-        for (uint8_t i=0; i<ARRAY_SIZE(rates); i++) {
+        for (uint_fast8_t i=0; i<ARRAY_SIZE(rates); i++) {
             if (rates[i].value == state.sbus_out_rate) {
                 rate = rates[i].rate;
             }

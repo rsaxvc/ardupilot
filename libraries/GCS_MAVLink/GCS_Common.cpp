@@ -151,7 +151,7 @@ bool GCS_MAVLINK::init(uint8_t instance)
     _port->begin(115200);
     AP_HAL::UARTDriver::flow_control old_flow_control = _port->get_flow_control();
     _port->set_flow_control(AP_HAL::UARTDriver::FLOW_CONTROL_DISABLE);
-    for (uint8_t i=0; i<3; i++) {
+    for (uint_fast8_t i=0; i<3; i++) {
         hal.scheduler->delay(1);
         _port->write(0x30);
         _port->write(0x20);
@@ -260,7 +260,7 @@ void GCS_MAVLINK::send_battery_status(const uint8_t instance) const
         // copy the first 10 cells
         memcpy(cell_mvolts, batt_cells.cells, sizeof(cell_mvolts));
         // 11 ... 14 use a second cell_volts_ext array
-        for (uint8_t i = 0; i < MAVLINK_MSG_BATTERY_STATUS_FIELD_VOLTAGES_EXT_LEN; i++) {
+        for (uint_fast8_t i = 0; i < MAVLINK_MSG_BATTERY_STATUS_FIELD_VOLTAGES_EXT_LEN; i++) {
             if (MAVLINK_MSG_BATTERY_STATUS_FIELD_VOLTAGES_LEN+i < uint8_t(ARRAY_SIZE(batt_cells.cells))) {
                 cell_mvolts_ext[i] = batt_cells.cells[MAVLINK_MSG_BATTERY_STATUS_FIELD_VOLTAGES_LEN+i];
             } else {
@@ -275,13 +275,13 @@ void GCS_MAVLINK::send_battery_status(const uint8_t instance) const
         const float voltage_mV = battery.gcs_voltage(instance) * 1e3f;
         float voltage_mV_sum = 0;
         uint8_t non_zero_cell_count = 0;
-        for (uint8_t i=0; i<MAVLINK_MSG_BATTERY_STATUS_FIELD_VOLTAGES_LEN; i++) {
+        for (uint_fast8_t i=0; i<MAVLINK_MSG_BATTERY_STATUS_FIELD_VOLTAGES_LEN; i++) {
             if (cell_mvolts[i] > 0 && cell_mvolts[i] != invalid_cell_mV) {
                 non_zero_cell_count++;
                 voltage_mV_sum += cell_mvolts[i];
             }
         }
-        for (uint8_t i=0; i<MAVLINK_MSG_BATTERY_STATUS_FIELD_VOLTAGES_EXT_LEN; i++) {
+        for (uint_fast8_t i=0; i<MAVLINK_MSG_BATTERY_STATUS_FIELD_VOLTAGES_EXT_LEN; i++) {
             if (cell_mvolts_ext[i] > 0 && cell_mvolts_ext[i] != invalid_cell_mV) {
                 non_zero_cell_count++;
                 voltage_mV_sum += cell_mvolts_ext[i];
@@ -290,12 +290,12 @@ void GCS_MAVLINK::send_battery_status(const uint8_t instance) const
         if (voltage_mV > voltage_mV_sum && non_zero_cell_count > 0) {
             // distribute the extra voltage over the non-zero cells
             uint32_t extra_mV = (voltage_mV - voltage_mV_sum) / non_zero_cell_count;
-            for (uint8_t i=0; i<MAVLINK_MSG_BATTERY_STATUS_FIELD_VOLTAGES_LEN; i++) {
+            for (uint_fast8_t i=0; i<MAVLINK_MSG_BATTERY_STATUS_FIELD_VOLTAGES_LEN; i++) {
                 if (cell_mvolts[i] > 0 && cell_mvolts[i] != invalid_cell_mV) {
                     cell_mvolts[i] = MIN(cell_mvolts[i] + extra_mV, max_cell_mV);
                 }
             }
-            for (uint8_t i=0; i<MAVLINK_MSG_BATTERY_STATUS_FIELD_VOLTAGES_EXT_LEN; i++) {
+            for (uint_fast8_t i=0; i<MAVLINK_MSG_BATTERY_STATUS_FIELD_VOLTAGES_EXT_LEN; i++) {
                 if (cell_mvolts_ext[i] > 0 && cell_mvolts_ext[i] != invalid_cell_mV) {
                     cell_mvolts_ext[i] = MIN(cell_mvolts_ext[i] + extra_mV, max_cell_mV);
                 }
@@ -306,7 +306,7 @@ void GCS_MAVLINK::send_battery_status(const uint8_t instance) const
         // if the total voltage cannot fit into a single field, the remainder into subsequent fields.
         // the GCS can then recover the pack voltage by summing all non ignored cell values an we can report a pack up to 655.34 V
         float voltage_mV = battery.gcs_voltage(instance) * 1e3f;
-        for (uint8_t i = 0; i < MAVLINK_MSG_BATTERY_STATUS_FIELD_VOLTAGES_LEN; i++) {
+        for (uint_fast8_t i = 0; i < MAVLINK_MSG_BATTERY_STATUS_FIELD_VOLTAGES_LEN; i++) {
           if (voltage_mV < 0.001f) {
               // too small to send to the GCS, set it to the no cell value
               cell_mvolts[i] = UINT16_MAX;
@@ -315,7 +315,7 @@ void GCS_MAVLINK::send_battery_status(const uint8_t instance) const
               voltage_mV -= max_cell_mV;
           }
         }
-        for (uint8_t i = 0; i < MAVLINK_MSG_BATTERY_STATUS_FIELD_VOLTAGES_EXT_LEN; i++) {
+        for (uint_fast8_t i = 0; i < MAVLINK_MSG_BATTERY_STATUS_FIELD_VOLTAGES_EXT_LEN; i++) {
             cell_mvolts_ext[i] = 0;
         }
     }
@@ -367,7 +367,7 @@ bool GCS_MAVLINK::send_battery_status()
 #if !defined(HAL_BUILD_AP_PERIPH) || defined(HAL_PERIPH_ENABLE_BATTERY)
     const AP_BattMonitor &battery = AP::battery();
 
-    for(uint8_t i = 0; i < AP_BATT_MONITOR_MAX_INSTANCES; i++) {
+    for (uint_fast8_t i = 0; i < AP_BATT_MONITOR_MAX_INSTANCES; i++) {
         const uint8_t battery_id = (last_battery_status_idx + 1) % AP_BATT_MONITOR_MAX_INSTANCES;
         if (battery.get_type(battery_id) != AP_BattMonitor::Type::NONE) {
             CHECK_PAYLOAD_SIZE(BATTERY_STATUS);
@@ -432,7 +432,7 @@ void GCS_MAVLINK::send_distance_sensor()
 #if HAL_PROXIMITY_ENABLED
     AP_Proximity *proximity = AP_Proximity::get_singleton();
     if (proximity != nullptr) {
-        for (uint8_t i = 0; i < proximity->num_sensors(); i++) {
+        for (uint_fast8_t i = 0; i < proximity->num_sensors(); i++) {
             if (proximity->get_type(i) == AP_Proximity::Type::RangeFinder) {
                 filter_possible_proximity_sensors = true;
             }
@@ -440,7 +440,7 @@ void GCS_MAVLINK::send_distance_sensor()
     }
 #endif
 
-    for (uint8_t i = 0; i < RANGEFINDER_MAX_INSTANCES; i++) {
+    for (uint_fast8_t i = 0; i < RANGEFINDER_MAX_INSTANCES; i++) {
         if (!HAVE_PAYLOAD_SPACE(chan, DISTANCE_SENSOR)) {
             return;
         }
@@ -492,7 +492,7 @@ void GCS_MAVLINK::send_proximity()
     if (proximity->get_status() == AP_Proximity::Status::Good) {
         Proximity_Distance_Array dist_array;
         if (proximity->get_horizontal_distances(dist_array)) {
-            for (uint8_t i = 0; i < PROXIMITY_MAX_DIRECTION; i++) {
+            for (uint_fast8_t i = 0; i < PROXIMITY_MAX_DIRECTION; i++) {
                 if (!HAVE_PAYLOAD_SPACE(chan, DISTANCE_SENSOR)) {
                     return;
                 }
@@ -995,7 +995,7 @@ ap_message GCS_MAVLINK::mavlink_id_to_ap_message_id(const uint32_t mavlink_id) c
 #endif
             };
 
-    for (uint8_t i=0; i<ARRAY_SIZE(map); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(map); i++) {
         if (map[i].mavlink_id == mavlink_id) {
             return map[i].msg_id;
         }
@@ -1071,7 +1071,7 @@ void GCS_MAVLINK::find_next_bucket_to_send(uint16_t now16_ms)
     // all done sending this bucket... find another bucket...
     sending_bucket_id = no_bucket_to_send;
     uint16_t ms_before_send_next_bucket_to_send = UINT16_MAX;
-    for (uint8_t i=0; i<ARRAY_SIZE(deferred_message_bucket); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(deferred_message_bucket); i++) {
         if (deferred_message_bucket[i].ap_message_ids.count() == 0) {
             // no entries
             continue;
@@ -1168,7 +1168,7 @@ bool GCS_MAVLINK::do_try_send_message(const ap_message id)
 
 int8_t GCS_MAVLINK::get_deferred_message_index(const ap_message id) const
 {
-    for (uint8_t i=0; i<ARRAY_SIZE(deferred_message); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(deferred_message); i++) {
         if (deferred_message[i].id == id) {
             return i;
         }
@@ -1181,7 +1181,7 @@ int8_t GCS_MAVLINK::deferred_message_to_send_index(uint16_t now16_ms)
 
     if (next_deferred_message_to_send_cache == -1) {
         uint16_t ms_before_next_message_to_send = UINT16_MAX;
-        for (uint8_t i=0; i<ARRAY_SIZE(deferred_message); i++) {
+        for (uint_fast8_t i=0; i<ARRAY_SIZE(deferred_message); i++) {
             const uint16_t interval_ms = deferred_message[i].interval_ms;
             if (interval_ms == 0) {
                 continue;
@@ -1531,7 +1531,7 @@ bool GCS_MAVLINK::set_ap_message_interval(enum ap_message id, uint16_t interval_
     uint16_t closest_bucket_interval_delta = UINT16_MAX;
     int8_t in_bucket = -1;
     int8_t empty_bucket_id = -1;
-    for (uint8_t i=0; i<ARRAY_SIZE(deferred_message_bucket); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(deferred_message_bucket); i++) {
         const deferred_message_bucket_t &bucket = deferred_message_bucket[i];
         if (bucket.interval_ms == 0) {
             // unused bucket
@@ -1678,7 +1678,7 @@ GCS_MAVLINK::update_receive(uint32_t max_time_us)
     status.packet_rx_drop_count = 0;
 
     const uint16_t nbytes = _port->available();
-    for (uint16_t i=0; i<nbytes; i++)
+    for (uint_fast16_t i=0; i<nbytes; i++)
     {
         const uint8_t c = (uint8_t)_port->read();
         const uint32_t protocol_timeout = 4000;
@@ -1802,7 +1802,7 @@ GCS_MAVLINK::update_receive(uint32_t max_time_us)
             try_send_message_stats.max_retry_deferred_body_us = 0;
         }
 
-        for (uint8_t i=0; i<ARRAY_SIZE(deferred_message_bucket); i++) {
+        for (uint_fast8_t i=0; i<ARRAY_SIZE(deferred_message_bucket); i++) {
             gcs().send_text(MAV_SEVERITY_INFO,
                             "B. intvl. (%u): %u %u %u %u %u",
                             chan,
@@ -2142,7 +2142,7 @@ void GCS::send_textv(MAV_SEVERITY severity, const char *fmt, va_list arg_list, u
         }
 
         const char *remainder = statustext_printf_buffer;
-        for (uint8_t i=0; i<_status_capacity; i++) {
+        for (uint_fast8_t i=0; i<_status_capacity; i++) {
             statustext.msg.chunk_seq = i;
             const size_t remainder_len = strlen(remainder);
             // note that remainder_len may be zero here!
@@ -2217,10 +2217,10 @@ void GCS::service_statustext(void)
         return;
     }
 
-    for (uint8_t i=first_backend_to_send; i<num_gcs(); i++) {
+    for (uint_fast8_t i=first_backend_to_send; i<num_gcs(); i++) {
         chan(i)->service_statustext();
     }
-    for (uint8_t i=0; i<first_backend_to_send; i++) {
+    for (uint_fast8_t i=0; i<first_backend_to_send; i++) {
         chan(i)->service_statustext();
     }
 
@@ -2237,7 +2237,7 @@ void GCS::StatusTextQueue::prune(void)
     last_prune_ms = now_ms;
 
     const uint16_t now16_ms = AP_HAL::millis16();
-    for (uint8_t idx=0; idx<available(); ) {
+    for (uint_fast8_t idx=0; idx<available(); ) {
         const GCS::statustext_t *statustext = (*this)[idx];
         if (statustext == nullptr) {
             INTERNAL_ERROR(AP_InternalError::error_t::flow_of_control);
@@ -2270,7 +2270,7 @@ void GCS_MAVLINK::service_statustext(void)
     // from the queue as the last thing we do, in which case we don't
     // want to move idx.
     const uint16_t payload_size = PAYLOAD_SIZE(chan, STATUSTEXT);
-    for (uint8_t idx=0; idx<_statustext_queue.available(); ) {
+    for (uint_fast8_t idx=0; idx<_statustext_queue.available(); ) {
         WITH_SEMAPHORE(comm_chan_lock(chan));
 
         if (txspace() < payload_size) {
@@ -2308,7 +2308,7 @@ void GCS_MAVLINK::service_statustext(void)
 
 void GCS::send_message(enum ap_message id)
 {
-    for (uint8_t i=0; i<num_gcs(); i++) {
+    for (uint_fast8_t i=0; i<num_gcs(); i++) {
         chan(i)->send_message(id);
     }
 }
@@ -2350,10 +2350,10 @@ void GCS::update_send()
     // round-robin the GCS_MAVLINK backend that gets to go first so
     // one backend doesn't monopolise all of the time allowed for sending
     // messages
-    for (uint8_t i=first_backend_to_send; i<num_gcs(); i++) {
+    for (uint_fast8_t i=first_backend_to_send; i<num_gcs(); i++) {
         chan(i)->update_send();
     }
-    for (uint8_t i=0; i<first_backend_to_send; i++) {
+    for (uint_fast8_t i=0; i<first_backend_to_send; i++) {
         chan(i)->update_send();
     }
 
@@ -2367,7 +2367,7 @@ void GCS::update_send()
 
 void GCS::update_receive(void)
 {
-    for (uint8_t i=0; i<num_gcs(); i++) {
+    for (uint_fast8_t i=0; i<num_gcs(); i++) {
         chan(i)->update_receive();
     }
     // also update UART pass-thru, if enabled
@@ -2376,7 +2376,7 @@ void GCS::update_receive(void)
 
 void GCS::send_mission_item_reached_message(uint16_t mission_index)
 {
-    for (uint8_t i=0; i<num_gcs(); i++) {
+    for (uint_fast8_t i=0; i<num_gcs(); i++) {
         chan(i)->mission_item_reached_index = mission_index;
         chan(i)->send_message(MSG_MISSION_ITEM_REACHED);
     }
@@ -2422,7 +2422,7 @@ void GCS::create_gcs_mavlink_backend(GCS_MAVLINK_Parameters &params, AP_HAL::UAR
 
 void GCS::setup_uarts()
 {
-    for (uint8_t i = 1; i < MAVLINK_COMM_NUM_BUFFERS; i++) {
+    for (uint_fast8_t i = 1; i < MAVLINK_COMM_NUM_BUFFERS; i++) {
         if (i >= ARRAY_SIZE(chan_parameters)) {
             // should not happen
             break;
@@ -2844,7 +2844,7 @@ MAV_RESULT GCS::set_message_interval(uint8_t port_num, uint32_t msg_id, int32_t 
 uint8_t GCS::get_channel_from_port_number(uint8_t port_num)
 {
     const AP_HAL::UARTDriver *u = AP::serialmanager().get_serial_by_id(port_num);
-    for (uint8_t i=0; i<num_gcs(); i++) {
+    for (uint_fast8_t i=0; i<num_gcs(); i++) {
         if (chan(i)->get_uart() == u) {
             return i;
         }
@@ -2874,7 +2874,7 @@ bool GCS_MAVLINK::get_ap_message_interval(ap_message id, uint16_t &interval_ms) 
     }
 
     // check the deferred message buckets:
-    for (uint8_t i=0; i<ARRAY_SIZE(deferred_message_bucket); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(deferred_message_bucket); i++) {
         const deferred_message_bucket_t &bucket = deferred_message_bucket[i];
         if (bucket.ap_message_ids.get(id)) {
             interval_ms = bucket.interval_ms;
@@ -2956,7 +2956,7 @@ void GCS_MAVLINK::send_servo_output_raw()
 
     uint16_t values[max_channels] {};
     hal.rcout->read(values, max_channels);
-    for (uint8_t i=0; i<max_channels; i++) {
+    for (uint_fast8_t i=0; i<max_channels; i++) {
         if (values[i] == 65535) {
             values[i] = 0;
         }
@@ -3104,7 +3104,7 @@ MAV_RESULT GCS_MAVLINK::handle_preflight_reboot(const mavlink_command_long_t &pa
             // create a really long loop
             send_text(MAV_SEVERITY_WARNING,"Creating long loop");
             // 250ms:
-            for (uint8_t i=0; i<250; i++) {
+            for (uint_fast8_t i=0; i<250; i++) {
                 hal.scheduler->delay_microseconds(1000);
             }
             return MAV_RESULT_ACCEPTED;
@@ -3654,13 +3654,13 @@ void GCS_MAVLINK::handle_rc_channels_override(const mavlink_message_t &msg)
         packet.chan16_raw
     };
 
-    for (uint8_t i=0; i<8; i++) {
+    for (uint_fast8_t i=0; i<8; i++) {
         // Per MAVLink spec a value of UINT16_MAX means to ignore this field.
         if (override_data[i] != UINT16_MAX) {
             RC_Channels::set_override(i, override_data[i], tnow);
         }
     }
-    for (uint8_t i=8; i<ARRAY_SIZE(override_data); i++) {
+    for (uint_fast8_t i=8; i<ARRAY_SIZE(override_data); i++) {
         // Per MAVLink spec a value of zero or UINT16_MAX means to
         // ignore this field.
         if (override_data[i] != 0 && override_data[i] != UINT16_MAX) {
@@ -4162,7 +4162,7 @@ void GCS_MAVLINK::send_banner()
 
 #if AP_INERTIALSENSOR_ENABLED
     // output any fast sampling status messages
-    for (uint8_t i = 0; i < INS_MAX_BACKENDS; i++) {
+    for (uint_fast8_t i = 0; i < INS_MAX_BACKENDS; i++) {
         if (AP::ins().get_output_banner(i, banner_msg, sizeof(banner_msg))) {
             send_text(MAV_SEVERITY_INFO, "%s", banner_msg);
         }
@@ -4388,7 +4388,7 @@ MAV_RESULT GCS_MAVLINK::handle_command_preflight_can(const mavlink_command_long_
     bool can_exists = false;
     uint8_t num_drivers = AP::can().get_num_drivers();
 
-    for (uint8_t i = 0; i < num_drivers; i++) {
+    for (uint_fast8_t i = 0; i < num_drivers; i++) {
         switch (AP::can().get_driver_type(i)) {
             case AP_CANManager::Driver_Type_KDECAN: {
 // To be replaced with macro saying if KDECAN library is included
@@ -5468,7 +5468,7 @@ void GCS_MAVLINK::send_water_depth() const
     Location loc;
     IGNORE_RETURN(ahrs.get_location(loc));
 
-    for (uint8_t i=0; i<rangefinder->num_sensors(); i++) {
+    for (uint_fast8_t i=0; i<rangefinder->num_sensors(); i++) {
         const AP_RangeFinder_Backend *s = rangefinder->get_backend(i);
         
         if (s == nullptr || s->orientation() != ROTATION_PITCH_270 || !s->has_data()) {
@@ -5971,14 +5971,14 @@ uint16_t GCS_MAVLINK::get_interval_for_stream(GCS_MAVLINK::streams id) const
 
 void GCS_MAVLINK::initialise_message_intervals_for_stream(GCS_MAVLINK::streams id)
 {
-    for (uint8_t i=0; all_stream_entries[i].ap_message_ids != nullptr; i++) {
+    for (uint_fast8_t i=0; all_stream_entries[i].ap_message_ids != nullptr; i++) {
         const GCS_MAVLINK::stream_entries &entries = all_stream_entries[i];
         if (entries.stream_id != id) {
             continue;
         }
         // found it!
         const uint16_t interval_ms = get_interval_for_stream(id);
-        for (uint8_t j=0; j<entries.num_ap_message_ids; j++) {
+        for (uint_fast8_t j=0; j<entries.num_ap_message_ids; j++) {
             set_ap_message_interval(entries.ap_message_ids[j], interval_ms);
         }
         break;
@@ -6009,7 +6009,7 @@ void DefaultIntervalsFromFiles::set(ap_message id, uint16_t interval)
     }
 
     // update any existing interval (last-one-in wins)
-    for (uint8_t i=0; i<_num_intervals; i++) {
+    for (uint_fast8_t i=0; i<_num_intervals; i++) {
         if (_intervals[i].id == id) {
             _intervals[i].interval = interval;
             return;
@@ -6028,7 +6028,7 @@ void DefaultIntervalsFromFiles::set(ap_message id, uint16_t interval)
 
 bool DefaultIntervalsFromFiles::get_interval_for_ap_message_id(ap_message id, uint16_t &interval) const
 {
-    for (uint16_t i=0; i<_num_intervals; i++) {
+    for (uint_fast16_t i=0; i<_num_intervals; i++) {
         if (_intervals[i].id == id) {
             interval = _intervals[i].interval;
             return true;
@@ -6149,7 +6149,7 @@ void GCS_MAVLINK::initialise_message_intervals_from_config_files()
     }
 
     // now actually initialise the intervals:
-    for (uint8_t i=0; i<default_intervals_from_files->num_intervals(); i++) {
+    for (uint_fast8_t i=0; i<default_intervals_from_files->num_intervals(); i++) {
         const ap_message id = default_intervals_from_files->id_at(i);
         if (id == MSG_LAST) {
             // internal error
@@ -6164,7 +6164,7 @@ void GCS_MAVLINK::initialise_message_intervals_from_config_files()
 void GCS_MAVLINK::initialise_message_intervals_from_streamrates()
 {
     // this is O(n^2), but it's once at boot and across a 10-entry list...
-    for (uint8_t i=0; all_stream_entries[i].ap_message_ids != nullptr; i++) {
+    for (uint_fast8_t i=0; all_stream_entries[i].ap_message_ids != nullptr; i++) {
         initialise_message_intervals_for_stream(all_stream_entries[i].stream_id);
     }
 #if HAL_HIGH_LATENCY2_ENABLED
@@ -6202,9 +6202,9 @@ bool GCS_MAVLINK::get_default_interval_for_ap_message(const ap_message id, uint1
 #endif
 
     // find which stream this ap_message is in
-    for (uint8_t i=0; all_stream_entries[i].ap_message_ids != nullptr; i++) {
+    for (uint_fast8_t i=0; all_stream_entries[i].ap_message_ids != nullptr; i++) {
         const GCS_MAVLINK::stream_entries &entries = all_stream_entries[i];
-        for (uint8_t j=0; j<entries.num_ap_message_ids; j++) {
+        for (uint_fast8_t j=0; j<entries.num_ap_message_ids; j++) {
             if (entries.ap_message_ids[j] == id) {
                 interval = get_interval_for_stream(all_stream_entries[i].stream_id);
                 return true;

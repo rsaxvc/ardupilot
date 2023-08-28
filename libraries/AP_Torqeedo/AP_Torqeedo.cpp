@@ -862,7 +862,7 @@ bool AP_Torqeedo::send_message(const uint8_t msg_contents[], uint8_t num_bytes)
     send_buff[send_buff_num_bytes++] = TORQEEDO_PACKET_HEADER;
 
     // add contents
-    for (uint8_t i=0; i<num_bytes; i++) {
+    for (uint_fast8_t i=0; i<num_bytes; i++) {
         if (!add_byte_to_message(msg_contents[i], send_buff, ARRAY_SIZE(send_buff), send_buff_num_bytes)) {
             _parse_error_count++;
             return false;

@@ -54,9 +54,9 @@ void loop(void)
 void full_spectrum()
 {
     // go through the full range of colours but only up to the dim light level
-    for (uint8_t red = 0; red <= 0x05; red++) {
-        for (uint8_t green = 0; green <= 0x05; green++) {
-            for (uint8_t blue = 0; blue <= 0x05; blue++) {
+    for (uint_fast8_t red = 0; red <= 0x05; red++) {
+        for (uint_fast8_t green = 0; green <= 0x05; green++) {
+            for (uint_fast8_t blue = 0; blue <= 0x05; blue++) {
                 toshiba_led.set_rgb(red, green, blue);
                 hal.scheduler->delay(5);
             }
@@ -73,7 +73,7 @@ void blink()
     toshiba_led.set_rgb(LED_DIM, 0, 0);
 
     // full spectrum test
-    for (uint8_t c=0; c<=2; c++ ) {
+    for (uint_fast8_t c=0; c<=2; c++ ) {
         if (c == 0) {
             toshiba_led.set_rgb(LED_DIM, 0, 0);   // red
         }else if (c==1) {

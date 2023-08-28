@@ -425,7 +425,7 @@ void fill_nanf(float *f, uint16_t count)
     static bool created;
     static float many_nanfs[2048];
     if (!created) {
-        for (uint16_t i=0; i<ARRAY_SIZE(many_nanfs); i++) {
+        for (uint_fast16_t i=0; i<ARRAY_SIZE(many_nanfs); i++) {
             created = true;
             many_nanfs[i] = std::numeric_limits<float>::signaling_NaN();
         }
@@ -448,7 +448,7 @@ void fill_nanf(double *f, uint16_t count)
     static bool created;
     static double many_nanfs[2048];
     if (!created) {
-        for (uint16_t i=0; i<ARRAY_SIZE(many_nanfs); i++) {
+        for (uint_fast16_t i=0; i<ARRAY_SIZE(many_nanfs); i++) {
             created = true;
             many_nanfs[i] = std::numeric_limits<double>::signaling_NaN();
         }

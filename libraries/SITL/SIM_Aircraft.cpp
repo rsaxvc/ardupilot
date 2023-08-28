@@ -74,7 +74,7 @@ Aircraft::Aircraft(const char *frame_str) :
     }
 
     // init rangefinder array to -1 to signify no data
-    for (uint8_t i = 0; i < ARRAY_SIZE(rangefinder_m); i++){
+    for (uint_fast8_t i = 0; i < ARRAY_SIZE(rangefinder_m); i++){
         rangefinder_m[i] = -1.0f;
     }
 }
@@ -960,7 +960,7 @@ void Aircraft::update_external_payload(const struct sitl_input &input)
 
     {
         const float range = rangefinder_range();
-        for (uint8_t i=0; i<ARRAY_SIZE(rangefinder_m); i++) {
+        for (uint_fast8_t i=0; i<ARRAY_SIZE(rangefinder_m); i++) {
             rangefinder_m[i] = range;
         }
     }

@@ -70,7 +70,7 @@ bool RCOutput::dshot_send_command(pwm_group& group, uint8_t command, uint8_t cha
     const uint16_t zero_packet = create_dshot_packet(0, false, bdshot_telem);
     const uint16_t packet = create_dshot_packet(command, true, bdshot_telem);
 
-    for (uint8_t i = 0; i < 4; i++) {
+    for (uint_fast8_t i = 0; i < 4; i++) {
         if (!group.is_chan_enabled(i)) {
             continue;
         }
@@ -143,7 +143,7 @@ void RCOutput::update_channel_masks() {
     }
 
 #if HAL_PWM_COUNT > 0
-    for (uint8_t i=0; i<HAL_PWM_COUNT; i++) {
+    for (uint_fast8_t i=0; i<HAL_PWM_COUNT; i++) {
         switch (_dshot_esc_type) {
             case DSHOT_ESC_BLHELI:
             case DSHOT_ESC_BLHELI_S:

@@ -48,7 +48,7 @@ void Blimp::calculate_forces(const struct sitl_input &input, Vector3f &rot_accel
   }
 
   //all fin setup
-  for (uint8_t i=0; i<4; i++) {
+  for (uint_fast8_t i=0; i<4; i++) {
     fin[i].last_angle = fin[i].angle;
     fin[i].angle = filtered_servo_angle(input, i)*radians(75.0f); //for servo range of -75 deg to +75 deg
     
@@ -82,7 +82,7 @@ void Blimp::calculate_forces(const struct sitl_input &input, Vector3f &rot_accel
   fin[3].Fx = -fin[3].T*sin(fin[3].angle); //causes yaw
 
   Vector3f force_bf{0,0,0}; 
-  for (uint8_t i=0; i<4; i++) {
+  for (uint_fast8_t i=0; i<4; i++) {
     force_bf.x = force_bf.x + fin[i].Fx;
     force_bf.y = force_bf.y + fin[i].Fy;
     force_bf.z = force_bf.z + fin[i].Fz;

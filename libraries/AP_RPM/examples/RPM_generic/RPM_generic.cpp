@@ -42,7 +42,7 @@ void loop(void)
 {
     RPM.update();
 
-    for (uint8_t ii = 0; ii < RPM.num_sensors(); ii++) {
+    for (uint_fast8_t ii = 0; ii < RPM.num_sensors(); ii++) {
 
         // Determine sensor state
         if (RPM.healthy(ii)) {

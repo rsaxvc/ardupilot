@@ -108,7 +108,7 @@ void AP_OpticalFlow_SITL::update(void)
             _sitl->flow_delay.set(ARRAY_SIZE(optflow_data));
         }
         optflow_delay = _sitl->flow_delay;
-        for (uint8_t i=0; i<optflow_delay; i++) {
+        for (uint_fast8_t i=0; i<optflow_delay; i++) {
             optflow_data[i] = state;
         }
     }

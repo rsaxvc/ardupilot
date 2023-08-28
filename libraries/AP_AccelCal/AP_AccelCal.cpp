@@ -46,7 +46,7 @@ void AP_AccelCal::update()
 
         AccelCalibrator *cal;
         uint8_t num_active_calibrators = 0;
-        for(uint8_t i=0; (cal = get_calibrator(i)); i++) {
+        for (uint_fast8_t i=0; (cal = get_calibrator(i)); i++) {
             num_active_calibrators++;
         }
         if (num_active_calibrators != _num_active_calibrators) {
@@ -69,7 +69,7 @@ void AP_AccelCal::update()
                 }
                 step = cal->get_num_samples_collected()+1;
 
-                for(uint8_t i=1 ; (cal = get_calibrator(i))  ; i++) {
+                for (uint_fast8_t i=1 ; (cal = get_calibrator(i))  ; i++) {
                     if (step != cal->get_num_samples_collected()+1) {
                         fail();
                         return;
@@ -119,7 +119,7 @@ void AP_AccelCal::update()
             case ACCEL_CAL_COLLECTING_SAMPLE:
                 // check for timeout
 
-                for(uint8_t i=0; (cal = get_calibrator(i)); i++) {
+                for (uint_fast8_t i=0; (cal = get_calibrator(i)); i++) {
                     cal->check_for_timeout();
                 }
 
@@ -133,7 +133,7 @@ void AP_AccelCal::update()
                 // save
                 if (_saving) {
                     bool done = true;
-                    for(uint8_t i=0; i<_num_clients; i++) {
+                    for (uint_fast8_t i=0; i<_num_clients; i++) {
                         if (client_active(i) && _clients[i]->_acal_get_saving()) {
                             done = false;
                             break;
@@ -144,13 +144,13 @@ void AP_AccelCal::update()
                     }
                     return;
                 } else {
-                    for(uint8_t i=0; i<_num_clients; i++) {
+                    for (uint_fast8_t i=0; i<_num_clients; i++) {
                         if(client_active(i) && _clients[i]->_acal_get_fail()) {
                             fail();
                             return;
                         }
                     }
-                    for(uint8_t i=0; i<_num_clients; i++) {
+                    for (uint_fast8_t i=0; i<_num_clients; i++) {
                         if(client_active(i)) {
                             _clients[i]->_acal_save_calibrations();
                         }
@@ -192,7 +192,7 @@ void AP_AccelCal::start(GCS_MAVLINK *gcs)
     _num_active_calibrators = 0;
 
     AccelCalibrator *cal;
-    for(uint8_t i=0; (cal = get_calibrator(i)); i++) {
+    for (uint_fast8_t i=0; (cal = get_calibrator(i)); i++) {
         cal->clear();
         cal->start(ACCEL_CAL_AXIS_ALIGNED_ELLIPSOID, 6, 0.5f);
         _num_active_calibrators++;
@@ -214,7 +214,7 @@ void AP_AccelCal::success()
 {
     _printf("Calibration successful");
 
-    for(uint8_t i=0 ; i < _num_clients ; i++) {
+    for (uint_fast8_t i=0 ; i < _num_clients ; i++) {
         _clients[i]->_acal_event_success();
     }
 
@@ -227,7 +227,7 @@ void AP_AccelCal::cancel()
 {
     _printf("Calibration cancelled");
 
-    for(uint8_t i=0 ; i < _num_clients ; i++) {
+    for (uint_fast8_t i=0 ; i < _num_clients ; i++) {
         _clients[i]->_acal_event_cancellation();
     }
 
@@ -240,7 +240,7 @@ void AP_AccelCal::fail()
 {
     _printf("Calibration FAILED");
 
-    for(uint8_t i=0 ; i < _num_clients ; i++) {
+    for (uint_fast8_t i=0 ; i < _num_clients ; i++) {
         _clients[i]->_acal_event_failure();
     }
 
@@ -256,7 +256,7 @@ void AP_AccelCal::clear()
     }
 
     AccelCalibrator *cal;
-    for(uint8_t i=0 ; (cal = get_calibrator(i))  ; i++) {
+    for (uint_fast8_t i=0 ; (cal = get_calibrator(i))  ; i++) {
         cal->clear();
     }
 
@@ -273,7 +273,7 @@ void AP_AccelCal::collect_sample()
         return;
     }
 
-    for(uint8_t i=0; i<_num_clients; i++) {
+    for (uint_fast8_t i=0; i<_num_clients; i++) {
         if (client_active(i) && !_clients[i]->_acal_get_ready_to_sample()) {
             _printf("Not ready to sample");
             return;
@@ -281,7 +281,7 @@ void AP_AccelCal::collect_sample()
     }
 
     AccelCalibrator *cal;
-    for(uint8_t i=0 ; (cal = get_calibrator(i))  ; i++) {
+    for (uint_fast8_t i=0 ; (cal = get_calibrator(i))  ; i++) {
         cal->collect_sample();
     }
     _start_collect_sample = false;
@@ -294,7 +294,7 @@ void AP_AccelCal::register_client(AP_AccelCal_Client* client) {
     }
 
 
-    for(uint8_t i=0; i<_num_clients; i++) {
+    for (uint_fast8_t i=0; i<_num_clients; i++) {
         if(_clients[i] == client) {
             return;
         }
@@ -305,8 +305,8 @@ void AP_AccelCal::register_client(AP_AccelCal_Client* client) {
 
 AccelCalibrator* AP_AccelCal::get_calibrator(uint8_t index) {
     AccelCalibrator* ret;
-    for(uint8_t i=0; i<_num_clients; i++) {
-        for(uint8_t j=0 ; (ret = _clients[i]->_acal_get_calibrator(j)) ; j++) {
+    for (uint_fast8_t i=0; i<_num_clients; i++) {
+        for (uint_fast8_t j=0 ; (ret = _clients[i]->_acal_get_calibrator(j)) ; j++) {
             if (index == 0) {
                 return ret;
             }
@@ -325,28 +325,28 @@ void AP_AccelCal::update_status() {
         return;
     }
 
-    for(uint8_t i=0 ; (cal = get_calibrator(i))  ; i++) {
+    for (uint_fast8_t i=0 ; (cal = get_calibrator(i))  ; i++) {
         if (cal->get_status() == ACCEL_CAL_FAILED) {
             _status = ACCEL_CAL_FAILED;         //fail if even one of the calibration has
             return;
         }
     }
 
-    for(uint8_t i=0 ; (cal = get_calibrator(i))  ; i++) {
+    for (uint_fast8_t i=0 ; (cal = get_calibrator(i))  ; i++) {
         if (cal->get_status() == ACCEL_CAL_COLLECTING_SAMPLE) {
             _status = ACCEL_CAL_COLLECTING_SAMPLE;          // move to Collecting sample state if all the callibrators have
             return;
         }
     }
 
-    for(uint8_t i=0 ; (cal = get_calibrator(i))  ; i++) {
+    for (uint_fast8_t i=0 ; (cal = get_calibrator(i))  ; i++) {
         if (cal->get_status() == ACCEL_CAL_WAITING_FOR_ORIENTATION) {
             _status = ACCEL_CAL_WAITING_FOR_ORIENTATION;    // move to waiting for user ack for orientation confirmation
             return;
         }
     }
 
-    for(uint8_t i=0 ; (cal = get_calibrator(i))  ; i++) {
+    for (uint_fast8_t i=0 ; (cal = get_calibrator(i))  ; i++) {
         if (cal->get_status() == ACCEL_CAL_NOT_STARTED) {
             _status = ACCEL_CAL_NOT_STARTED;    // we haven't started if all the calibrators haven't
             return;

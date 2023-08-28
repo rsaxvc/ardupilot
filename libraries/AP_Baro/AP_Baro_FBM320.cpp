@@ -64,7 +64,7 @@ bool AP_Baro_FBM320::read_calibration(void)
     uint8_t tmp[2];
     uint16_t R[10];
 
-    for (uint8_t i=0; i<9; i++) {
+    for (uint_fast8_t i=0; i<9; i++) {
         if (!dev->read_registers(0xAA+(i*2),&tmp[0],1)) {
             return false;
         }

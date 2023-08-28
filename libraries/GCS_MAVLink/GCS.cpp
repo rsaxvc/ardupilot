@@ -85,7 +85,7 @@ void GCS::send_to_active_channels(uint32_t msgid, const char *pkt)
     if (entry == nullptr) {
         return;
     }
-    for (uint8_t i=0; i<num_gcs(); i++) {
+    for (uint_fast8_t i=0; i<num_gcs(); i++) {
         GCS_MAVLINK &c = *chan(i);
         if (c.is_private()) {
             continue;

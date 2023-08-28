@@ -133,7 +133,7 @@ void AP_Scheduler::init(const AP_Scheduler::Task *tasks, uint8_t num_tasks, uint
     // sanity check the task lists to ensure the priorities are
     // never decrease
     uint8_t old = 0;
-    for (uint8_t i=0; i<_num_common_tasks; i++) {
+    for (uint_fast8_t i=0; i<_num_common_tasks; i++) {
         if (_common_tasks[i].priority < old){
             INTERNAL_ERROR(AP_InternalError::error_t::flow_of_control);
             break;
@@ -141,7 +141,7 @@ void AP_Scheduler::init(const AP_Scheduler::Task *tasks, uint8_t num_tasks, uint
         old = _common_tasks[i].priority;
     }
     old = 0;
-    for (uint8_t i=0; i<_num_vehicle_tasks; i++) {
+    for (uint_fast8_t i=0; i<_num_vehicle_tasks; i++) {
         if (_vehicle_tasks[i].priority < old) {
             INTERNAL_ERROR(AP_InternalError::error_t::flow_of_control);
             break;
@@ -181,7 +181,7 @@ void AP_Scheduler::run(uint32_t time_available)
     uint8_t vehicle_tasks_offset = 0;
     uint8_t common_tasks_offset = 0;
 
-    for (uint8_t i=0; i<_num_tasks; i++) {
+    for (uint_fast8_t i=0; i<_num_tasks; i++) {
         // determine which of the common task / vehicle task to run
         bool run_vehicle_task = false;
         if (vehicle_tasks_offset < _num_vehicle_tasks &&
@@ -475,7 +475,7 @@ void AP_Scheduler::task_info(ExpandingString &str)
 
     // baseline the total time taken by all tasks
     float total_time = 1.0f;
-    for (uint8_t i = 0; i < _num_tasks + 1; i++) {
+    for (uint_fast8_t i = 0; i < _num_tasks + 1; i++) {
         const AP::PerfInfo::TaskInfo* ti = perf_info.get_task_info(i);
         if (ti != nullptr && ti->tick_count > 0) {
             total_time += ti->elapsed_time_us;
@@ -485,7 +485,7 @@ void AP_Scheduler::task_info(ExpandingString &str)
     uint8_t vehicle_tasks_offset = 0;
     uint8_t common_tasks_offset = 0;
 
-    for (uint8_t i = 0; i < _num_tasks; i++) {
+    for (uint_fast8_t i = 0; i < _num_tasks; i++) {
         const AP::PerfInfo::TaskInfo* ti = perf_info.get_task_info(i);
         const char *task_name;
 

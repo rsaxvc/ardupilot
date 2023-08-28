@@ -435,14 +435,14 @@ void Display::draw_char(uint16_t x, uint16_t y, const char c)
     uint8_t line;
 
     // draw char to pixel
-    for (uint8_t i = 0; i < 6; i++) {
+    for (uint_fast8_t i = 0; i < 6; i++) {
         if (i == 5) {
             line = 0;
         } else {
             line = _font[(c * 5) + i];
         }
 
-        for (uint8_t j = 0; j < 8; j++) {
+        for (uint_fast8_t j = 0; j < 8; j++) {
             if (line & 1) {
                 _driver->set_pixel(x + i, y + j);
             } else {

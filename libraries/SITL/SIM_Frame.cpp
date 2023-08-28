@@ -384,7 +384,7 @@ void Frame::load_frame_params(const char *model_json)
         FRAME_VAR(num_motors),
     };
 
-    for (uint8_t i=0; i<ARRAY_SIZE(vars); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(vars); i++) {
         auto v = obj->get(vars[i].label);
         if (v.is<picojson::null>()) {
             // use default value
@@ -405,8 +405,8 @@ void Frame::load_frame_params(const char *model_json)
         {"yaw", &model.yaw_factor, VarType::FLOAT},
     };
     char label_name[20];
-    for (uint8_t i=0; i<ARRAY_SIZE(per_motor_vars); i++) {
-        for (uint8_t j=0; j<12; j++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(per_motor_vars); i++) {
+        for (uint_fast8_t j=0; j<12; j++) {
             sprintf(label_name, "motor%i_%s", j+1, per_motor_vars[i].label);
             auto v = obj->get(label_name);
             if (v.is<picojson::null>()) {
@@ -438,7 +438,7 @@ void Frame::parse_vector3(picojson::value val, const char* label, Vector3f &para
     if (!val.is<picojson::array>() || !val.contains(2) || val.contains(3)) {
         AP_HAL::panic("Bad json type for %s: %s", label, val.to_str().c_str());
     }
-    for (uint8_t j=0; j<3; j++) {
+    for (uint_fast8_t j=0; j<3; j++) {
         parse_float(val.get(j), label, param[j]);
     }
 }
@@ -501,7 +501,7 @@ void Frame::init(const char *frame_str, Battery *_battery)
         ::printf("Warning model expected %u motors and got %u\n", uint8_t(model.num_motors), num_motors);
     }
 
-    for (uint8_t i=0; i<num_motors; i++) {
+    for (uint_fast8_t i=0; i<num_motors; i++) {
         motors[i].setup_params(model.pwmMin, model.pwmMax, model.spin_min, model.spin_max, model.propExpo, model.slew_max,
                                model.diagonal_size, power_factor, model.maxVoltage, effective_prop_area, velocity_max,
                                model.motor_pos[i], model.motor_thrust_vec[i], model.yaw_factor[i], true_prop_area,
@@ -528,7 +528,7 @@ void Frame::init(const char *frame_str, Battery *_battery)
  */
 Frame *Frame::find_frame(const char *name)
 {
-    for (uint8_t i=0; i < ARRAY_SIZE(supported_frames); i++) {
+    for (uint_fast8_t i=0; i < ARRAY_SIZE(supported_frames); i++) {
         // do partial name matching to allow for frame variants
         if (strncasecmp(name, supported_frames[i].name, strlen(supported_frames[i].name)) == 0) {
             return &supported_frames[i];
@@ -554,7 +554,7 @@ void Frame::calculate_forces(const Aircraft &aircraft,
     Vector3f vel_air_bf = aircraft.get_dcm().transposed() * aircraft.get_velocity_air_ef();
 
     float current = 0;
-    for (uint8_t i=0; i<num_motors; i++) {
+    for (uint_fast8_t i=0; i<num_motors; i++) {
         Vector3f mtorque, mthrust;
         motors[i].calculate_forces(input, motor_offset, mtorque, mthrust, vel_air_bf, gyro, air_density, battery->get_voltage(), use_drag);
         current += motors[i].get_current();
@@ -613,7 +613,7 @@ void Frame::current_and_voltage(float &voltage, float &current)
     }
     voltage = battery->get_voltage();
     current = 0;
-    for (uint8_t i=0; i<num_motors; i++) {
+    for (uint_fast8_t i=0; i<num_motors; i++) {
         current += motors[i].get_current();
     }
 }

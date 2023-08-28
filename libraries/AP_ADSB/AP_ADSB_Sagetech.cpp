@@ -332,11 +332,11 @@ uint16_t AP_ADSB_Sagetech::checksum_generate_XP(Packet_XP &msg) const
             msg.payload_length
     };
 
-    for (uint8_t i=0; i<5; i++) {
+    for (uint_fast8_t i=0; i<5; i++) {
         sum += header_message_format[i];
         sumFletcher += sum;
     }
-    for (uint8_t i=0; i<msg.payload_length; i++) {
+    for (uint_fast8_t i=0; i<msg.payload_length; i++) {
         sum += msg.payload[i];
         sumFletcher += sum;
     }

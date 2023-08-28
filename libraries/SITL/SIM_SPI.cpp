@@ -58,9 +58,9 @@ void SPI::init()
 
     // sanity check the spi_devices structure to ensure we don't have
     // two devices at the same address on the same bus:
-    for (uint8_t i=0; i<ARRAY_SIZE(spi_devices)-1; i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(spi_devices)-1; i++) {
         const auto &dev_i = spi_devices[i];
-        for (uint8_t j=i+1; j<ARRAY_SIZE(spi_devices); j++) {
+        for (uint_fast8_t j=i+1; j<ARRAY_SIZE(spi_devices); j++) {
             const auto &dev_j = spi_devices[j];
             if (dev_i.bus == dev_j.bus &&
                 dev_i.cs_pin == dev_j.cs_pin) {

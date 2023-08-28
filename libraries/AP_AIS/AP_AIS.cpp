@@ -139,7 +139,7 @@ void AP_AIS::update()
                 // last part of a multi part message
                 uint8_t index = 0;
                 uint8_t msg_parts[_incoming.num - 1];
-                for  (uint8_t i = 0; i < AIVDM_BUFFER_SIZE; i++) {
+                for (uint_fast8_t i = 0; i < AIVDM_BUFFER_SIZE; i++) {
                     // look for the rest of the message from the start of the buffer
                     // we assume the mesage has be received in the correct order
                     if (_AIVDM_buffer[i].num == (index + 1) && _AIVDM_buffer[i].total == _incoming.total && _AIVDM_buffer[i].ID == _incoming.ID) {
@@ -155,13 +155,13 @@ void AP_AIS::update()
                 if (_incoming.num != index) {
                     // could not find all of the message, save messages
                     if (log_unsupported) {
-                        for (uint8_t i = 0; i < index; i++) {
+                        for (uint_fast8_t i = 0; i < index; i++) {
                             log_raw(&_AIVDM_buffer[msg_parts[i]]);
                         }
                         log_raw(&_incoming);
                     }
                     // remove
-                    for (uint8_t i = 0; i < index; i++) {
+                    for (uint_fast8_t i = 0; i < index; i++) {
                         buffer_shift(msg_parts[i]);
                     }
                     break;
@@ -170,12 +170,12 @@ void AP_AIS::update()
                 // combine packets
                 char multi[AIVDM_PAYLOAD_SIZE*_incoming.total];
                 strncpy(multi,_AIVDM_buffer[msg_parts[0]].payload,AIVDM_PAYLOAD_SIZE);
-                for (uint8_t i = 1; i < _incoming.total - 1; i++) {
+                for (uint_fast8_t i = 1; i < _incoming.total - 1; i++) {
                     strncat(multi,_AIVDM_buffer[msg_parts[i]].payload,sizeof(multi));
                 }
                 strncat(multi,_incoming.payload,sizeof(multi));
                 const bool decoded = payload_decode(multi);
-                for (uint8_t i = 0; i < _incoming.total; i++) {
+                for (uint_fast8_t i = 0; i < _incoming.total; i++) {
                     // unsupported type, log and discard
                     if (!decoded && log_unsupported) {
                         log_raw(&_AIVDM_buffer[msg_parts[i]]);
@@ -188,7 +188,7 @@ void AP_AIS::update()
             } else {
                 // multi part message, store in buffer
                 bool fits_in = false;
-                for  (uint8_t i = 0; i < AIVDM_BUFFER_SIZE; i++) {
+                for (uint_fast8_t i = 0; i < AIVDM_BUFFER_SIZE; i++) {
                     // find the first free spot
                     if (_AIVDM_buffer[i].num == 0 && _AIVDM_buffer[i].total == 0 && _AIVDM_buffer[i].ID == 0) {
                         _AIVDM_buffer[i] = _incoming;
@@ -216,7 +216,7 @@ void AP_AIS::update()
         return;
     }
     const uint32_t deadline = now - timeout;
-    for (uint16_t i = 0; i < _list.max_items(); i++) {
+    for (uint_fast16_t i = 0; i < _list.max_items(); i++) {
         if (_list[i].last_update_ms < deadline && _list[i].last_update_ms != 0) {
             clear_list_item(i);
         }
@@ -253,7 +253,7 @@ void AP_AIS::send(mavlink_channel_t chan)
 // remove the given index from the AIVDM buffer and shift following elements up
 void AP_AIS::buffer_shift(uint8_t i)
 {
-    for (uint8_t n = i;  n < (AIVDM_BUFFER_SIZE - 1); n++) {
+    for (uint_fast8_t n = i;  n < (AIVDM_BUFFER_SIZE - 1); n++) {
         _AIVDM_buffer[n].ID = _AIVDM_buffer[n+1].ID;
         _AIVDM_buffer[n].num = _AIVDM_buffer[n+1].num;
         _AIVDM_buffer[n].total = _AIVDM_buffer[n+1].total;
@@ -275,7 +275,7 @@ bool AP_AIS::get_vessel_index(uint32_t mmsi, uint16_t &index, uint32_t lat, uint
 
     uint16_t empty = 0;
     bool found_empty = false;
-    for (uint16_t i = 0; i < list_size; i++) {
+    for (uint_fast16_t i = 0; i < list_size; i++) {
         if (_list[i].info.MMSI == mmsi) {
             index = i;
             return true;
@@ -317,7 +317,7 @@ bool AP_AIS::get_vessel_index(uint32_t mmsi, uint16_t &index, uint32_t lat, uint
     Location loc;
     float dist;
     float max_dist = 0;
-    for (uint16_t i = 0; i < list_size; i++) {
+    for (uint_fast16_t i = 0; i < list_size; i++) {
         loc.lat = _list[i].info.lat;
         loc.lng = _list[i].info.lon;
         dist = loc.get_distance(current_loc);
@@ -628,7 +628,7 @@ void AP_AIS::get_char(const char *payload, char *array, uint16_t low, uint16_t h
 {
     bool found_char = false;
     uint8_t length = ((high - low) + 1)/6;
-    for (uint8_t i = length; i > 0; i--) {
+    for (uint_fast8_t i = length; i > 0; i--) {
         uint8_t ascii = get_bits(payload, low + (i-1)*6, (low + (i*6)) - 1);
         if (ascii < 32) {
             ascii += 64;
@@ -653,7 +653,7 @@ uint32_t AP_AIS::get_bits(const char *payload, uint16_t low, uint16_t high)
     uint8_t bit_high = (high % 6) + 1;
 
     uint32_t val = 0;
-    for (uint8_t index = 0; index <= char_high - char_low; index++) {
+    for (uint_fast8_t index = 0; index <= char_high - char_low; index++) {
         uint8_t value = payload_char_decode(payload[char_low + index]);
         uint8_t mask = 0b111111;
         if (index == 0) {

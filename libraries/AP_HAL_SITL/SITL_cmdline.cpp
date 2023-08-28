@@ -535,7 +535,7 @@ void SITL_State::_parse_command_line(int argc, char * const argv[])
 
     if (!model_str) {
         printf("You must specify a vehicle model.  Options are:\n");
-        for (uint8_t i=0; i < ARRAY_SIZE(model_constructors); i++) {
+        for (uint_fast8_t i=0; i < ARRAY_SIZE(model_constructors); i++) {
             printf("  %s\n", model_constructors[i].name);
         }
         // spit this out again as the original message probably just
@@ -544,7 +544,7 @@ void SITL_State::_parse_command_line(int argc, char * const argv[])
         exit(1);
     }
 
-    for (uint8_t i=0; i < ARRAY_SIZE(model_constructors); i++) {
+    for (uint_fast8_t i=0; i < ARRAY_SIZE(model_constructors); i++) {
         if (strncasecmp(model_constructors[i].name, model_str, strlen(model_constructors[i].name)) == 0) {
             // printf("Creating model %f,%f,%f,%f at speed %.1f\n", opos.lat, opos.lng, opos.alt, opos.hdg, speedup);
             sitl_model = model_constructors[i].constructor(model_str);
@@ -607,12 +607,12 @@ void SITL_State::_parse_command_line(int argc, char * const argv[])
         pwm_input[2] = 1500;
     } else if (strcmp(vehicle_str, "ArduSub") == 0) {
         _vehicle = ArduSub;
-        for(uint8_t i = 0; i < 8; i++) {
+        for (uint_fast8_t i = 0; i < 8; i++) {
             pwm_input[i] = 1500;
         }
     } else if (strcmp(vehicle_str, "Blimp") == 0) {
         _vehicle = Blimp;
-        for(uint8_t i = 0; i < 8; i++) {
+        for (uint_fast8_t i = 0; i < 8; i++) {
             pwm_input[i] = 1500;
         }
     } else {

@@ -109,7 +109,7 @@ void SIMState::fdm_input_local(void)
         sitl_model->fill_fdm(_sitl->state);
 
         if (_sitl->rc_fail == SITL::SIM::SITL_RCFail_None) {
-            for (uint8_t i=0; i< _sitl->state.rcin_chan_count; i++) {
+            for (uint_fast8_t i=0; i< _sitl->state.rcin_chan_count; i++) {
                 pwm_input[i] = 1000 + _sitl->state.rcin[i]*1000;
             }
         }
@@ -235,7 +235,7 @@ void SIMState::fdm_input_local(void)
         ais->update();
     }
 #endif
-    for (uint8_t i=0; i<ARRAY_SIZE(gps); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(gps); i++) {
         if (gps[i] != nullptr) {
             gps[i]->update();
         }
@@ -306,7 +306,7 @@ void SIMState::_simulator_servos(struct sitl_input &input)
     input.wind.turbulence = _sitl?_sitl->wind_turbulance:0;
     input.wind.dir_z = wind_dir_z;
 
-    for (uint8_t i=0; i<SITL_NUM_CHANNELS; i++) {
+    for (uint_fast8_t i=0; i<SITL_NUM_CHANNELS; i++) {
         if (pwm_output[i] == 0xFFFF) {
             input.servos[i] = 0;
         } else {
@@ -322,7 +322,7 @@ void SIMState::_simulator_servos(struct sitl_input &input)
         if (_sitl != nullptr) {
             if (_sitl->fetteconewireesc_sim.enabled()) {
                 _sitl->fetteconewireesc_sim.update_sitl_input_pwm(input);
-                for (uint8_t i=0; i<ARRAY_SIZE(input.servos); i++) {
+                for (uint_fast8_t i=0; i<ARRAY_SIZE(input.servos); i++) {
                     if (input.servos[i] != 0 && input.servos[i] < 1000) {
                         AP_HAL::panic("Bad input servo value (%u)", input.servos[i]);
                     }

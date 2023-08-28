@@ -75,7 +75,7 @@ void AP_InertialSensor_SITL::generate_accel()
     Vector3f accel_accum;
     uint8_t nsamples = enable_fast_sampling(accel_instance) ? 4 : 1;
 
-    for (uint8_t j = 0; j < nsamples; j++) {
+    for (uint_fast8_t j = 0; j < nsamples; j++) {
 
         Vector3f accel = Vector3f(sitl->state.xAccel,
                                   sitl->state.yAccel,
@@ -210,7 +210,7 @@ void AP_InertialSensor_SITL::generate_gyro()
     uint8_t nsamples = enable_fast_sampling(gyro_instance) ? 8 : 1;
 
     const float _gyro_drift = gyro_drift();
-    for (uint8_t j = 0; j < nsamples; j++) {
+    for (uint_fast8_t j = 0; j < nsamples; j++) {
         float p = radians(sitl->state.rollRate) + _gyro_drift;
         float q = radians(sitl->state.pitchRate) + _gyro_drift;
         float r = radians(sitl->state.yawRate) + _gyro_drift;
@@ -440,7 +440,7 @@ void AP_InertialSensor_SITL::read_gyro(const float* buf, uint8_t nsamples)
 {
     Vector3f gyro_accum;
 
-    for (uint8_t j = 0; j < nsamples; j++) {
+    for (uint_fast8_t j = 0; j < nsamples; j++) {
         float p = buf[j*3];
         float q = buf[j*3+1];
         float r = buf[j*3+2];
@@ -506,7 +506,7 @@ void AP_InertialSensor_SITL::read_accel(const float* buf, uint8_t nsamples)
 {
     Vector3f accel_accum;
 
-    for (uint8_t j = 0; j < nsamples; j++) {
+    for (uint_fast8_t j = 0; j < nsamples; j++) {
         float p = buf[j*3];
         float q = buf[j*3+1];
         float r = buf[j*3+2];

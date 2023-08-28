@@ -728,7 +728,7 @@ void MissionTest::print_mission()
     hal.console->printf("Mission: %d commands\n",(int)mission.num_commands());
 
     // print each command
-    for(uint16_t i=0; i<mission.num_commands(); i++) {
+    for (uint_fast16_t i=0; i<mission.num_commands(); i++) {
         // get next command from eeprom
         mission.read_cmd_from_storage(i,cmd);
 
@@ -849,7 +849,7 @@ void MissionTest::run_resume_test()
     // set condition to "i<5" to catch mission as cmd #1 (Nav) is running - you should see it restart cmd #1
     // set condition to "i<7" to catch mission just after cmd #1 (Nav) has completed - you should see it start cmd #2
     // set condition to "i<11" to catch mission just after cmd #2 (Nav) has completed - you should see it start cmd #3 (Do) and cmd #4 (Nav)
-    for(uint8_t i=0; i<11; i++) {
+    for (uint_fast8_t i=0; i<11; i++) {
         mission.update();
     }
 
@@ -979,7 +979,7 @@ void MissionTest::run_set_current_cmd_test()
     mission.start();
 
     // update the mission for X iterations to let it go to about command 3 or 4
-    for(uint8_t i=0; i<11; i++) {
+    for (uint_fast8_t i=0; i<11; i++) {
         mission.update();
     }
 
@@ -1100,7 +1100,7 @@ void MissionTest::run_set_current_cmd_while_stopped_test()
     mission.start();
 
     // update the mission for X iterations
-    for(uint8_t i=0; i<11; i++) {
+    for (uint_fast8_t i=0; i<11; i++) {
         mission.update();
     }
 
@@ -1240,7 +1240,7 @@ void MissionTest::run_replace_cmd_test()
     mission.start();
 
     // update the mission for X iterations to let it go to about command 3 or 4
-    for(uint8_t i=0; i<9; i++) {
+    for (uint_fast8_t i=0; i<9; i++) {
         mission.update();
     }
 

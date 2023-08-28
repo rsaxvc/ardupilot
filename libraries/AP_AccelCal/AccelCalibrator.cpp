@@ -243,7 +243,7 @@ bool AccelCalibrator::accept_sample(const Vector3f& sample)
         return false;
     }
 
-    for(uint8_t i=0; i < _samples_collected; i++) {
+    for (uint_fast8_t i=0; i < _samples_collected; i++) {
         Vector3f other_sample;
         get_sample(i, other_sample);
 
@@ -337,7 +337,7 @@ void AccelCalibrator::run_fit(uint8_t max_iterations, float& fitness)
         float JTJ[ACCEL_CAL_MAX_NUM_PARAMS*ACCEL_CAL_MAX_NUM_PARAMS] {};
         VectorP JTFI;
 
-        for(uint16_t k = 0; k<_samples_collected; k++) {
+        for (uint_fast16_t k = 0; k<_samples_collected; k++) {
             Vector3f sample;
             get_sample(k, sample);
 
@@ -345,9 +345,9 @@ void AccelCalibrator::run_fit(uint8_t max_iterations, float& fitness)
 
             calc_jacob(sample, fit_param.s, jacob);
 
-            for(uint8_t i = 0; i < get_num_params(); i++) {
+            for (uint_fast8_t i = 0; i < get_num_params(); i++) {
                 // compute JTJ
-                for(uint8_t j = 0; j < get_num_params(); j++) {
+                for (uint_fast8_t j = 0; j < get_num_params(); j++) {
                     JTJ[i*get_num_params()+j] += jacob[i] * jacob[j];
                 }
                 // compute JTFI
@@ -359,8 +359,8 @@ void AccelCalibrator::run_fit(uint8_t max_iterations, float& fitness)
             return;
         }
 
-        for(uint8_t row=0; row < get_num_params(); row++) {
-            for(uint8_t col=0; col < get_num_params(); col++) {
+        for (uint_fast8_t row=0; row < get_num_params(); row++) {
+            for (uint_fast8_t col=0; col < get_num_params(); col++) {
                 fit_param.a[row] -= JTFI[col] * JTJ[row*get_num_params()+col];
             }
         }
@@ -399,7 +399,7 @@ float AccelCalibrator::calc_mean_squared_residuals(const struct param_t& params)
         return 1.0e30f;
     }
     float sum = 0.0f;
-    for(uint16_t i=0; i < _samples_collected; i++){
+    for (uint_fast16_t i=0; i < _samples_collected; i++){
         Vector3f sample;
         get_sample(i, sample);
         float resid = calc_residual(sample, params);

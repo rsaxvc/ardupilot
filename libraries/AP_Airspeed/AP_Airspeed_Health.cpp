@@ -10,7 +10,7 @@
 void AP_Airspeed::check_sensor_failures()
 {
 #ifndef HAL_BUILD_AP_PERIPH
-    for (uint8_t i=0; i<AIRSPEED_MAX_SENSORS; i++) {
+    for (uint_fast8_t i=0; i<AIRSPEED_MAX_SENSORS; i++) {
         check_sensor_ahrs_wind_max_failures(i);
     }
 #endif

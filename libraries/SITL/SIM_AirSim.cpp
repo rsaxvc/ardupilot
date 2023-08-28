@@ -78,7 +78,7 @@ void AirSim::output_copter(const sitl_input& input)
 {
     servo_packet pkt;
 
-	for (uint8_t i=0; i<kArduCopterRotorControlCount; i++) {
+	for (uint_fast8_t i=0; i<kArduCopterRotorControlCount; i++) {
 		pkt.pwm[i] = input.servos[i];
 	}
 
@@ -137,7 +137,7 @@ void AirSim::output_servos(const sitl_input& input)
 bool AirSim::parse_sensors(const char *json)
 {
     // printf("%s\n", json);
-    for (uint16_t i=0; i<ARRAY_SIZE(keytable); i++) {
+    for (uint_fast16_t i=0; i<ARRAY_SIZE(keytable); i++) {
         struct keytable &key = keytable[i];
 
         /* look for section header */
@@ -329,13 +329,13 @@ void AirSim::recv_fdm(const sitl_input& input)
 
     // Update RC input, max 12 channels
     rcin_chan_count = MIN(state.rc.rc_channels.length, 12);
-    for (uint8_t i=0; i < rcin_chan_count; i++) {
+    for (uint_fast8_t i=0; i < rcin_chan_count; i++) {
         rcin[i] = state.rc.rc_channels.data[i];
     }
 
     // Update Rangefinder data, max sensors limit as defined
     uint8_t rng_sensor_count = MIN(state.rng.rng_distances.length, ARRAY_SIZE(rangefinder_m));
-    for (uint8_t i=0; i<rng_sensor_count; i++) {
+    for (uint_fast8_t i=0; i<rng_sensor_count; i++) {
         rangefinder_m[i] = state.rng.rng_distances.data[i];
     }
 

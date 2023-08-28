@@ -385,7 +385,7 @@ int32_t AP_Filesystem_Param::read(int fd, void *buf, uint32_t count)
     size_t total = 0;
 
     // find the first cursor that is positioned after the file offset
-    for (uint8_t i=1; i<num_cursors; i++) {
+    for (uint_fast8_t i=1; i<num_cursors; i++) {
         struct cursor &c = r.cursors[i];
         if (c.token_ofs >= data_ofs && c.token_ofs < best_ofs) {
             best_i = i;
@@ -555,7 +555,7 @@ bool AP_Filesystem_Param::param_upload_parse(const rfile &r, bool &need_retry)
 
     char last_name[17] {};
 
-    for (uint16_t i=0; i<hdr.num_params; i++) {
+    for (uint_fast16_t i=0; i<hdr.num_params; i++) {
         enum ap_var_type ptype = (enum ap_var_type)(b[0]&0x0F);
         uint8_t flags = (enum ap_var_type)(b[0]>>4);
         if (flags != 0) {

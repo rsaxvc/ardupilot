@@ -41,7 +41,7 @@ ProfiLED::ProfiLED() :
 uint16_t ProfiLED::init_ports()
 {
     uint16_t mask = 0;
-    for (uint16_t i=0; i<AP_NOTIFY_ProfiLED_MAX_INSTANCES; i++) {
+    for (uint_fast16_t i=0; i<AP_NOTIFY_ProfiLED_MAX_INSTANCES; i++) {
         const SRV_Channel::Aux_servo_function_t fn = (SRV_Channel::Aux_servo_function_t)((uint8_t)SRV_Channel::k_ProfiLED_1 + i);
         if (!SRV_Channels::function_assigned(fn)) {
             continue;
@@ -58,7 +58,7 @@ uint16_t ProfiLED::init_ports()
         return 0;
     }
 
-    for (uint16_t chan=0; chan<16; chan++) {
+    for (uint_fast16_t chan=0; chan<16; chan++) {
         if ((1U<<chan) & mask) {
             led->set_num_profiled(chan+1, (pNotify->get_led_len()));
         }
@@ -102,7 +102,7 @@ void ProfiLED_SPI::rgb_set_id(uint8_t red, uint8_t green, uint8_t blue, uint8_t 
 
 bool ProfiLED_SPI::hw_set_rgb(uint8_t red, uint8_t green, uint8_t blue)
 {
-    for (uint16_t i = 0; i < num_leds; i++) {
+    for (uint_fast16_t i = 0; i < num_leds; i++) {
         rgb[i] = {blue, red, green};
     }
     _need_update = true;
@@ -135,7 +135,7 @@ void ProfiLED_SPI::update_led_strip() {
     curr_led_color.struct_val = rgb[curr_led_idx];
     for (uint32_t i=0; i<output_stream_byte_length; i++) {
         uint8_t byte = 0;
-        for (uint8_t bit = 0; bit < 8; bit++) {
+        for (uint_fast8_t bit = 0; bit < 8; bit++) {
             uint32_t out_bit_idx = i*8+bit;
             uint8_t bit_val;
             if (out_bit_idx < num_leading_zeros) {

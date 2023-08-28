@@ -170,7 +170,7 @@ void GPS::send_ubx(uint8_t msgid, uint8_t *buf, uint16_t size)
     chk[1] += (chk[0] += hdr[3]);
     chk[1] += (chk[0] += hdr[4]);
     chk[1] += (chk[0] += hdr[5]);
-    for (uint16_t i=0; i<size; i++) {
+    for (uint_fast16_t i=0; i<size; i++) {
         chk[1] += (chk[0] += buf[i]);
     }
     write_to_autopilot((char*)hdr, sizeof(hdr));
@@ -467,7 +467,7 @@ void GPS::update_ubx(const struct gps_data *d)
         svinfo.globalFlags = 4; // u-blox 8/M8
         // fill in the SV's with some data even though firmware does not currently use it
         // note that this is not using num_sats as we aren't dynamically creating this to match
-        for (uint8_t i = 0; i < SV_COUNT; i++) {
+        for (uint_fast8_t i = 0; i < SV_COUNT; i++) {
             svinfo.sv[i].chn = i;
             svinfo.sv[i].svid = i;
             svinfo.sv[i].flags = (i < _sitl->gps_numsats[instance]) ? 0x7 : 0x6; // sv used, diff correction data, orbit information
@@ -1240,7 +1240,7 @@ GPS::gps_data GPS::interpolate_data(const gps_data &d, uint32_t delay_ms)
     memmove(&_gps_history[1], &_gps_history[0], sizeof(_gps_history[0])*(ARRAY_SIZE(_gps_history)-1));
     _gps_history[0] = d;
 
-    for (uint8_t i=0; i<N-1; i++) {
+    for (uint_fast8_t i=0; i<N-1; i++) {
         uint32_t dt1 = now_ms - _gps_history[i].timestamp_ms;
         uint32_t dt2 = now_ms - _gps_history[i+1].timestamp_ms;
         if (delay_ms >= dt1 && delay_ms <= dt2) {

@@ -153,7 +153,7 @@ void Scheduler::delay(uint16_t ms)
 
 void Scheduler::register_timer_process(AP_HAL::MemberProc proc)
 {
-    for (uint8_t i = 0; i < _num_timer_procs; i++) {
+    for (uint_fast8_t i = 0; i < _num_timer_procs; i++) {
         if (_timer_proc[i] == proc) {
             return;
         }
@@ -167,7 +167,7 @@ void Scheduler::register_timer_process(AP_HAL::MemberProc proc)
 
 void Scheduler::register_io_process(AP_HAL::MemberProc proc)
 {
-    for (uint8_t i = 0; i < _num_io_procs; i++) {
+    for (uint_fast8_t i = 0; i < _num_io_procs; i++) {
         if (_io_proc[i] == proc) {
             return;
         }
@@ -271,7 +271,7 @@ void Scheduler::_run_io_procs()
 
     _in_io_proc = false;
 
-    for (uint8_t i=0; i<hal.num_serial; i++) {
+    for (uint_fast8_t i=0; i<hal.num_serial; i++) {
         hal.serial(i)->_timer_tick();
     }
     hal.storage->_timer_tick();
@@ -402,7 +402,7 @@ void Scheduler::check_thread_stacks(void)
     WITH_SEMAPHORE(_thread_sem);
     for (struct thread_attr *p=threads; p; p=p->next) {
         const uint8_t ncheck = 8;
-        for (uint8_t i=0; i<ncheck; i++) {
+        for (uint_fast8_t i=0; i<ncheck; i++) {
             if (p->stack_min[i] != stackfill) {
                 AP_HAL::panic("stack overflow in thread %s\n", p->name);
             }

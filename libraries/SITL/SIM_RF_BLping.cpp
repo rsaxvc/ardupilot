@@ -55,7 +55,7 @@ uint32_t RF_BLping::packet_for_alt(uint16_t alt_cm, uint8_t *buffer, uint8_t buf
     memcpy(&buffer[offs], payload, ARRAY_SIZE(payload));
     offs += ARRAY_SIZE(payload);
     uint16_t crc = 0;
-    for (uint8_t i=0; i<offs; i++) {
+    for (uint_fast8_t i=0; i<offs; i++) {
         crc += buffer[i];
     }
 

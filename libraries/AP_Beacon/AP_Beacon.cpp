@@ -256,7 +256,7 @@ void AP_Beacon::update_boundary_points()
 
     // accumulate beacon points
     Vector2f beacon_points[AP_BEACON_MAX_BEACONS];
-    for (uint8_t index = 0; index < num_beacons; index++) {
+    for (uint_fast8_t index = 0; index < num_beacons; index++) {
         const Vector3f& point_3d = beacon_position(index);
         beacon_points[index].x = point_3d.x;
         beacon_points[index].y = point_3d.y;
@@ -306,7 +306,7 @@ void AP_Beacon::update_boundary_points()
                 const uint8_t num_pts = curr_boundary_idx - dup_idx;
                 if (num_pts >= AP_BEACON_MINIMUM_FENCE_BEACONS) { // we consider three points to be a polygon
                     // success, copy boundary points to boundary array and convert meters to cm
-                    for (uint8_t j = 0; j < num_pts; j++) {
+                    for (uint_fast8_t j = 0; j < num_pts; j++) {
                         boundary[j] = boundary_points[j+dup_idx] * 100.0f;
                     }
                     boundary_num_points = num_pts;
@@ -349,7 +349,7 @@ bool AP_Beacon::get_next_boundary_point(const Vector2f* boundary_pts, uint8_t nu
     float lowest_angle_relative = M_PI_2;
     bool lowest_found = false;
     uint8_t lowest_index = 0;
-    for (uint8_t i=0; i < num_points; i++) {
+    for (uint_fast8_t i=0; i < num_points; i++) {
         if (i != current_index) {
             Vector2f vec = boundary_pts[i] - curr_point;
             if (!vec.is_zero()) {

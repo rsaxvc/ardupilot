@@ -40,7 +40,7 @@ void AP_Baro::Write_Baro(void)
 {
     const uint64_t time_us = AP_HAL::micros64();
 
-    for (uint8_t i=0; i< _num_sensors; i++) {
+    for (uint_fast8_t i=0; i< _num_sensors; i++) {
         Write_Baro_instance(time_us, i);
     }
 }

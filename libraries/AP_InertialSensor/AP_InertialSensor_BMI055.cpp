@@ -261,7 +261,7 @@ void AP_InertialSensor_BMI055::read_fifo_accel(void)
     }
     // data is 12 bits with 16g range, 7.81mg/LSB
     const float scale = 7.81 * 0.001 * GRAVITY_MSS / 16.0f;
-    for (uint8_t i = 0; i < num_frames; i++) {
+    for (uint_fast8_t i = 0; i < num_frames; i++) {
         const uint8_t *d = &data[i*6];
         int16_t xyz[3] {
                 int16_t(uint16_t((d[0]&0xF0) | (d[1]<<8))),
@@ -320,7 +320,7 @@ void AP_InertialSensor_BMI055::read_fifo_gyro(void)
 
     // data is 16 bits with 2000dps range
     const float scale = radians(2000.0f) / 32767.0f;
-    for (uint8_t i = 0; i < num_frames; i++) {
+    for (uint_fast8_t i = 0; i < num_frames; i++) {
         const uint8_t *d = &data[i*6];
         int16_t xyz[3] {
                     int16_t(uint16_t(d[0] | d[1]<<8)),

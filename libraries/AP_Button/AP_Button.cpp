@@ -170,7 +170,7 @@ void AP_Button::update(void)
 
     // update the PWM state:
     uint8_t new_pwm_state = pwm_state;
-    for (uint8_t i=0; i<AP_BUTTON_NUM_PINS; i++) {
+    for (uint_fast8_t i=0; i<AP_BUTTON_NUM_PINS; i++) {
         const uint8_t mask = (1U << i);
         if (!is_pwm_input(i)) {
             // not a PWM input
@@ -241,7 +241,7 @@ void AP_Button::run_aux_functions(bool force)
         return;
     }
 
-    for (uint8_t i=0; i<AP_BUTTON_NUM_PINS; i++) {
+    for (uint_fast8_t i=0; i<AP_BUTTON_NUM_PINS; i++) {
         const RC_Channel::AUX_FUNC func = RC_Channel::AUX_FUNC(pin_func[i].get());
         if (func == RC_Channel::AUX_FUNC::DO_NOTHING) {
             continue;
@@ -302,7 +302,7 @@ bool AP_Button::get_button_state(uint8_t number)
 uint8_t AP_Button::get_mask(void)
 {
     uint8_t mask = 0;
-    for (uint8_t i=0; i<AP_BUTTON_NUM_PINS; i++) {
+    for (uint_fast8_t i=0; i<AP_BUTTON_NUM_PINS; i++) {
         if (pin[i] == -1) {
             continue;
         }
@@ -359,7 +359,7 @@ void AP_Button::send_report(void) const
  */
 void AP_Button::setup_pins(void)
 {
-    for (uint8_t i=0; i<AP_BUTTON_NUM_PINS; i++) {
+    for (uint_fast8_t i=0; i<AP_BUTTON_NUM_PINS; i++) {
         if (is_pwm_input(i)) {
             pwm_pin_source[i].set_pin(pin[i], "Button");
             continue;
@@ -380,7 +380,7 @@ bool AP_Button::arming_checks(size_t buflen, char *buffer) const
     if (!enable) {
         return true;
     }
-    for (uint8_t i=0; i<AP_BUTTON_NUM_PINS; i++) {
+    for (uint_fast8_t i=0; i<AP_BUTTON_NUM_PINS; i++) {
         if (pin[i] != -1 && !hal.gpio->valid_pin(pin[i])) {
             uint8_t servo_ch;
             if (hal.gpio->pin_to_servo_channel(pin[i], servo_ch)) {

@@ -57,7 +57,7 @@ void last_letter::start_last_letter(void)
       // in child
       close(0);
       open("/dev/null", O_RDONLY|O_CLOEXEC);
-      for (uint8_t i=3; i<100; i++) {
+      for (uint_fast8_t i=3; i<100; i++) {
           close(i);
       }
       int ret = execlp("roslaunch",

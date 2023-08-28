@@ -56,7 +56,7 @@ static struct gpio_entry {
  */
 static struct gpio_entry *gpio_by_pin_num(uint8_t pin_num, bool check_enabled=true)
 {
-    for (uint8_t i=0; i<ARRAY_SIZE(_gpio_tab); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(_gpio_tab); i++) {
         const auto &t = _gpio_tab[i];
         if (pin_num == t.pin_num) {
             if (check_enabled && t.pwm_num != 0 && !t.enabled) {
@@ -81,7 +81,7 @@ void GPIO::init()
 #if HAL_WITH_IO_MCU
     if (AP_BoardConfig::io_enabled()) {
         uint8_t GPIO_mask = 0;
-        for (uint8_t i=0; i<8; i++) {
+        for (uint_fast8_t i=0; i<8; i++) {
             if (SRV_Channels::is_GPIO(i)) {
                 GPIO_mask |= 1U << i;
             }
@@ -91,7 +91,7 @@ void GPIO::init()
     }
 #endif
     // auto-disable pins being used for PWM output
-    for (uint8_t i=0; i<ARRAY_SIZE(_gpio_tab); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(_gpio_tab); i++) {
         struct gpio_entry *g = &_gpio_tab[i];
         if (g->pwm_num != 0) {
             g->enabled = SRV_Channels::is_GPIO((g->pwm_num-1)+chan_offset);
@@ -132,12 +132,12 @@ void GPIO::setup_alt_config(void)
         // use defaults
         return;
     }
-    for (uint8_t i=0; i<ARRAY_SIZE(alternate_config); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(alternate_config); i++) {
         const struct alt_config &alt = alternate_config[i];
         if (alt_config == alt.alternate) {
             if (alt.periph_type == PERIPH_TYPE::GPIO) {
                 // enable pin in GPIO table
-                for (uint8_t j=0; j<ARRAY_SIZE(_gpio_tab); j++) {
+                for (uint_fast8_t j=0; j<ARRAY_SIZE(_gpio_tab); j++) {
                     struct gpio_entry *g = &_gpio_tab[j];
                     if (g->pal_line == alt.line) {
                         g->enabled = true;
@@ -168,7 +168,7 @@ ioline_t GPIO::resolve_alt_config(ioline_t base, PERIPH_TYPE ptype, uint8_t inst
         // unchanged
         return base;
     }
-    for (uint8_t i=0; i<ARRAY_SIZE(alternate_config); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(alternate_config); i++) {
         const struct alt_config &alt = alternate_config[i];
         if (alt_config == alt.alternate) {
             if (ptype == alt.periph_type && instance == alt.periph_instance) {
@@ -178,7 +178,7 @@ ioline_t GPIO::resolve_alt_config(ioline_t base, PERIPH_TYPE ptype, uint8_t inst
         }
     }
     // now search for pins that have been configured off via BRD_ALT_CONFIG
-    for (uint8_t i=0; i<ARRAY_SIZE(alternate_config); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(alternate_config); i++) {
         const struct alt_config &alt = alternate_config[i];
         if (alt_config == alt.alternate) {
             if (alt.line == base) {
@@ -530,7 +530,7 @@ bool GPIO::pin_to_servo_channel(uint8_t pin, uint8_t& servo_ch) const
 #endif
 
     // search _gpio_tab for matching pin
-    for (uint8_t i=0; i<ARRAY_SIZE(_gpio_tab); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(_gpio_tab); i++) {
         if (_gpio_tab[i].pin_num == pin) {
             if (_gpio_tab[i].pwm_num == 0) {
                 return false;
@@ -574,7 +574,7 @@ void GPIO::timer_tick()
     // allow 100k interrupts/second max for GPIO interrupt sources, which is
     // 10k per 100ms call to timer_tick()
     const uint16_t quota = 10000U;
-    for (uint8_t i=0; i<ARRAY_SIZE(_gpio_tab); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(_gpio_tab); i++) {
         if (_gpio_tab[i].isr_quota == 1) {
             // we ran out of ISR quota for this pin since the last
             // check. This is not really an internal error, but we use

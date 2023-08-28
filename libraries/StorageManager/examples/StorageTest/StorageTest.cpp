@@ -46,10 +46,10 @@ void setup(void)
 {
     hal.console->printf("StorageTest startup...\n");
 #if DO_INITIALISATION
-    for (uint8_t type = 0; type < 4; type++) {
+    for (uint_fast8_t type = 0; type < 4; type++) {
         const StorageAccess &storage = all_storage[type];
         hal.console->printf("Init type %u\n", (unsigned)type);
-        for (uint16_t i = 0; i < storage.size(); i++) {
+        for (uint_fast16_t i = 0; i < storage.size(); i++) {
             storage.write_byte(i, pvalue(i));
         }
     }
@@ -70,7 +70,7 @@ void loop(void)
         return;
     }
     uint8_t b[length];
-    for (uint8_t i=0; i<length; i++) {
+    for (uint_fast8_t i=0; i<length; i++) {
         b[i] = pvalue(offset+i);
     }
 

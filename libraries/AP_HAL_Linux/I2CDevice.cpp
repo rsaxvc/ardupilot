@@ -214,7 +214,7 @@ bool I2CDevice::read_registers_multiple(uint8_t first_reg, uint8_t *recv,
         i2c_data.msgs = msgs;
         i2c_data.nmsgs = 2 * n;
 
-        for (uint8_t i = 0; i < i2c_data.nmsgs; i += 2) {
+        for (uint_fast8_t i = 0; i < i2c_data.nmsgs; i += 2) {
             msgs[i].addr = _address;
             msgs[i].flags = 0;
             msgs[i].buf = &first_reg;
@@ -347,7 +347,7 @@ I2CDeviceManager::get_device(uint8_t bus, uint8_t address,
                              bool use_smbus,
                              uint32_t timeout_ms)
 {
-    for (uint8_t i = 0, n = _buses.size(); i < n; i++) {
+    for (uint_fast8_t i = 0, n = _buses.size(); i < n; i++) {
         if (_buses[i]->bus == bus) {
             return _create_device(*_buses[i], address);
         }

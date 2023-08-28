@@ -259,9 +259,9 @@ void AP_Tuning::save_parameters(void)
         return;
     }
     // multiple parameter tuning
-    for (uint8_t i=0; tuning_sets[i].num_parms != 0; i++) {
+    for (uint_fast8_t i=0; tuning_sets[i].num_parms != 0; i++) {
         if (tuning_sets[i].set+set_base == set) {
-            for (uint8_t p=0; p<tuning_sets[i].num_parms; p++) {
+            for (uint_fast8_t p=0; p<tuning_sets[i].num_parms; p++) {
                 save_value(tuning_sets[i].parms[p]);
             }
             break;
@@ -281,9 +281,9 @@ void AP_Tuning::revert_parameters(void)
         reload_value(set);
         return;
     }
-    for (uint8_t i=0; tuning_sets[i].num_parms != 0; i++) {
+    for (uint_fast8_t i=0; tuning_sets[i].num_parms != 0; i++) {
         if (tuning_sets[i].set+set_base == set) {
-            for (uint8_t p=0; p<tuning_sets[i].num_parms; p++) {
+            for (uint_fast8_t p=0; p<tuning_sets[i].num_parms; p++) {
                 if (p >= 32 || (need_revert & (1U<<p))) {
                     reload_value(tuning_sets[i].parms[p]);
                 }
@@ -306,7 +306,7 @@ void AP_Tuning::next_parameter(void)
         re_center();        
         return;
     }
-    for (uint8_t i=0; tuning_sets[i].num_parms != 0; i++) {
+    for (uint_fast8_t i=0; tuning_sets[i].num_parms != 0; i++) {
         if (tuning_sets[i].set+set_base == set) {
             if (current_parm == 0) {
                 current_parm_index = 0;
@@ -327,7 +327,7 @@ void AP_Tuning::next_parameter(void)
  */
 const char *AP_Tuning::get_tuning_name(uint8_t parm)
 {
-    for (uint8_t i=0; tuning_names[i].name != nullptr; i++) {
+    for (uint_fast8_t i=0; tuning_names[i].name != nullptr; i++) {
         if (parm == tuning_names[i].parm) {
             return tuning_names[i].name;
         }

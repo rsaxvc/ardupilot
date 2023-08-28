@@ -288,7 +288,7 @@ uint16_t AP_InertialSensor_ADIS1647x::read_reg16(uint8_t regnum) const
 bool AP_InertialSensor_ADIS1647x::write_reg16(uint8_t regnum, uint16_t value, bool confirm) const
 {
     const uint8_t retries = 16;
-    for (uint8_t i=0; i<retries; i++) {
+    for (uint_fast8_t i=0; i<retries; i++) {
         uint8_t req[2];
         req[0] = (regnum | 0x80);
         req[1] = value & 0xFF;
@@ -344,7 +344,7 @@ void AP_InertialSensor_ADIS1647x::read_sensor16(void)
      */
     uint8_t sum = 0;
     const uint8_t *b = (const uint8_t *)&data.diag_stat;
-    for (uint8_t i=0; i<offsetof(adis_data, pad) - offsetof(adis_data, diag_stat); i++) {
+    for (uint_fast8_t i=0; i<offsetof(adis_data, pad) - offsetof(adis_data, diag_stat); i++) {
         sum += b[i];
     }
     if (sum != data.checksum) {
@@ -436,7 +436,7 @@ void AP_InertialSensor_ADIS1647x::read_sensor32(void)
      */
     uint8_t sum = 0;
     const uint8_t *b = (const uint8_t *)&data.diag_stat;
-    for (uint8_t i=0; i<offsetof(adis_data, pad) - offsetof(adis_data, diag_stat); i++) {
+    for (uint_fast8_t i=0; i<offsetof(adis_data, pad) - offsetof(adis_data, diag_stat); i++) {
         sum += b[i];
     }
     if (sum != data.checksum) {
@@ -528,7 +528,7 @@ void AP_InertialSensor_ADIS1647x::read_sensor32_delta(void)
      */
     uint8_t sum = 0;
     const uint8_t *b = (const uint8_t *)&data.diag_stat;
-    for (uint8_t i=0; i<offsetof(adis_data, pad) - offsetof(adis_data, diag_stat); i++) {
+    for (uint_fast8_t i=0; i<offsetof(adis_data, pad) - offsetof(adis_data, diag_stat); i++) {
         sum += b[i];
     }
     if (sum != data.checksum) {

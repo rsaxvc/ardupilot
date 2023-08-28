@@ -558,7 +558,7 @@ void AP_OSD::handle_msg(const mavlink_message_t &msg, const GCS_MAVLINK& link)
         mavlink_osd_param_config_t packet;
         mavlink_msg_osd_param_config_decode(&msg, &packet);
 #if OSD_PARAM_ENABLED
-        for (uint8_t i = 0; i < AP_OSD_NUM_PARAM_SCREENS; i++) {
+        for (uint_fast8_t i = 0; i < AP_OSD_NUM_PARAM_SCREENS; i++) {
             if (packet.osd_screen == i + AP_OSD_NUM_DISPLAY_SCREENS + 1) {
                 param_screen[i].handle_write_msg(packet, link);
                 found = true;
@@ -575,7 +575,7 @@ void AP_OSD::handle_msg(const mavlink_message_t &msg, const GCS_MAVLINK& link)
         mavlink_osd_param_show_config_t packet;
         mavlink_msg_osd_param_show_config_decode(&msg, &packet);
 #if OSD_PARAM_ENABLED
-        for (uint8_t i = 0; i < AP_OSD_NUM_PARAM_SCREENS; i++) {
+        for (uint_fast8_t i = 0; i < AP_OSD_NUM_PARAM_SCREENS; i++) {
             if (packet.osd_screen == i + AP_OSD_NUM_DISPLAY_SCREENS + 1) {
                 param_screen[i].handle_read_msg(packet, link);
                 found = true;

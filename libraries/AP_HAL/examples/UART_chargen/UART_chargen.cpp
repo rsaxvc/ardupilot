@@ -66,8 +66,8 @@ void setup(void)
 #endif
 
     // populate chargen buffer
-    for (uint8_t line=0; line<95; line++) {
-        for (uint8_t i=0; i<72; i++) {
+    for (uint_fast8_t line=0; line<95; line++) {
+        for (uint_fast8_t i=0; i<72; i++) {
             uint8_t c = ' ' + line + i;
             if (c >= ' ' + 72) {
                 c -= 72;

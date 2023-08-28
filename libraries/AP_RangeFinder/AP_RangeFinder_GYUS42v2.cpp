@@ -19,7 +19,7 @@
 
 bool AP_RangeFinder_GYUS42v2::find_signature_in_buffer(uint8_t start)
 {
-    for (uint8_t i=start; i<buffer_used; i++) {
+    for (uint_fast8_t i=start; i<buffer_used; i++) {
         if (buffer[i] == 0x5A) {
             memmove(&buffer[0], &buffer[i], buffer_used-i);
             buffer_used -= i;
@@ -55,7 +55,7 @@ bool AP_RangeFinder_GYUS42v2::get_reading(float &reading_m)
     }
 
     uint8_t sum = 0;
-    for (uint8_t i=0; i<6; i++) {
+    for (uint_fast8_t i=0; i<6; i++) {
         sum += buffer[i];
     }
     if (buffer[6] != sum) {

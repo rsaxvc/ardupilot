@@ -81,7 +81,7 @@ bool sdcard_init()
     }
 
     const uint8_t tries = 3;
-    for (uint8_t i=0; i<tries; i++) {
+    for (uint_fast8_t i=0; i<tries; i++) {
         sdcconfig.slowdown = sd_slowdown;
         sdcStart(&sdcd, &sdcconfig);
         if(sdcConnect(&sdcd) == HAL_FAILED) {
@@ -124,7 +124,7 @@ bool sdcard_init()
       try up to 3 times to init microSD interface
      */
     const uint8_t tries = 3;
-    for (uint8_t i=0; i<tries; i++) {
+    for (uint_fast8_t i=0; i<tries; i++) {
         mmcStart(&MMCD1, &mmcconfig);
 
         if (mmcConnect(&MMCD1) == HAL_FAILED) {

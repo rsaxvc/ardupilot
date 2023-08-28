@@ -35,7 +35,7 @@ void AP_Proximity_RangeFinder::update(void)
     uint32_t now = AP_HAL::millis();
 
     // look through all rangefinders
-    for (uint8_t i=0; i < rngfnd->num_sensors(); i++) {
+    for (uint_fast8_t i=0; i < rngfnd->num_sensors(); i++) {
         AP_RangeFinder_Backend *sensor = rngfnd->get_backend(i);
         if (sensor == nullptr) {
             continue;

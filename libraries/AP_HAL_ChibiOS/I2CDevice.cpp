@@ -102,7 +102,7 @@ void I2CBus::dma_init(void)
 // Clear Bus to avoid bus lockup
 void I2CBus::clear_all()
 {
-    for (uint8_t i=0; i<ARRAY_SIZE(I2CD); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(I2CD); i++) {
         clear_bus(i);
     }
 }
@@ -161,7 +161,7 @@ void I2CBus::clear_bus(uint8_t busidx)
     }
     const iomode_t mode_saved = palReadLineMode(scl_line);
     palSetLineMode(scl_line, PAL_MODE_OUTPUT_PUSHPULL);
-    for(uint8_t j = 0; j < 20; j++) {
+    for (uint_fast8_t j = 0; j < 20; j++) {
         palToggleLine(scl_line);
         hal.scheduler->delay_microseconds(10);
     }
@@ -191,7 +191,7 @@ uint8_t I2CBus::read_sda(uint8_t busidx)
 // setup I2C buses
 I2CDeviceManager::I2CDeviceManager(void)
 {
-    for (uint8_t i=0; i<ARRAY_SIZE(I2CD); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(I2CD); i++) {
         businfo[i].busnum = i;
         businfo[i].dma_init();
         /*
@@ -352,7 +352,7 @@ bool I2CDevice::_transfer(const uint8_t *send, uint32_t send_len,
         return false;
     }
 
-    for(uint8_t i=0 ; i <= _retries; i++) {
+    for (uint_fast8_t i=0 ; i <= _retries; i++) {
         int ret;
         // calculate a timeout as twice the expected transfer time, and set as min of 4ms
         uint32_t timeout_ms = 1+2*(((8*1000000UL/bus.busclock)*(send_len+recv_len))/1000);

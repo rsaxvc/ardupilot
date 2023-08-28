@@ -772,7 +772,7 @@ void Compass::init()
     // set the dev_id to 0 for undetected compasses. extra_dev_id is just an
     // interface for users to see unreg compasses, we actually never store it
     // in storage.
-    for (uint8_t i=_unreg_compass_count; i<COMPASS_MAX_UNREG_DEV; i++) {
+    for (uint_fast8_t i=_unreg_compass_count; i<COMPASS_MAX_UNREG_DEV; i++) {
         // cache the extra devices detected in last boot
         // for detecting replacement mag
         _previously_unreg_mag[i] = extra_dev_id[i];
@@ -798,7 +798,7 @@ void Compass::init()
     // We don't do this during runtime, as we don't want to detect
     // compasses connected by user as a replacement while the system
     // is running
-    for (uint8_t i=0; i<COMPASS_MAX_UNREG_DEV; i++) {
+    for (uint_fast8_t i=0; i<COMPASS_MAX_UNREG_DEV; i++) {
         extra_dev_id[i].save();
     }
 #endif
@@ -961,7 +961,7 @@ bool Compass::register_compass(int32_t dev_id, uint8_t& instance)
         AP_HAL::panic("Too many compass instances");
     }
 
-    for (uint8_t i=0; i<COMPASS_MAX_UNREG_DEV; i++) {
+    for (uint_fast8_t i=0; i<COMPASS_MAX_UNREG_DEV; i++) {
         if (extra_dev_id[i] == dev_id) {
             if (i >= _unreg_compass_count) {
                 _unreg_compass_count = i+1;
@@ -1185,7 +1185,7 @@ void Compass::_probe_external_i2c_compasses(void)
         // probe all 4 possible addresses
         const uint8_t ist8310_addr[] = { 0x0C, 0x0D, 0x0E, 0x0F };
 
-        for (uint8_t a=0; a<ARRAY_SIZE(ist8310_addr); a++) {
+        for (uint_fast8_t a=0; a<ARRAY_SIZE(ist8310_addr); a++) {
             FOREACH_I2C_EXTERNAL(i) {
                 ADD_BACKEND(DRIVER_IST8310, AP_Compass_IST8310::probe(GET_I2C_DEVICE(i, ist8310_addr[a]),
                             true, default_rotation));
@@ -1240,14 +1240,14 @@ void Compass::_probe_external_i2c_compasses(void)
 #endif
     // external i2c bus
     FOREACH_I2C_EXTERNAL(i) {
-        for (uint8_t j=0; j<ARRAY_SIZE(rm3100_addresses); j++) {
+        for (uint_fast8_t j=0; j<ARRAY_SIZE(rm3100_addresses); j++) {
             ADD_BACKEND(DRIVER_RM3100, AP_Compass_RM3100::probe(GET_I2C_DEVICE(i, rm3100_addresses[j]), true, ROTATION_NONE));
         }
     }
 
 #if !defined(HAL_SKIP_AUTO_INTERNAL_I2C_PROBE)
     FOREACH_I2C_INTERNAL(i) {
-        for (uint8_t j=0; j<ARRAY_SIZE(rm3100_addresses); j++) {
+        for (uint_fast8_t j=0; j<ARRAY_SIZE(rm3100_addresses); j++) {
             ADD_BACKEND(DRIVER_RM3100, AP_Compass_RM3100::probe(GET_I2C_DEVICE(i, rm3100_addresses[j]), all_external, ROTATION_NONE));
         }
     }
@@ -1257,7 +1257,7 @@ void Compass::_probe_external_i2c_compasses(void)
 #if AP_COMPASS_BMM150_DETECT_BACKENDS_ENABLED
     // BMM150 on I2C
     FOREACH_I2C_EXTERNAL(i) {
-        for (uint8_t addr=BMM150_I2C_ADDR_MIN; addr <= BMM150_I2C_ADDR_MAX; addr++) {
+        for (uint_fast8_t addr=BMM150_I2C_ADDR_MIN; addr <= BMM150_I2C_ADDR_MAX; addr++) {
             ADD_BACKEND(DRIVER_BMM150,
                         AP_Compass_BMM150::probe(GET_I2C_DEVICE(i, addr), true, ROTATION_NONE));
         }
@@ -1297,7 +1297,7 @@ void Compass::_detect_backends(void)
 #endif
 
 #if AP_COMPASS_MSP_ENABLED
-    for (uint8_t i=0; i<8; i++) {
+    for (uint_fast8_t i=0; i<8; i++) {
         if (msp_instance_mask & (1U<<i)) {
             ADD_BACKEND(DRIVER_MSP, new AP_Compass_MSP(i));
         }
@@ -1451,7 +1451,7 @@ void Compass::_detect_backends(void)
 
 #if AP_COMPASS_UAVCAN_ENABLED
     if (_driver_enabled(DRIVER_UAVCAN)) {
-        for (uint8_t i=0; i<COMPASS_MAX_BACKEND; i++) {
+        for (uint_fast8_t i=0; i<COMPASS_MAX_BACKEND; i++) {
             AP_Compass_Backend* _uavcan_backend = AP_Compass_UAVCAN::probe(i);
             if (_uavcan_backend) {
                 _add_backend(_uavcan_backend);
@@ -1473,7 +1473,7 @@ void Compass::_detect_backends(void)
             }
             // There's a UAVCAN compass missing
             // Let's check if there's a replacement
-            for (uint8_t j=0; j<COMPASS_MAX_INSTANCES; j++) {
+            for (uint_fast8_t j=0; j<COMPASS_MAX_INSTANCES; j++) {
                 uint32_t detected_devid = AP_Compass_UAVCAN::get_detected_devid(j);
                 // Check if this is a potential replacement mag
                 if (!is_replacement_mag(detected_devid)) {
@@ -1541,7 +1541,7 @@ bool Compass::is_replacement_mag(uint32_t devid) {
 
 #if COMPASS_MAX_UNREG_DEV > 0
     // Check that its not an unused additional mag
-    for (uint8_t i = 0; i<COMPASS_MAX_UNREG_DEV; i++) {
+    for (uint_fast8_t i = 0; i<COMPASS_MAX_UNREG_DEV; i++) {
         if (_previously_unreg_mag[i] == devid) {
             return false;
         }
@@ -1567,7 +1567,7 @@ void Compass::remove_unreg_dev_id(uint32_t devid)
     }
 
 #if COMPASS_MAX_UNREG_DEV > 0
-    for (uint8_t i = 0; i<COMPASS_MAX_UNREG_DEV; i++) {
+    for (uint_fast8_t i = 0; i<COMPASS_MAX_UNREG_DEV; i++) {
         if ((uint32_t)extra_dev_id[i] == devid) {
             extra_dev_id[i].set_and_save(0);
             return;
@@ -1624,7 +1624,7 @@ Compass::_detect_runtime(void)
     }
     last_try = AP_HAL::millis();
     if (_driver_enabled(DRIVER_UAVCAN)) {
-        for (uint8_t i=0; i<COMPASS_MAX_BACKEND; i++) {
+        for (uint_fast8_t i=0; i<COMPASS_MAX_BACKEND; i++) {
             AP_Compass_Backend* _uavcan_backend = AP_Compass_UAVCAN::probe(i);
             if (_uavcan_backend) {
                 _add_backend(_uavcan_backend);
@@ -1654,7 +1654,7 @@ Compass::read(void)
 
     _detect_runtime();
 
-    for (uint8_t i=0; i< _backend_count; i++) {
+    for (uint_fast8_t i=0; i< _backend_count; i++) {
         // call read on each of the backend. This call updates field[i]
         _backends[i]->read();
     }
@@ -1870,7 +1870,7 @@ uint8_t Compass::get_num_enabled(void) const
         return 0;
     }
     uint8_t count = 0;
-    for (uint8_t i=0; i<COMPASS_MAX_INSTANCES; i++) {
+    for (uint_fast8_t i=0; i<COMPASS_MAX_INSTANCES; i++) {
         if (use_for_yaw(i)) {
             count++;
         }
@@ -1995,7 +1995,7 @@ bool Compass::configured(char *failure_msg, uint8_t failure_msg_len)
 #endif
 
     bool all_configured = true;
-    for (uint8_t i=0; i<get_count(); i++) {
+    for (uint_fast8_t i=0; i<get_count(); i++) {
         if (configured(i)) {
             continue;
         }
@@ -2021,7 +2021,7 @@ void Compass::motor_compensation_type(const uint8_t comp_type)
     if (_motor_comp_type <= AP_COMPASS_MOT_COMP_CURRENT && _motor_comp_type != (int8_t)comp_type) {
         _motor_comp_type.set((int8_t)comp_type);
         _thr = 0; // set current  throttle to zero
-        for (uint8_t i=0; i<COMPASS_MAX_INSTANCES; i++) {
+        for (uint_fast8_t i=0; i<COMPASS_MAX_INSTANCES; i++) {
             set_motor_compensation(i, Vector3f(0,0,0)); // clear out invalid compensation vectors
         }
     }
@@ -2039,7 +2039,7 @@ bool Compass::consistent() const
     const Vector3f primary_mag_field_norm = primary_mag_field.normalized();
     const Vector2f primary_mag_field_xy_norm = primary_mag_field_xy.normalized();
 
-    for (uint8_t i=0; i<get_count(); i++) {
+    for (uint_fast8_t i=0; i<get_count(); i++) {
         if (!use_for_yaw(i)) {
             // configured not-to-be-used
             continue;
@@ -2106,7 +2106,7 @@ void Compass::handle_msp(const MSP::msp_compass_data_message_t &pkt)
             msp_instance_mask |= 1U<<pkt.instance;
         }
     } else {
-        for (uint8_t i=0; i<_backend_count; i++) {
+        for (uint_fast8_t i=0; i<_backend_count; i++) {
             _backends[i]->handle_msp(pkt);
         }
     }
@@ -2119,7 +2119,7 @@ void Compass::handle_external(const AP_ExternalAHRS::mag_data_message_t &pkt)
     if (!_driver_enabled(DRIVER_EXTERNALAHRS)) {
         return;
     }
-    for (uint8_t i=0; i<_backend_count; i++) {
+    for (uint_fast8_t i=0; i<_backend_count; i++) {
         _backends[i]->handle_external(pkt);
     }
 }

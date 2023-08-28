@@ -81,7 +81,7 @@ bool AP_EFI_Serial_MS::read_incoming_realtime_data()
     }
     
     // Iterate over the payload bytes 
-    for ( uint8_t offset=RT_FIRST_OFFSET; offset < (RT_FIRST_OFFSET + message_length - 1); offset++) {
+    for (uint_fast8_t offset=RT_FIRST_OFFSET; offset < (RT_FIRST_OFFSET + message_length - 1); offset++) {
         uint8_t data = read_byte_CRC32();
         float temp_float;
         switch (offset) {
@@ -197,7 +197,7 @@ void AP_EFI_Serial_MS::send_request(uint8_t table, uint16_t first_offset, uint16
     uint32_t crc = 0;
     
     // Write the request and calc CRC
-    for (uint8_t i = 0;  i != sizeof(data) ; i++) {
+    for (uint_fast8_t i = 0;  i != sizeof(data) ; i++) {
         // Message size is excluded from CRC
         if (i > 1) {
             crc = CRC32_compute_byte(crc, data[i]);

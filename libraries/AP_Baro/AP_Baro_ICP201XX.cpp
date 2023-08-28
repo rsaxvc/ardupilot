@@ -261,7 +261,7 @@ bool AP_Baro_ICP201XX::get_sensor_data(float *pressure, float *temperature)
         if (fifo_packets > 0 && fifo_packets <= 16 && read_reg(REG_FIFO_BASE, fifo_data, fifo_packets * 2 * 3)) {
             uint8_t offset = 0;
 
-            for (uint8_t i = 0; i < fifo_packets; i++) {
+            for (uint_fast8_t i = 0; i < fifo_packets; i++) {
                 data_press = (int32_t)(((fifo_data[offset + 2] & 0x0f) << 16) | (fifo_data[offset + 1] << 8) | fifo_data[offset]);
                 if (data_press & 0x080000) {
                     data_press |= 0xFFF00000;

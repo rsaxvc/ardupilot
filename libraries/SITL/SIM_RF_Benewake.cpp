@@ -33,7 +33,7 @@ uint32_t RF_Benewake::packet_for_alt(uint16_t alt_cm, uint8_t *buffer, uint8_t b
 
     // calculate checksum:
     buffer[8] = 0;
-    for (uint8_t i=0; i<8; i++) {
+    for (uint_fast8_t i=0; i<8; i++) {
         buffer[8] += buffer[i];
     }
     return 9;

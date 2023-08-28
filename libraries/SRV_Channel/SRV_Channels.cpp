@@ -365,7 +365,7 @@ SRV_Channels::SRV_Channels(void)
     AP_Param::setup_object_defaults(this, var_info);
 
     // setup ch_num on channels
-    for (uint8_t i=0; i<NUM_SERVO_CHANNELS; i++) {
+    for (uint_fast8_t i=0; i<NUM_SERVO_CHANNELS; i++) {
         channels[i].ch_num = i;
 #if NUM_SERVO_CHANNELS > 16
         if (i >= 16) {
@@ -413,7 +413,7 @@ void SRV_Channels::init(uint32_t motor_mask, AP_HAL::RCOutput::output_mode mode)
  */
 void SRV_Channels::save_trim(void)
 {
-    for (uint8_t i=0; i<NUM_SERVO_CHANNELS; i++) {
+    for (uint_fast8_t i=0; i<NUM_SERVO_CHANNELS; i++) {
         if (trimmed_mask & (1U<<i)) {
             channels[i].servo_trim.set_and_save(channels[i].servo_trim.get());
         }
@@ -423,7 +423,7 @@ void SRV_Channels::save_trim(void)
 
 void SRV_Channels::setup_failsafe_trim_all_non_motors(void)
 {
-    for (uint8_t i = 0; i < NUM_SERVO_CHANNELS; i++) {
+    for (uint_fast8_t i = 0; i < NUM_SERVO_CHANNELS; i++) {
         if (!SRV_Channel::is_motor(channels[i].get_function())) {
             hal.rcout->set_failsafe_pwm(1U<<channels[i].ch_num, channels[i].servo_trim);
         }
@@ -446,7 +446,7 @@ void SRV_Channels::calc_pwm(void)
 
     WITH_SEMAPHORE(_singleton->override_counter_sem);
 
-    for (uint8_t i=0; i<NUM_SERVO_CHANNELS; i++) {
+    for (uint_fast8_t i=0; i<NUM_SERVO_CHANNELS; i++) {
         // check if channel has been locked out for this loop
         // if it has, decrement the loop count for that channel
         if (override_counter[i] == 0) {
@@ -537,7 +537,7 @@ void SRV_Channels::push()
 #if HAL_CANMANAGER_ENABLED
     // push outputs to CAN
     uint8_t can_num_drivers = AP::can().get_num_drivers();
-    for (uint8_t i = 0; i < can_num_drivers; i++) {
+    for (uint_fast8_t i = 0; i < can_num_drivers; i++) {
         switch (AP::can().get_driver_type(i)) {
             case AP_CANManager::Driver_Type_UAVCAN: {
                 AP_UAVCAN *ap_uavcan = AP_UAVCAN::get_uavcan(i);
@@ -585,7 +585,7 @@ void SRV_Channels::zero_rc_outputs()
      * undesired/unexpected behavior
      */
     cork();
-    for (uint8_t i=0; i<NUM_SERVO_CHANNELS; i++) {
+    for (uint_fast8_t i=0; i<NUM_SERVO_CHANNELS; i++) {
         hal.rcout->write(i, 0);
     }
     push();

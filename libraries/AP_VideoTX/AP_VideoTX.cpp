@@ -142,7 +142,7 @@ bool AP_VideoTX::init(void)
     _options.convert_parameter_width(AP_PARAM_INT16);
 
     // find the index into the power table
-    for (uint8_t i = 0; i < VTX_MAX_POWER_LEVELS; i++) {
+    for (uint_fast8_t i = 0; i < VTX_MAX_POWER_LEVELS; i++) {
         if (_power_mw <= _power_levels[i].mw) {
             if (_power_mw != _power_levels[i].mw) {
                 if (i > 0) {
@@ -167,8 +167,8 @@ bool AP_VideoTX::init(void)
 
 bool AP_VideoTX::get_band_and_channel(uint16_t freq, VideoBand& band, uint8_t& channel)
 {
-    for (uint8_t i = 0; i < AP_VideoTX::MAX_BANDS; i++) {
-        for (uint8_t j = 0; j < VTX_MAX_CHANNELS; j++) {
+    for (uint_fast8_t i = 0; i < AP_VideoTX::MAX_BANDS; i++) {
+        for (uint_fast8_t j = 0; j < VTX_MAX_CHANNELS; j++) {
             if (VIDEO_CHANNELS[i][j] == freq) {
                 band = VideoBand(i);
                 channel = j;
@@ -187,7 +187,7 @@ void AP_VideoTX::set_configured_power_mw(uint16_t power)
 
 uint8_t AP_VideoTX::find_current_power() const
 {
-    for (uint8_t i = 0; i < VTX_MAX_POWER_LEVELS; i++) {
+    for (uint_fast8_t i = 0; i < VTX_MAX_POWER_LEVELS; i++) {
         if (_power_mw == _power_levels[i].mw) {
             return i;
         }
@@ -203,7 +203,7 @@ void AP_VideoTX::set_power_dbm(uint8_t power, PowerActive active)
         return;
     }
 
-    for (uint8_t i = 0; i < VTX_MAX_POWER_LEVELS; i++) {
+    for (uint_fast8_t i = 0; i < VTX_MAX_POWER_LEVELS; i++) {
         if (power == _power_levels[i].dbm) {
             _current_power = i;
             _power_levels[i].active = active;
@@ -232,7 +232,7 @@ void AP_VideoTX::set_power_dbm(uint8_t power, PowerActive active)
 // add an active power setting in dbm
 uint8_t AP_VideoTX::update_power_dbm(uint8_t power, PowerActive active)
 {
-    for (uint8_t i = 0; i < VTX_MAX_POWER_LEVELS; i++) {
+    for (uint_fast8_t i = 0; i < VTX_MAX_POWER_LEVELS; i++) {
         if (power == _power_levels[i].dbm) {
             if (_power_levels[i].active != active) {
                 _power_levels[i].active = active;
@@ -254,11 +254,11 @@ uint8_t AP_VideoTX::update_power_dbm(uint8_t power, PowerActive active)
 // add all active power setting in dbm
 void AP_VideoTX::update_all_power_dbm(uint8_t nlevels, const uint8_t power[])
 {
-    for (uint8_t i = 0; i < nlevels; i++) {
+    for (uint_fast8_t i = 0; i < nlevels; i++) {
         update_power_dbm(power[i], PowerActive::Active);
     }
     // invalidate the remaining ones
-    for (uint8_t i = 0; i < VTX_MAX_POWER_LEVELS; i++) {
+    for (uint_fast8_t i = 0; i < VTX_MAX_POWER_LEVELS; i++) {
         if (_power_levels[i].active == PowerActive::Unknown) {
             _power_levels[i].active = PowerActive::Inactive;
         }
@@ -268,7 +268,7 @@ void AP_VideoTX::update_all_power_dbm(uint8_t nlevels, const uint8_t power[])
 // set the power in mw
 void AP_VideoTX::set_power_mw(uint16_t power)
 {
-    for (uint8_t i = 0; i < VTX_MAX_POWER_LEVELS; i++) {
+    for (uint_fast8_t i = 0; i < VTX_MAX_POWER_LEVELS; i++) {
         if (power == _power_levels[i].mw) {
             _current_power = i;
             break;
@@ -284,7 +284,7 @@ void AP_VideoTX::set_power_level(uint8_t level, PowerActive active)
         return;
     }
 
-    for (uint8_t i = 0; i < VTX_MAX_POWER_LEVELS; i++) {
+    for (uint_fast8_t i = 0; i < VTX_MAX_POWER_LEVELS; i++) {
         if (level == _power_levels[i].level) {
             _current_power = i;
             _power_levels[i].active = active;
@@ -302,7 +302,7 @@ void AP_VideoTX::set_power_dac(uint16_t power, PowerActive active)
         return;
     }
 
-    for (uint8_t i = 0; i < VTX_MAX_POWER_LEVELS; i++) {
+    for (uint_fast8_t i = 0; i < VTX_MAX_POWER_LEVELS; i++) {
         if (power == _power_levels[i].dac) {
             _current_power = i;
             _power_levels[i].active = active;
@@ -398,7 +398,7 @@ bool AP_VideoTX::update_power() const {
         return false;
     }
     // check that the requested power is actually allowed
-    for (uint8_t i = 0; i < VTX_MAX_POWER_LEVELS; i++) {
+    for (uint_fast8_t i = 0; i < VTX_MAX_POWER_LEVELS; i++) {
         if (_power_mw == _power_levels[i].mw
             && _power_levels[i].active != PowerActive::Inactive) {
             return true;
@@ -512,7 +512,7 @@ void AP_VideoTX::change_power(int8_t position)
     }
     // first find out how many possible levels there are
     uint8_t num_active_levels = 0;
-    for (uint8_t i = 0; i < VTX_MAX_POWER_LEVELS; i++) {
+    for (uint_fast8_t i = 0; i < VTX_MAX_POWER_LEVELS; i++) {
         if (_power_levels[i].active != PowerActive::Inactive) {
             num_active_levels++;
         }
@@ -521,7 +521,7 @@ void AP_VideoTX::change_power(int8_t position)
     uint16_t level = constrain_int16(roundf((num_active_levels * (position + 1)/ 6.0f) - 1), 0, num_active_levels - 1);
     debug("looking for pos %d power level %d from %d", position, level, num_active_levels);
     uint16_t power = 0;
-    for (uint8_t i = 0, j = 0; i < num_active_levels; i++, j++) {
+    for (uint_fast8_t i = 0, j = 0; i < num_active_levels; i++, j++) {
         while (j < VTX_MAX_POWER_LEVELS-1 && _power_levels[j].active == PowerActive::Inactive) {
             j++;
         }

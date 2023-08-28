@@ -30,7 +30,7 @@ void AP_MotorsMatrix_6DoF_Scripting::output_to_motors()
         case SpoolState::GROUND_IDLE:
         {
             // no output, cant spin up for ground idle because we don't know which way motors should be spining
-            for (uint8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
+            for (uint_fast8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
                 if (motor_enabled[i]) {
                     _actuator[i] = 0.0f;
                 }
@@ -41,7 +41,7 @@ void AP_MotorsMatrix_6DoF_Scripting::output_to_motors()
         case SpoolState::THROTTLE_UNLIMITED:
         case SpoolState::SPOOLING_DOWN:
             // set motor output based on thrust requests
-            for (uint8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
+            for (uint_fast8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
                 if (motor_enabled[i]) {
                     if (_reversible[i]) {
                         // revesible motor can provide both positive and negative thrust, +- spin max, spin min does not apply
@@ -64,7 +64,7 @@ void AP_MotorsMatrix_6DoF_Scripting::output_to_motors()
     }
 
     // Send to each motor
-    for (uint8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
+    for (uint_fast8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
         if (motor_enabled[i]) {
             SRV_Channels::set_output_scaled(SRV_Channels::get_motor_function(i), _actuator[i] * 4500);
         }
@@ -282,7 +282,7 @@ void AP_MotorsMatrix_6DoF_Scripting::add_motor(int8_t motor_num, float roll_fact
 
 bool AP_MotorsMatrix_6DoF_Scripting::init(uint8_t expected_num_motors) {
     uint8_t num_motors = 0;
-    for (uint8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
+    for (uint_fast8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
         if (motor_enabled[i]) {
             num_motors++;
         }

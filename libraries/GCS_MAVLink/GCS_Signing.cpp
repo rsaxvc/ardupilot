@@ -87,7 +87,7 @@ void GCS_MAVLINK::handle_setup_signing(const mavlink_message_t &msg) const
     }
 
     // activate it immediately on all links:
-    for (uint8_t i=0; i<MAVLINK_COMM_NUM_BUFFERS; i++) {
+    for (uint_fast8_t i=0; i<MAVLINK_COMM_NUM_BUFFERS; i++) {
         GCS_MAVLINK *backend = gcs().chan(i);
         if (backend == nullptr) {
             return;
@@ -114,7 +114,7 @@ static bool accept_unsigned_callback(const mavlink_status_t *status, uint32_t ms
         // is USB on PX4 boards
         return true;
     }
-    for (uint8_t i=0; i<ARRAY_SIZE(accept_list); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(accept_list); i++) {
         if (accept_list[i] == msgId) {
             return true;
         }
@@ -148,7 +148,7 @@ void GCS_MAVLINK::load_signing_key(void)
 
     // if timestamp and key are all zero then we disable signing
     bool all_zero = (key.timestamp == 0);
-    for (uint8_t i=0; i<sizeof(key.secret_key); i++) {
+    for (uint_fast8_t i=0; i<sizeof(key.secret_key); i++) {
         if (signing.secret_key[i] != 0) {
             all_zero = false;
             break;
@@ -181,7 +181,7 @@ void GCS_MAVLINK::update_signing_timestamp(uint64_t timestamp_usec)
     signing_timestamp *= 100 * 1000ULL;
 
     // increase signing timestamp on any links that have signing
-    for (uint8_t i=0; i<MAVLINK_COMM_NUM_BUFFERS; i++) {
+    for (uint_fast8_t i=0; i<MAVLINK_COMM_NUM_BUFFERS; i++) {
         mavlink_channel_t chan = (mavlink_channel_t)(MAVLINK_COMM_0 + i);
         mavlink_status_t *status = mavlink_get_channel_status(chan);
         if (status && status->signing && status->signing->timestamp < signing_timestamp) {
@@ -213,7 +213,7 @@ void GCS_MAVLINK::save_signing_timestamp(bool force_save_now)
     }
     bool need_save = false;
 
-    for (uint8_t i=0; i<MAVLINK_COMM_NUM_BUFFERS; i++) {
+    for (uint_fast8_t i=0; i<MAVLINK_COMM_NUM_BUFFERS; i++) {
         mavlink_channel_t chan = (mavlink_channel_t)(MAVLINK_COMM_0 + i);
         const mavlink_status_t *status = mavlink_get_channel_status(chan);
         if (status && status->signing && status->signing->timestamp > key.timestamp) {

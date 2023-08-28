@@ -507,7 +507,7 @@ void AP_KDECAN::loop()
                 (new_output && (pwm_last_sent == 0 || now - pwm_last_sent > SET_PWM_TIMEOUT_US)) ||
                 (pwm_last_sent != 0 && (now - pwm_last_sent > SET_PWM_MIN_INTERVAL_US))) {
 
-                for (uint8_t esc_num = sending_esc_num; esc_num < _esc_max_node_id; esc_num++) {
+                for (uint_fast8_t esc_num = sending_esc_num; esc_num < _esc_max_node_id; esc_num++) {
 
                     if ((_esc_present_bitmask & (1 << esc_num)) == 0) {
                         continue;
@@ -576,7 +576,7 @@ void AP_KDECAN::loop()
 void AP_KDECAN::update()
 {
     if (_rc_out_sem.take(1)) {
-        for (uint8_t i = 0; i < KDECAN_MAX_NUM_ESCS; i++) {
+        for (uint_fast8_t i = 0; i < KDECAN_MAX_NUM_ESCS; i++) {
             if ((_esc_present_bitmask & (1 << i)) == 0) {
                 _scaled_output[i] = 0;
                 continue;

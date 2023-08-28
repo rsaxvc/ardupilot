@@ -54,7 +54,7 @@ void PS_TeraRangerTower::update_output(const Location &location)
         uint8_t checksum;
     } send_buffer;
 
-    for (uint8_t i=0; i<8; i++) {
+    for (uint_fast8_t i=0; i<8; i++) {
         const uint16_t bf_angle = (360 - (i * 45)) % 360;
         float distance = measure_distance_at_angle_bf(location, bf_angle);
         // ::fprintf(stderr, "SIM: %f=%fm\n", current_degrees_bf, distance);

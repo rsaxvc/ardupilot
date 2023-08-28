@@ -60,7 +60,7 @@ void AP_Mount::init()
     bool primary_set = false;
 
     // create each instance
-    for (uint8_t instance=0; instance<AP_MOUNT_MAX_INSTANCES; instance++) {
+    for (uint_fast8_t instance=0; instance<AP_MOUNT_MAX_INSTANCES; instance++) {
         MountType mount_type = get_mount_type(instance);
 
         // check for servo mounts
@@ -138,7 +138,7 @@ void AP_Mount::init()
     }
 
     // init each instance, do it after all instances were created, so that they all know things
-    for (uint8_t instance=0; instance<AP_MOUNT_MAX_INSTANCES; instance++) {
+    for (uint_fast8_t instance=0; instance<AP_MOUNT_MAX_INSTANCES; instance++) {
         if (_backends[instance] != nullptr) {
             _backends[instance]->init();
             set_mode_to_default(instance);
@@ -150,7 +150,7 @@ void AP_Mount::init()
 void AP_Mount::update()
 {
     // update each instance
-    for (uint8_t instance=0; instance<AP_MOUNT_MAX_INSTANCES; instance++) {
+    for (uint_fast8_t instance=0; instance<AP_MOUNT_MAX_INSTANCES; instance++) {
         if (_backends[instance] != nullptr) {
             _backends[instance]->update();
         }
@@ -161,7 +161,7 @@ void AP_Mount::update()
 void AP_Mount::update_fast()
 {
     // update each instance
-    for (uint8_t instance=0; instance<AP_MOUNT_MAX_INSTANCES; instance++) {
+    for (uint_fast8_t instance=0; instance<AP_MOUNT_MAX_INSTANCES; instance++) {
         if (_backends[instance] != nullptr) {
             _backends[instance]->update_fast();
         }
@@ -362,7 +362,7 @@ void AP_Mount::handle_global_position_int(const mavlink_message_t &msg)
         return;
     }
 
-    for (uint8_t instance=0; instance<AP_MOUNT_MAX_INSTANCES; instance++) {
+    for (uint_fast8_t instance=0; instance<AP_MOUNT_MAX_INSTANCES; instance++) {
         if (_backends[instance] != nullptr) {
             _backends[instance]->handle_global_position_int(msg.sysid, packet);
         }
@@ -403,7 +403,7 @@ void AP_Mount::handle_mount_control(const mavlink_message_t &msg)
 void AP_Mount::send_gimbal_device_attitude_status(mavlink_channel_t chan)
 {
     // call send_gimbal_device_attitude_status for each instance
-    for (uint8_t instance=0; instance<AP_MOUNT_MAX_INSTANCES; instance++) {
+    for (uint_fast8_t instance=0; instance<AP_MOUNT_MAX_INSTANCES; instance++) {
         if (_backends[instance] != nullptr) {
             _backends[instance]->send_gimbal_device_attitude_status(chan);
         }
@@ -438,7 +438,7 @@ bool AP_Mount::get_attitude_euler(uint8_t instance, float& roll_deg, float& pitc
 bool AP_Mount::pre_arm_checks(char *failure_msg, uint8_t failure_msg_len)
 {
     // check type parameters
-    for (uint8_t i=0; i<AP_MOUNT_MAX_INSTANCES; i++) {
+    for (uint_fast8_t i=0; i<AP_MOUNT_MAX_INSTANCES; i++) {
         if ((_params[i].type != Mount_Type_None) && (_backends[i] == nullptr)) {
             strncpy(failure_msg, "check TYPE", failure_msg_len);
             return false;
@@ -451,7 +451,7 @@ bool AP_Mount::pre_arm_checks(char *failure_msg, uint8_t failure_msg_len)
     }
 
     // check healthy
-    for (uint8_t i=0; i<AP_MOUNT_MAX_INSTANCES; i++) {
+    for (uint_fast8_t i=0; i<AP_MOUNT_MAX_INSTANCES; i++) {
         if ((_backends[i] != nullptr) && !_backends[i]->healthy()) {
             strncpy(failure_msg, "not healthy", failure_msg_len);
             return false;
@@ -602,7 +602,7 @@ AP_Mount_Backend *AP_Mount::get_instance(uint8_t instance) const
 // pass a GIMBAL_REPORT message to the backend
 void AP_Mount::handle_gimbal_report(mavlink_channel_t chan, const mavlink_message_t &msg)
 {
-    for (uint8_t instance=0; instance<AP_MOUNT_MAX_INSTANCES; instance++) {
+    for (uint_fast8_t instance=0; instance<AP_MOUNT_MAX_INSTANCES; instance++) {
         if (_backends[instance] != nullptr) {
             _backends[instance]->handle_gimbal_report(chan, msg);
         }
@@ -641,7 +641,7 @@ void AP_Mount::handle_message(mavlink_channel_t chan, const mavlink_message_t &m
 // handle PARAM_VALUE
 void AP_Mount::handle_param_value(const mavlink_message_t &msg)
 {
-    for (uint8_t instance=0; instance<AP_MOUNT_MAX_INSTANCES; instance++) {
+    for (uint_fast8_t instance=0; instance<AP_MOUNT_MAX_INSTANCES; instance++) {
         if (_backends[instance] != nullptr) {
             _backends[instance]->handle_param_value(msg);
         }
@@ -652,7 +652,7 @@ void AP_Mount::handle_param_value(const mavlink_message_t &msg)
 // handle GIMBAL_DEVICE_INFORMATION message
 void AP_Mount::handle_gimbal_device_information(const mavlink_message_t &msg)
 {
-    for (uint8_t instance=0; instance<AP_MOUNT_MAX_INSTANCES; instance++) {
+    for (uint_fast8_t instance=0; instance<AP_MOUNT_MAX_INSTANCES; instance++) {
         if (_backends[instance] != nullptr) {
             _backends[instance]->handle_gimbal_device_information(msg);
         }
@@ -662,7 +662,7 @@ void AP_Mount::handle_gimbal_device_information(const mavlink_message_t &msg)
 // handle GIMBAL_DEVICE_ATTITUDE_STATUS message
 void AP_Mount::handle_gimbal_device_attitude_status(const mavlink_message_t &msg)
 {
-    for (uint8_t instance=0; instance<AP_MOUNT_MAX_INSTANCES; instance++) {
+    for (uint_fast8_t instance=0; instance<AP_MOUNT_MAX_INSTANCES; instance++) {
         if (_backends[instance] != nullptr) {
             _backends[instance]->handle_gimbal_device_attitude_status(msg);
         }
@@ -715,7 +715,7 @@ void AP_Mount::convert_params()
         { k_param_mount_key, 18, AP_PARAM_FLOAT, "MNT1_LEAD_PTCH" },
     };
     uint8_t table_size = ARRAY_SIZE(mnt_param_conversion_info);
-    for (uint8_t i=0; i<table_size; i++) {
+    for (uint_fast8_t i=0; i<table_size; i++) {
         AP_Param::convert_old_parameter(&mnt_param_conversion_info[i], 1.0f);
     }
 
@@ -729,7 +729,7 @@ void AP_Mount::convert_params()
         { k_param_mount_key, 15, AP_PARAM_INT16, "MNT1_YAW_MAX" },
     };
     table_size = ARRAY_SIZE(mnt_param_deg_conversion_info);
-    for (uint8_t i=0; i<table_size; i++) {
+    for (uint_fast8_t i=0; i<table_size; i++) {
         AP_Param::convert_old_parameter(&mnt_param_deg_conversion_info[i], 0.01f);
     }
 
@@ -743,7 +743,7 @@ void AP_Mount::convert_params()
         {10, 213},  // MTN_RC_IN_TILT to RCx_OPTION = 213 (MOUNT1_PITCH)
         {13, 214},  // MTN_RC_IN_PAN to RCx_OPTION = 214 (MOUNT1_YAW)
     };
-    for (uint8_t i = 0; i < ARRAY_SIZE(mnt_rc_conversion_table); i++) {
+    for (uint_fast8_t i = 0; i < ARRAY_SIZE(mnt_rc_conversion_table); i++) {
         int8_t mnt_rcin = 0;
         if (AP_Param::get_param_by_index(this, mnt_rc_conversion_table[i].old_rcin_idx, AP_PARAM_INT8, &mnt_rcin) && (mnt_rcin > 0)) {
             // get pointers to the appropriate RCx_OPTION parameter

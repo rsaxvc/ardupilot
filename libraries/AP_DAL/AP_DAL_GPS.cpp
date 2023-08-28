@@ -8,7 +8,7 @@ static Location tmp_location[GPS_MAX_INSTANCES];
 
 AP_DAL_GPS::AP_DAL_GPS()
 {
-    for (uint8_t i=0; i<ARRAY_SIZE(_RGPI); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(_RGPI); i++) {
         _RGPI[i].instance = i;
         _RGPJ[i].instance = i;
     }
@@ -33,7 +33,7 @@ void AP_DAL_GPS::start_frame()
 
     WRITE_REPLAY_BLOCK_IFCHANGED(RGPH, _RGPH, old_RGPH);
 
-    for (uint8_t i=0; i<ARRAY_SIZE(_RGPI); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(_RGPI); i++) {
         log_RGPI &RGPI = _RGPI[i];
         log_RGPJ &RGPJ = _RGPJ[i];
         const log_RGPI old_RGPI = RGPI;

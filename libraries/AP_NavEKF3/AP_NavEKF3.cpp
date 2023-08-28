@@ -784,14 +784,14 @@ bool NavEKF3::InitialiseFilter(void)
         _imuMask.set(_imuMask.get() & mask);
         
         // initialise the setup variables
-        for (uint8_t i=0; i<MAX_EKF_CORES; i++) {
+        for (uint_fast8_t i=0; i<MAX_EKF_CORES; i++) {
             coreSetupRequired[i] = false;
             coreImuIndex[i] = 0;
         }
         num_cores = 0;
 
         // count IMUs from mask
-        for (uint8_t i=0; i<MAX_EKF_CORES; i++) {
+        for (uint_fast8_t i=0; i<MAX_EKF_CORES; i++) {
             if (_imuMask & (1U<<i)) {
                 coreSetupRequired[num_cores] = true;
                 coreImuIndex[num_cores] = i;
@@ -815,7 +815,7 @@ bool NavEKF3::InitialiseFilter(void)
         }
 
         // Call constructors on all cores
-        for (uint8_t i = 0; i < num_cores; i++) {
+        for (uint_fast8_t i = 0; i < num_cores; i++) {
             new (&core[i]) NavEKF3_core(this);
         }
     }
@@ -824,7 +824,7 @@ bool NavEKF3::InitialiseFilter(void)
     // This specifies the IMU to be used and creates the data buffers
     // If we are unable to set up a core, return false and try again next time the function is called
     bool core_setup_success = true;
-    for (uint8_t core_index=0; core_index<num_cores; core_index++) {
+    for (uint_fast8_t core_index=0; core_index<num_cores; core_index++) {
         if (coreSetupRequired[core_index]) {
             coreSetupRequired[core_index] = !core[core_index].setup_core(coreImuIndex[core_index], core_index);
             if (coreSetupRequired[core_index]) {
@@ -849,7 +849,7 @@ bool NavEKF3::InitialiseFilter(void)
     // initialise the cores. We return success only if all cores
     // initialise successfully
     bool ret = true;
-    for (uint8_t i=0; i<num_cores; i++) {
+    for (uint_fast8_t i=0; i<num_cores; i++) {
         ret &= core[i].InitialiseFilterBootstrap();
     }
 
@@ -904,7 +904,7 @@ void NavEKF3::UpdateFilter(void)
 
     imuSampleTime_us = AP::dal().micros64();
 
-    for (uint8_t i=0; i<num_cores; i++) {
+    for (uint_fast8_t i=0; i<num_cores; i++) {
         // if we have not overrun by more than 3 IMU frames, and we
         // have already used more than 1/3 of the CPU budget for this
         // loop then suppress the prediction step. This allows
@@ -943,7 +943,7 @@ void NavEKF3::UpdateFilter(void)
         uint8_t newPrimaryIndex = primary;
 
         // loop through all available cores to find if an alternative core is available
-        for (uint8_t coreIndex=0; coreIndex<num_cores; coreIndex++) {
+        for (uint_fast8_t coreIndex=0; coreIndex<num_cores; coreIndex++) {
             if (coreIndex != primary) {
                 float altCoreError = coreRelativeErrors[coreIndex];
 
@@ -1022,7 +1022,7 @@ void NavEKF3::checkLaneSwitch(void)
     float primaryErrorScore = core[primary].errorScore();
     float lowestErrorScore = primaryErrorScore;
     uint8_t newPrimaryIndex = primary;
-    for (uint8_t coreIndex=0; coreIndex<num_cores; coreIndex++) {
+    for (uint_fast8_t coreIndex=0; coreIndex<num_cores; coreIndex++) {
         if (coreIndex != primary) {
             const NavEKF3_core &newCore = core[coreIndex];
             // an alternative core is available for selection only if healthy and if states have been updated on this time step
@@ -1050,7 +1050,7 @@ void NavEKF3::requestYawReset(void)
 {
     AP::dal().log_event3(AP_DAL::Event::requestYawReset);
 
-    for (uint8_t i = 0; i < num_cores; i++) {
+    for (uint_fast8_t i = 0; i < num_cores; i++) {
         core[i].EKFGSF_requestYawReset();
     }
 }
@@ -1060,7 +1060,7 @@ void NavEKF3::requestYawReset(void)
 */
 float NavEKF3::updateCoreErrorScores()
 {
-    for (uint8_t i = 0; i < num_cores; i++) {
+    for (uint_fast8_t i = 0; i < num_cores; i++) {
         coreErrorScores[i] = core[i].errorScore();
     }
     return coreErrorScores[primary];
@@ -1074,7 +1074,7 @@ float NavEKF3::updateCoreErrorScores()
 void NavEKF3::updateCoreRelativeErrors()
 {
     float error = 0;
-    for (uint8_t i = 0; i < num_cores; i++) {
+    for (uint_fast8_t i = 0; i < num_cores; i++) {
         if (i != primary) {
             error = coreErrorScores[i] - coreErrorScores[primary];
             // reduce error for a core only if its better than the primary lane by at least the Relative Error Threshold, this should prevent unnecessary lane changes
@@ -1089,7 +1089,7 @@ void NavEKF3::updateCoreRelativeErrors()
 // Reset the relative error values
 void NavEKF3::resetCoreErrors(void)
 {
-    for (uint8_t i = 0; i < num_cores; i++) {
+    for (uint_fast8_t i = 0; i < num_cores; i++) {
         coreRelativeErrors[i] = 0;
     }
 }
@@ -1134,7 +1134,7 @@ bool NavEKF3::pre_arm_check(bool requires_position, char *failure_msg, uint8_t f
         AP::dal().snprintf(failure_msg, failure_msg_len, "no EKF3 cores");
         return false;
     }
-    for (uint8_t i = 0; i < num_cores; i++) {
+    for (uint_fast8_t i = 0; i < num_cores; i++) {
         if (!core[i].healthy()) {
             const char *failure = core[i].prearm_failure_reason();
             if (failure != nullptr) {
@@ -1257,7 +1257,7 @@ void NavEKF3::resetGyroBias(void)
     AP::dal().log_event3(AP_DAL::Event::resetGyroBias);
 
     if (core) {
-        for (uint8_t i=0; i<num_cores; i++) {
+        for (uint_fast8_t i=0; i<num_cores; i++) {
             core[i].resetGyroBias();
         }
     }
@@ -1274,7 +1274,7 @@ bool NavEKF3::resetHeightDatum(void)
 
     bool status = true;
     if (core) {
-        for (uint8_t i=0; i<num_cores; i++) {
+        for (uint_fast8_t i=0; i<num_cores; i++) {
             if (!core[i].resetHeightDatum()) {
                 status = false;
             }
@@ -1344,7 +1344,7 @@ bool NavEKF3::getMagOffsets(uint8_t mag_idx, Vector3f &magOffsets) const
     if (core[primary].getMagOffsets(mag_idx, magOffsets)) {
         return true;
     }
-    for (uint8_t i=0; i<num_cores; i++) {
+    for (uint_fast8_t i=0; i<num_cores; i++) {
         if(core[i].getMagOffsets(mag_idx, magOffsets)) {
             return true;
         }
@@ -1399,7 +1399,7 @@ bool NavEKF3::setOriginLLH(const Location &loc)
         return false;
     }
     bool ret = false;
-    for (uint8_t i=0; i<num_cores; i++) {
+    for (uint_fast8_t i=0; i<num_cores; i++) {
         ret |= core[i].setOriginLLH(loc);
     }
     // return true if any core accepts the new origin
@@ -1529,7 +1529,7 @@ void NavEKF3::writeOptFlowMeas(const uint8_t rawFlowQuality, const Vector2f &raw
     AP::dal().writeOptFlowMeas(rawFlowQuality, rawFlowRates, rawGyroRates, msecFlowMeas, posOffset, heightOverride);
 
     if (core) {
-        for (uint8_t i=0; i<num_cores; i++) {
+        for (uint_fast8_t i=0; i<num_cores; i++) {
             core[i].writeOptFlowMeas(rawFlowQuality, rawFlowRates, rawGyroRates, msecFlowMeas, posOffset, heightOverride);
         }
     }
@@ -1551,7 +1551,7 @@ void NavEKF3::writeEulerYawAngle(float yawAngle, float yawAngleErr, uint32_t tim
     AP::dal().log_writeEulerYawAngle(yawAngle, yawAngleErr, timeStamp_ms, type);
 
     if (core) {
-        for (uint8_t i=0; i<num_cores; i++) {
+        for (uint_fast8_t i=0; i<num_cores; i++) {
             core[i].writeEulerYawAngle(yawAngle, yawAngleErr, timeStamp_ms, type);
         }
     }
@@ -1574,7 +1574,7 @@ void NavEKF3::writeExtNavData(const Vector3f &pos, const Quaternion &quat, float
     AP::dal().writeExtNavData(pos, quat, posErr, angErr, timeStamp_ms, delay_ms, resetTime_ms);
 
     if (core) {
-        for (uint8_t i=0; i<num_cores; i++) {
+        for (uint_fast8_t i=0; i<num_cores; i++) {
             core[i].writeExtNavData(pos, quat, posErr, angErr, timeStamp_ms, delay_ms, resetTime_ms);
         }
     }
@@ -1591,7 +1591,7 @@ void NavEKF3::writeExtNavVelData(const Vector3f &vel, float err, uint32_t timeSt
     AP::dal().writeExtNavVelData(vel, err, timeStamp_ms, delay_ms);
 
     if (core) {
-        for (uint8_t i=0; i<num_cores; i++) {
+        for (uint_fast8_t i=0; i<num_cores; i++) {
             core[i].writeExtNavVelData(vel, err, timeStamp_ms, delay_ms);
         }
     }
@@ -1614,7 +1614,7 @@ void NavEKF3::writeBodyFrameOdom(float quality, const Vector3f &delPos, const Ve
     AP::dal().writeBodyFrameOdom(quality, delPos, delAng, delTime, timeStamp_ms, delay_ms, posOffset);
 
     if (core) {
-        for (uint8_t i=0; i<num_cores; i++) {
+        for (uint_fast8_t i=0; i<num_cores; i++) {
             core[i].writeBodyFrameOdom(quality, delPos, delAng, delTime, timeStamp_ms, delay_ms, posOffset);
         }
     }
@@ -1633,7 +1633,7 @@ void NavEKF3::writeWheelOdom(float delAng, float delTime, uint32_t timeStamp_ms,
     AP::dal().writeWheelOdom(delAng, delTime, timeStamp_ms, posOffset, radius);
 
     if (core) {
-        for (uint8_t i=0; i<num_cores; i++) {
+        for (uint_fast8_t i=0; i<num_cores; i++) {
             core[i].writeWheelOdom(delAng, delTime, timeStamp_ms, posOffset, radius);
         }
     }
@@ -1753,7 +1753,7 @@ void NavEKF3::setTerrainHgtStable(bool val)
     }
 
     if (core) {
-        for (uint8_t i=0; i<num_cores; i++) {
+        for (uint_fast8_t i=0; i<num_cores; i++) {
             core[i].setTerrainHgtStable(val);
         }
     }
@@ -2019,7 +2019,7 @@ void NavEKF3::writeDefaultAirSpeed(float airspeed, float uncertainty)
     AP::dal().log_writeDefaultAirSpeed3(airspeed, uncertainty);
 
     if (core) {
-        for (uint8_t i=0; i<num_cores; i++) {
+        for (uint_fast8_t i=0; i<num_cores; i++) {
             core[i].writeDefaultAirSpeed(airspeed, uncertainty);
         }
     }

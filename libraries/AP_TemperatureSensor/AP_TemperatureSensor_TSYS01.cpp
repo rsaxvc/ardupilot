@@ -91,7 +91,7 @@ void AP_TemperatureSensor_TSYS01::init()
 bool AP_TemperatureSensor_TSYS01::read_prom()
 {
     bool success = false;
-    for (uint8_t i = 0; i < ARRAY_SIZE(_k); i++) {
+    for (uint_fast8_t i = 0; i < ARRAY_SIZE(_k); i++) {
         // Read only the prom values that we use
         _k[i] = read_prom_word(ARRAY_SIZE(_k)-i);
         success |= (_k[i] != 0);

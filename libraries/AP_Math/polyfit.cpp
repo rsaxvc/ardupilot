@@ -42,14 +42,14 @@ bool PolyFit<order,xtype,vtype>::get_polynomial(vtype res[order]) const
     // the summation must be done with double precision to get
     // good accuracy
     Vector3d resd[order] {};
-    for (uint8_t i = 0; i < order; i++) {
-        for (uint8_t j = 0; j < order; j++) {
+    for (uint_fast8_t i = 0; i < order; i++) {
+        for (uint_fast8_t j = 0; j < order; j++) {
             resd[i].x += vec[j].x * inv_mat[i*order+j];
             resd[i].y += vec[j].y * inv_mat[i*order+j];
             resd[i].z += vec[j].z * inv_mat[i*order+j];
         }
     }
-    for (uint8_t j = 0; j < order; j++) {
+    for (uint_fast8_t j = 0; j < order; j++) {
         res[j].x = resd[j].x;
         res[j].y = resd[j].y;
         res[j].z = resd[j].z;

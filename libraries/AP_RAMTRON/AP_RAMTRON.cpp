@@ -72,7 +72,7 @@ bool AP_RAMTRON::init(void)
         }
     }
 
-    for (uint8_t i = 0; i < ARRAY_SIZE(ramtron_ids); i++) {
+    for (uint_fast8_t i = 0; i < ARRAY_SIZE(ramtron_ids); i++) {
         if (ramtron_ids[i].rdid_type == RDID_type::Cypress) {
             const cypress_rdid *cypress = (const cypress_rdid *)rdid;
             if (ramtron_ids[i].id1 == cypress->id1 &&
@@ -133,7 +133,7 @@ bool AP_RAMTRON::read(uint32_t offset, uint8_t *buf, uint32_t size)
         size -= maxread;
     }
 
-    for (uint8_t r=0; r<RAMTRON_RETRIES; r++) {
+    for (uint_fast8_t r=0; r<RAMTRON_RETRIES; r++) {
         if (r != 0) {
             hal.scheduler->delay(RAMTRON_DELAY_MS);
         }
@@ -183,7 +183,7 @@ bool AP_RAMTRON::write(uint32_t offset, const uint8_t *buf, uint32_t size)
 
     WITH_SEMAPHORE(dev->get_semaphore());
 
-    for (uint8_t r=0; r<RAMTRON_RETRIES; r++) {
+    for (uint_fast8_t r=0; r<RAMTRON_RETRIES; r++) {
         if (r != 0) {
             hal.scheduler->delay(RAMTRON_DELAY_MS);
         }

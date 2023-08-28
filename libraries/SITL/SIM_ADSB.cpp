@@ -96,7 +96,7 @@ void ADSB::update(const class Aircraft &aircraft)
         return;
     } else if (num_vehicles != _sitl->adsb_plane_count) {
         num_vehicles = _sitl->adsb_plane_count;
-        for (uint8_t i=0; i<num_vehicles_MAX; i++) {
+        for (uint_fast8_t i=0; i<num_vehicles_MAX; i++) {
             vehicles[i].initialised = false;
         }
     }
@@ -107,7 +107,7 @@ void ADSB::update(const class Aircraft &aircraft)
     float delta_t = (now_us - last_update_us) * 1.0e-6f;
     last_update_us = now_us;
 
-    for (uint8_t i=0; i<num_vehicles; i++) {
+    for (uint_fast8_t i=0; i<num_vehicles; i++) {
         vehicles[i].update(delta_t);
     }
     
@@ -131,7 +131,7 @@ void ADSB::send_report(const class Aircraft &aircraft)
     ssize_t ret;
 
     while ((ret=read_from_autopilot((char*)buf, sizeof(buf))) > 0) {
-        for (uint8_t i=0; i<ret; i++) {
+        for (uint_fast8_t i=0; i<ret; i++) {
             mavlink_message_t msg;
             mavlink_status_t status;
             if (mavlink_frame_char_buffer(&mavlink.rxmsg, &mavlink.status,
@@ -194,7 +194,7 @@ void ADSB::send_report(const class Aircraft &aircraft)
 
     uint32_t now_us = AP_HAL::micros();
     if (now_us - last_report_us >= reporting_period_ms*1000UL) {
-        for (uint8_t i=0; i<num_vehicles; i++) {
+        for (uint_fast8_t i=0; i<num_vehicles; i++) {
             ADSB_Vehicle &vehicle = vehicles[i];
             Location loc = home;
 

@@ -176,7 +176,7 @@ void AP_Mount_SToRM32_serial::send_target_angles(const MountTarget& angle_target
 
     cmd_set_angles_data.crc = crc_calculate(&buf[1], sizeof(cmd_set_angles_data)-3);
 
-    for (uint8_t i = 0;  i != sizeof(cmd_set_angles_data) ; i++) {
+    for (uint_fast8_t i = 0;  i != sizeof(cmd_set_angles_data) ; i++) {
         _port->write(buf[i]);
     }
 

@@ -55,7 +55,7 @@ void AP_Proximity_LightWareSerial::send_message(uint8_t msgid, bool write, const
 
     // payload
     if ((payload_len > 0) && (payload != nullptr)) {
-        for (uint16_t i = 0; i < payload_len; i++) {
+        for (uint_fast16_t i = 0; i < payload_len; i++) {
             _uart->write(payload[i]);
             crc = crc_xmodem_update(crc, payload[i]);
         }

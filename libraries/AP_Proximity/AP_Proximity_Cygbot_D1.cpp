@@ -138,7 +138,7 @@ void AP_Proximity_Cygbot_D1::parse_payload()
     float sampled_angle = CYGBOT_2D_START_ANGLE;
 
     // start from second byte as first byte is part of the header
-    for (uint16_t i = 2; i < _msg.payload_len; i += 2) {
+    for (uint_fast16_t i = 2; i < _msg.payload_len; i += 2) {
         const float corrected_angle = correct_angle_for_orientation(sampled_angle);
         const uint16_t distance_mm = UINT16_VALUE(_msg.payload[i], _msg.payload[i+1]);
         float distance_m = distance_mm * 0.001f;
@@ -167,7 +167,7 @@ uint8_t AP_Proximity_Cygbot_D1::calc_checksum(uint8_t *buff, int buffSize)
     uint8_t check_sum_num = 0;
     check_sum_num ^= _msg.payload_len_flags_high;
     check_sum_num ^= _msg.payload_len_flags_low;
-    for (uint16_t i = 0; i <= buffSize; i++) {
+    for (uint_fast16_t i = 0; i <= buffSize; i++) {
         check_sum_num ^= buff[i];
     }
     return check_sum_num;

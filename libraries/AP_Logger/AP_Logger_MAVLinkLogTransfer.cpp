@@ -226,7 +226,7 @@ void AP_Logger::handle_log_sending()
     }
 #endif
 
-    for (uint8_t i=0; i<num_sends; i++) {
+    for (uint_fast8_t i=0; i<num_sends; i++) {
         if (transfer_activity != TransferActivity::SENDING) {
             // may have completed sending data
             break;

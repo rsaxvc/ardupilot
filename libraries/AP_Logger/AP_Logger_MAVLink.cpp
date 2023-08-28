@@ -198,7 +198,7 @@ void AP_Logger_MAVLink::free_all_blocks()
     _blocks_sent.oldest = _blocks_sent.youngest = nullptr;
 
     // add blocks to the free stack:
-    for(uint8_t i=0; i < _blockcount; i++) {
+    for (uint_fast8_t i=0; i < _blockcount; i++) {
         _blocks[i].next = _blocks_free;
         _blocks_free = &_blocks[i];
         // this value doesn't really matter, but it stops valgrind

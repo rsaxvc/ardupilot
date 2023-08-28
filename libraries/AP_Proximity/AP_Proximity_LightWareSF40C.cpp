@@ -138,7 +138,7 @@ void AP_Proximity_LightWareSF40C::send_message(MessageID msgid, bool write, cons
 
     // payload
     if ((payload_len > 0) && (payload != nullptr)) {
-        for (uint16_t i = 0; i < payload_len; i++) {
+        for (uint_fast16_t i = 0; i < payload_len; i++) {
             _uart->write(payload[i]);
             crc = crc_xmodem_update(crc, payload[i]);
         }
@@ -316,7 +316,7 @@ void AP_Proximity_LightWareSF40C::process_message()
         uint8_t combined_count = 0;
         float combined_angle_deg = 0;
         float combined_dist_m = INT16_MAX;
-        for (uint16_t i = 0; i < point_count; i++) {
+        for (uint_fast16_t i = 0; i < point_count; i++) {
             const uint16_t idx = 14 + (i * 2);
             const int16_t dist_cm = (int16_t)buff_to_uint16(_msg.payload[idx], _msg.payload[idx+1]);
             const float angle_deg = wrap_360((point_start_index + i) * angle_inc_deg * angle_sign + angle_correction);

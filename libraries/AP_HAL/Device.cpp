@@ -88,7 +88,7 @@ void AP_HAL::Device::set_checked_register(uint8_t bank, uint8_t reg, uint8_t val
         return;
     }
     struct checkreg *regs = _checked.regs;
-    for (uint8_t i=0; i<_checked.n_set; i++) {
+    for (uint_fast8_t i=0; i<_checked.n_set; i++) {
         if (regs[i].regnum == reg && regs[i].bank == bank) {
             regs[i].value = val;
             return;

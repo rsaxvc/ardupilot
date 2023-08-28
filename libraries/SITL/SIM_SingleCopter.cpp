@@ -51,7 +51,7 @@ void SingleCopter::update(const struct sitl_input &input)
     update_wind(input);
 
     float actuator[4];
-    for (uint8_t i=0; i<4; i++) {
+    for (uint_fast8_t i=0; i<4; i++) {
         actuator[i] = constrain_float((input.servos[i]-1500) / 500.0f, -1, 1);
     }
     float thrust;

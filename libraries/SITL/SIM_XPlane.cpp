@@ -280,7 +280,7 @@ void XPlane::check_reload_dref(void)
 
 int8_t XPlane::find_data_index(uint8_t code)
 {
-    for (uint8_t i = 0; i<ARRAY_SIZE(required_data); i++) {
+    for (uint_fast8_t i = 0; i<ARRAY_SIZE(required_data); i++) {
         if (required_data[i] == code) {
             return i;
         }
@@ -304,7 +304,7 @@ void XPlane::select_data(void)
         uint32_t data[8] {};
     } dsel;
     uint8_t count = 0;
-    for (uint8_t i=0; i<ARRAY_SIZE(required_data); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(required_data); i++) {
         if (seen_mask & (1U<<i)) {
             // got this one
             continue;

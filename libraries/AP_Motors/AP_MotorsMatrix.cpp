@@ -49,7 +49,7 @@ bool AP_MotorsMatrix::init(uint8_t expected_num_motors)
 
     // Make sure the correct number of motors have been added
     uint8_t num_motors = 0;
-    for (uint8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
+    for (uint_fast8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
         if (motor_enabled[i]) {
             num_motors++;
         }
@@ -118,7 +118,7 @@ void AP_MotorsMatrix::set_update_rate(uint16_t speed_hz)
     _speed_hz = speed_hz;
 
     uint32_t mask = 0;
-    for (uint8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
+    for (uint_fast8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
         if (motor_enabled[i]) {
             mask |= 1U << i;
         }
@@ -187,7 +187,7 @@ void AP_MotorsMatrix::output_to_motors()
 uint32_t AP_MotorsMatrix::get_motor_mask()
 {
     uint32_t motor_mask = 0;
-    for (uint8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
+    for (uint_fast8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
         if (motor_enabled[i]) {
             motor_mask |= 1U << i;
         }
@@ -415,7 +415,7 @@ void AP_MotorsMatrix::check_for_failed_motor(float throttle_thrust_best_plus_adj
 {
     // record filtered and scaled thrust output for motor loss monitoring purposes
     float alpha = _dt / (_dt + 0.5f);
-    for (uint8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
+    for (uint_fast8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
         if (motor_enabled[i]) {
             _thrust_rpyt_out_filt[i] += alpha * (_thrust_rpyt_out[i] - _thrust_rpyt_out_filt[i]);
         }
@@ -424,7 +424,7 @@ void AP_MotorsMatrix::check_for_failed_motor(float throttle_thrust_best_plus_adj
     float rpyt_high = 0.0f;
     float rpyt_sum = 0.0f;
     uint8_t number_motors = 0.0f;
-    for (uint8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
+    for (uint_fast8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
         if (motor_enabled[i]) {
             number_motors += 1;
             rpyt_sum += _thrust_rpyt_out_filt[i];
@@ -463,7 +463,7 @@ void AP_MotorsMatrix::check_for_failed_motor(float throttle_thrust_best_plus_adj
 void AP_MotorsMatrix::_output_test_seq(uint8_t motor_seq, int16_t pwm)
 {
     // loop through all the possible orders spinning any motors that match that description
-    for (uint8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
+    for (uint_fast8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
         if (motor_enabled[i] && _test_order[i] == motor_seq) {
             // turn on this motor
             rc_write(i, pwm);
@@ -557,14 +557,14 @@ void AP_MotorsMatrix::remove_motor(int8_t motor_num)
 
 void AP_MotorsMatrix::add_motors(const struct MotorDef *motors, uint8_t num_motors)
 {
-    for (uint8_t i=0; i<num_motors; i++) {
+    for (uint_fast8_t i=0; i<num_motors; i++) {
         const auto &motor = motors[i];
         add_motor(i, motor.angle_degrees, motor.yaw_factor, motor.testing_order);
     }
 }
 void AP_MotorsMatrix::add_motors_raw(const struct MotorDefRaw *motors, uint8_t num_motors)
 {
-    for (uint8_t i=0; i<num_motors; i++) {
+    for (uint_fast8_t i=0; i<num_motors; i++) {
         const auto &m = motors[i];
         add_motor_raw(i, m.roll_fac, m.pitch_fac, m.yaw_fac, m.testing_order);
     }
@@ -1313,7 +1313,7 @@ void AP_MotorsMatrix::normalise_rpy_factors()
     float throttle_fac = 0.0f;
 
     // find maximum roll, pitch and yaw factors
-    for (uint8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
+    for (uint_fast8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
         if (motor_enabled[i]) {
             roll_fac = MAX(roll_fac,fabsf(_roll_factor[i]));
             pitch_fac = MAX(pitch_fac,fabsf(_pitch_factor[i]));
@@ -1323,7 +1323,7 @@ void AP_MotorsMatrix::normalise_rpy_factors()
     }
 
     // scale factors back to -0.5 to +0.5 for each axis
-    for (uint8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
+    for (uint_fast8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
         if (motor_enabled[i]) {
             if (!is_zero(roll_fac)) {
                 _roll_factor[i] = 0.5f * _roll_factor[i] / roll_fac;
@@ -1360,7 +1360,7 @@ void AP_MotorsMatrix::thrust_compensation(void)
 */
 void AP_MotorsMatrix::disable_yaw_torque(void)
 {
-    for (uint8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
+    for (uint_fast8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
         _yaw_factor[i] = 0;
     }
 }

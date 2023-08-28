@@ -86,7 +86,7 @@ bool AP_RangeFinder_Benewake::get_reading(float &reading_m)
             if (linebuf_len == BENEWAKE_FRAME_LENGTH) {
                 // calculate checksum
                 uint8_t checksum = 0;
-                for (uint8_t i=0; i<BENEWAKE_FRAME_LENGTH-1; i++) {
+                for (uint_fast8_t i=0; i<BENEWAKE_FRAME_LENGTH-1; i++) {
                     checksum += linebuf[i];
                 }
                 // if checksum matches extract contents

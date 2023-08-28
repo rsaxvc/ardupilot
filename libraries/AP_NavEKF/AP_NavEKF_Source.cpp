@@ -170,7 +170,7 @@ bool AP_NavEKF_Source::useVelXYSource(SourceXY velxy_source) const
 
     // check for fuse all velocities
     if (_options.get() & (uint16_t)(SourceOptions::FUSE_ALL_VELOCITIES)) {
-        for (uint8_t i=0; i<AP_NAKEKF_SOURCE_SET_MAX; i++) {
+        for (uint_fast8_t i=0; i<AP_NAKEKF_SOURCE_SET_MAX; i++) {
             if (_source_set[i].velxy == velxy_source) {
                 return true;
             }
@@ -189,7 +189,7 @@ bool AP_NavEKF_Source::useVelZSource(SourceZ velz_source) const
 
     // check for fuse all velocities
     if (_options.get() & (uint16_t)(SourceOptions::FUSE_ALL_VELOCITIES)) {
-        for (uint8_t i=0; i<AP_NAKEKF_SOURCE_SET_MAX; i++) {
+        for (uint_fast8_t i=0; i<AP_NAKEKF_SOURCE_SET_MAX; i++) {
             if (_source_set[i].velz == velz_source) {
                 return true;
             }
@@ -209,7 +209,7 @@ bool AP_NavEKF_Source::haveVelZSource() const
 
     // check for fuse all velocities
     if (_options.get() & (uint16_t)(SourceOptions::FUSE_ALL_VELOCITIES)) {
-        for (uint8_t i=0; i<AP_NAKEKF_SOURCE_SET_MAX; i++) {
+        for (uint_fast8_t i=0; i<AP_NAKEKF_SOURCE_SET_MAX; i++) {
             if (_source_set[i].velz != SourceZ::NONE) {
                 return true;
             }
@@ -247,7 +247,7 @@ void AP_NavEKF_Source::align_inactive_sources()
     if ((getPosXYSource() == SourceXY::GPS) ||
         (getPosXYSource() == SourceXY::BEACON)) {
         // only align position if active source is GPS or Beacon
-        for (uint8_t i=0; i<AP_NAKEKF_SOURCE_SET_MAX; i++) {
+        for (uint_fast8_t i=0; i<AP_NAKEKF_SOURCE_SET_MAX; i++) {
             if (_source_set[i].posxy == SourceXY::EXTNAV) {
                 // ExtNav could potentially be used, so align it
                 align_posxy = true;
@@ -263,7 +263,7 @@ void AP_NavEKF_Source::align_inactive_sources()
         (getPosZSource() == SourceZ::GPS) ||
         (getPosZSource() == SourceZ::BEACON)) {
         // ExtNav is not the active source; we do not want to align active source!
-        for (uint8_t i=0; i<AP_NAKEKF_SOURCE_SET_MAX; i++) {
+        for (uint_fast8_t i=0; i<AP_NAKEKF_SOURCE_SET_MAX; i++) {
             if (_source_set[i].posz == SourceZ::EXTNAV) {
                 // ExtNav could potentially be used, so align it
                 align_posz = true;
@@ -320,7 +320,7 @@ bool AP_NavEKF_Source::pre_arm_check(bool requires_position, char *failure_msg, 
     bool wheelencoder_required = false;
 
     // check source params are valid
-    for (uint8_t i=0; i<AP_NAKEKF_SOURCE_SET_MAX; i++) {
+    for (uint_fast8_t i=0; i<AP_NAKEKF_SOURCE_SET_MAX; i++) {
 
         if (requires_position) {
             // check posxy
@@ -498,7 +498,7 @@ bool AP_NavEKF_Source::pre_arm_check(bool requires_position, char *failure_msg, 
 // return true if ext nav is enabled on any source
 bool AP_NavEKF_Source::ext_nav_enabled(void) const
 {
-    for (uint8_t i=0; i<AP_NAKEKF_SOURCE_SET_MAX; i++) {
+    for (uint_fast8_t i=0; i<AP_NAKEKF_SOURCE_SET_MAX; i++) {
         const auto &src = _source_set[i];
         if (src.posxy == SourceXY::EXTNAV) {
             return true;
@@ -522,7 +522,7 @@ bool AP_NavEKF_Source::ext_nav_enabled(void) const
 // return true if wheel encoder is enabled on any source
 bool AP_NavEKF_Source::wheel_encoder_enabled(void) const
 {
-    for (uint8_t i=0; i<AP_NAKEKF_SOURCE_SET_MAX; i++) {
+    for (uint_fast8_t i=0; i<AP_NAKEKF_SOURCE_SET_MAX; i++) {
         const auto &src = _source_set[i];
         if (src.velxy == SourceXY::WHEEL_ENCODER) {
             return true;
@@ -540,7 +540,7 @@ uint8_t AP_NavEKF_Source::get_active_source_set() const
 // return true if GPS yaw is enabled on any source
 bool AP_NavEKF_Source::gps_yaw_enabled(void) const
 {
-    for (uint8_t i=0; i<AP_NAKEKF_SOURCE_SET_MAX; i++) {
+    for (uint_fast8_t i=0; i<AP_NAKEKF_SOURCE_SET_MAX; i++) {
         const auto &src = _source_set[i];
         const SourceYaw yaw = SourceYaw(src.yaw.get());
         if (yaw == SourceYaw::GPS ||

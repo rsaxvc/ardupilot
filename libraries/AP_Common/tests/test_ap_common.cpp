@@ -5,15 +5,15 @@
 TEST(AP_Common, HexToUint8)
 {
     uint8_t res;
-    for (uint8_t test_value = '0', expected_res = 0; test_value < ':'; test_value++, expected_res++) {
+    for (uint_fast8_t test_value = '0', expected_res = 0; test_value < ':'; test_value++, expected_res++) {
         EXPECT_TRUE(hex_to_uint8(test_value, res));
         EXPECT_EQ(expected_res, res);
     }
-    for (uint8_t test_value = 'A', expected_res = 10; test_value < 'G'; test_value++, expected_res++) {
+    for (uint_fast8_t test_value = 'A', expected_res = 10; test_value < 'G'; test_value++, expected_res++) {
         EXPECT_TRUE(hex_to_uint8(test_value, res));
         EXPECT_EQ(expected_res, res);
     }
-    for (uint8_t test_value = 'a', expected_res = 10; test_value < 'g'; test_value++, expected_res++) {
+    for (uint_fast8_t test_value = 'a', expected_res = 10; test_value < 'g'; test_value++, expected_res++) {
         EXPECT_TRUE(hex_to_uint8(test_value, res));
         EXPECT_EQ(expected_res, res);
     }

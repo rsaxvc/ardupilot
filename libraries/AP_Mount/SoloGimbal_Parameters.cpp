@@ -70,7 +70,7 @@ const char* SoloGimbal_Parameters::get_param_name(gmb_param_t param)
 
 void SoloGimbal_Parameters::fetch_params()
 {
-    for(uint8_t i=0; i<MAVLINK_GIMBAL_NUM_TRACKED_PARAMS; i++) {
+    for (uint_fast8_t i=0; i<MAVLINK_GIMBAL_NUM_TRACKED_PARAMS; i++) {
         if (_params[i].state != GMB_PARAMSTATE_NOT_YET_READ) {
             _params[i].state = GMB_PARAMSTATE_FETCH_AGAIN;
         }
@@ -79,7 +79,7 @@ void SoloGimbal_Parameters::fetch_params()
 
 bool SoloGimbal_Parameters::initialized()
 {
-    for(uint8_t i=0; i<MAVLINK_GIMBAL_NUM_TRACKED_PARAMS; i++) {
+    for (uint_fast8_t i=0; i<MAVLINK_GIMBAL_NUM_TRACKED_PARAMS; i++) {
         if(_params[i].state == GMB_PARAMSTATE_NOT_YET_READ) {
             return false;
         }
@@ -89,7 +89,7 @@ bool SoloGimbal_Parameters::initialized()
 
 bool SoloGimbal_Parameters::received_all()
 {
-    for(uint8_t i=0; i<MAVLINK_GIMBAL_NUM_TRACKED_PARAMS; i++) {
+    for (uint_fast8_t i=0; i<MAVLINK_GIMBAL_NUM_TRACKED_PARAMS; i++) {
         if(_params[i].state == GMB_PARAMSTATE_NOT_YET_READ || _params[i].state == GMB_PARAMSTATE_FETCH_AGAIN) {
             return false;
         }
@@ -135,7 +135,7 @@ void SoloGimbal_Parameters::update()
         _last_request_ms = tnow_ms;
         mavlink_msg_param_request_list_send(_chan, 0, MAV_COMP_ID_GIMBAL);
             
-        for(uint8_t i=0; i<MAVLINK_GIMBAL_NUM_TRACKED_PARAMS; i++) {
+        for (uint_fast8_t i=0; i<MAVLINK_GIMBAL_NUM_TRACKED_PARAMS; i++) {
             if (!_params[i].seen) {
                 _params[i].fetch_attempts++;
             }
@@ -143,7 +143,7 @@ void SoloGimbal_Parameters::update()
     }
 
     // retry param_set
-    for(uint8_t i=0; i<MAVLINK_GIMBAL_NUM_TRACKED_PARAMS; i++) {
+    for (uint_fast8_t i=0; i<MAVLINK_GIMBAL_NUM_TRACKED_PARAMS; i++) {
         if (!HAVE_PAYLOAD_SPACE(_chan, PARAM_SET)) {
             break;
         }
@@ -159,7 +159,7 @@ void SoloGimbal_Parameters::update()
     }
 
     // check for nonexistent parameters
-    for(uint8_t i=0; i<MAVLINK_GIMBAL_NUM_TRACKED_PARAMS; i++) {
+    for (uint_fast8_t i=0; i<MAVLINK_GIMBAL_NUM_TRACKED_PARAMS; i++) {
         if (!_params[i].seen && _params[i].fetch_attempts > _max_fetch_attempts) {
             _params[i].state = GMB_PARAMSTATE_NONEXISTANT;
             DEV_PRINTF("Gimbal parameter %s timed out\n", get_param_name((gmb_param_t)i));
@@ -168,7 +168,7 @@ void SoloGimbal_Parameters::update()
 
     if(_flashing_step == GMB_PARAM_FLASHING_WAITING_FOR_SET) {
         bool done = true;
-        for(uint8_t i=0; i<MAVLINK_GIMBAL_NUM_TRACKED_PARAMS; i++) {
+        for (uint_fast8_t i=0; i<MAVLINK_GIMBAL_NUM_TRACKED_PARAMS; i++) {
             if (_params[i].state == GMB_PARAMSTATE_ATTEMPTING_TO_SET) {
                 done = false;
                 break;
@@ -192,7 +192,7 @@ void SoloGimbal_Parameters::handle_param_value(const mavlink_message_t &msg)
         logger->Write_Parameter(packet.param_id, packet.param_value);
     }
 
-    for(uint8_t i=0; i<MAVLINK_GIMBAL_NUM_TRACKED_PARAMS; i++) {
+    for (uint_fast8_t i=0; i<MAVLINK_GIMBAL_NUM_TRACKED_PARAMS; i++) {
         if (!strcmp(packet.param_id, get_param_name((gmb_param_t)i))) {
             _params[i].seen = true;
             switch(_params[i].state) {

@@ -72,7 +72,7 @@ bool AP_Proximity_Backend::ignore_reading(float pitch, float yaw, float distance
 
     if (check_for_ign_area) {
         // check angle vs each ignore area
-        for (uint8_t i=0; i < PROXIMITY_MAX_IGNORE; i++) {
+        for (uint_fast8_t i=0; i < PROXIMITY_MAX_IGNORE; i++) {
             if (params.ignore_width_deg[i] != 0) {
                 if (abs(yaw - params.ignore_angle_deg[i]) <= (params.ignore_width_deg[i]/2)) {
                     return true;

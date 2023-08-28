@@ -71,7 +71,7 @@ bool AP_IOMCU::upload_fw(void)
     bool ret = false;
 
     /* look for the bootloader for 150 ms */
-    for (uint8_t i = 0; i < 15; i++) {
+    for (uint_fast8_t i = 0; i < 15; i++) {
         ret = sync();
         if (ret) {
             break;
@@ -351,7 +351,7 @@ bool AP_IOMCU::verify_rev2(uint32_t size)
         send(PROTO_EOC);
 
 
-        for (uint8_t i = 0; i<n; i++) {
+        for (uint_fast8_t i = 0; i<n; i++) {
             uint8_t c;
             ret = recv_byte_with_timeout(&c, 5000);
             if (!ret) {

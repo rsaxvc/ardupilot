@@ -27,7 +27,7 @@ void AP_Frsky_MAVliteMsgHandler::handle_command_long(const AP_Frsky_MAVlite_Mess
     }
     uint8_t param_count = AP_Frsky_MAVlite_Message::bit8_unpack(cmd_options, 3, 0);               // first 3 bits
 
-    for (uint8_t cmd_idx=0; cmd_idx<param_count; cmd_idx++) {
+    for (uint_fast8_t cmd_idx=0; cmd_idx<param_count; cmd_idx++) {
         // base offset is 3, relative offset is 4*cmd_idx
         if (!rxmsg.get_float(params[cmd_idx], 3+(4*cmd_idx))) {
             return;

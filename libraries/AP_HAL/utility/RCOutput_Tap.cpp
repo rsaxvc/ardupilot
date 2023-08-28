@@ -366,7 +366,7 @@ void RCOutput_Tap::init()
     config.controlMode = 1;
 
     /* Assign the id's to the ESCs to match the mux */
-    for (uint8_t phy_chan_index = 0; phy_chan_index < _channels_count; phy_chan_index++) {
+    for (uint_fast8_t phy_chan_index = 0; phy_chan_index < _channels_count; phy_chan_index++) {
         config.channelMapTable[phy_chan_index] = device_mux_map[phy_chan_index] & ESC_CHANNEL_MAP_CHANNEL;
         config.channelMapTable[phy_chan_index] |= (device_dir_map[phy_chan_index] << 4) & ESC_CHANNEL_MAP_RUNNING_DIRECTION;
     }
@@ -389,7 +389,7 @@ void RCOutput_Tap::init()
     unlock_packet.len *= sizeof(unlock_packet.d.reqRun.value[0]);
     memset(unlock_packet.d.bytes, 0, sizeof(packet.d.bytes));
 
-    for (uint8_t i = 0; i < 10; i++) {
+    for (uint_fast8_t i = 0; i < 10; i++) {
         _send_packet(unlock_packet);
         /* Min Packet to Packet time is 1 Ms so use 2 */
         hal.scheduler->delay(2);
@@ -412,7 +412,7 @@ uint8_t RCOutput_Tap::_crc8_esc(uint8_t *p, uint8_t len)
 {
     uint8_t crc = 0;
 
-    for (uint8_t i = 0; i < len; i++) {
+    for (uint_fast8_t i = 0; i < len; i++) {
         crc = crcTable[crc ^ *p++];
     }
 
@@ -482,7 +482,7 @@ uint16_t RCOutput_Tap::read(uint8_t ch)
 
 void RCOutput_Tap::read(uint16_t *period_us, uint8_t len)
 {
-    for (uint8_t i = 0; i < len; i++) {
+    for (uint_fast8_t i = 0; i < len; i++) {
         period_us[i] = read(i);
     }
 }
@@ -507,7 +507,7 @@ void RCOutput_Tap::push()
     };
 
     // map from the RPM range to 0 - 100% duty cycle for the ESCs
-    for (uint8_t i = 0; i < motor_cnt; i++) {
+    for (uint_fast8_t i = 0; i < motor_cnt; i++) {
         uint16_t *val = &out[motor_mapping[i]];
 
         if (!(_enabled_channels & (1U << i))) {
@@ -530,7 +530,7 @@ void RCOutput_Tap::push()
             *val = (uint16_t) rpm;
         }
     }
-    for (uint8_t i = motor_cnt; i < TAP_ESC_MAX_MOTOR_NUM; i++) {
+    for (uint_fast8_t i = motor_cnt; i < TAP_ESC_MAX_MOTOR_NUM; i++) {
         out[i] = RPMSTOPPED;
     }
 
@@ -558,7 +558,7 @@ void RCOutput_Tap::push()
         _last_led_update_msec = tnow;
     }
 
-    for (uint8_t i = 0; i < _channels_count; i++) {
+    for (uint_fast8_t i = 0; i < _channels_count; i++) {
         packet.d.reqRun.value[i] = out[i] & RUN_CHANNEL_VALUE_MASK;
         if (_led_on) {
             packet.d.reqRun.value[i] |= RUN_LED_ON_MASK;

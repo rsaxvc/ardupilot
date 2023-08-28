@@ -348,11 +348,11 @@ void AP_Radio_cc2500::radio_init(void)
     hal.scheduler->delay_microseconds(100);
     if (get_protocol() == AP_Radio::PROTOCOL_CC2500_GFSK) {
         Debug(1,"Using GFSK configuration\n");
-        for (uint8_t i=0; i<ARRAY_SIZE(radio_config_GFSK); i++) {
+        for (uint_fast8_t i=0; i<ARRAY_SIZE(radio_config_GFSK); i++) {
             cc2500.WriteRegCheck(radio_config_GFSK[i].reg, radio_config_GFSK[i].value);
         }
     } else {
-        for (uint8_t i=0; i<ARRAY_SIZE(radio_config); i++) {
+        for (uint_fast8_t i=0; i<ARRAY_SIZE(radio_config); i++) {
             cc2500.WriteRegCheck(radio_config[i].reg, radio_config[i].value);
         }
     }
@@ -761,7 +761,7 @@ bool AP_Radio_cc2500::handle_autobind_packet(const uint8_t *packet, uint8_t lqi)
         // not a valid autobind packet
         return false;
     }
-    for (uint8_t i=0; i<sizeof(pkt->pad); i++) {
+    for (uint_fast8_t i=0; i<sizeof(pkt->pad); i++) {
         if (pkt->pad[i] != i+1) {
             Debug(3, "AB pad[%u]=%u\n", i, pkt->pad[i]);
             return false;
@@ -859,7 +859,7 @@ void AP_Radio_cc2500::irq_handler(void)
     if (get_debug_level() > 6) {
         Debug(6, "CC2500 IRQ state=%u\n", unsigned(protocolState));
         Debug(6,"len=%u\n", ccLen);
-        for (uint8_t i=0; i<ccLen; i++) {
+        for (uint_fast8_t i=0; i<ccLen; i++) {
             Debug(6, "%02x:%02x ", i, packet[i]);
             if ((i+1) % 16 == 0) {
                 Debug(6, "\n");
@@ -1239,7 +1239,7 @@ bool AP_Radio_cc2500::getBindData(uint8_t ccLen, uint8_t *packet)
             listLength = 0;
         }
 
-        for (uint8_t n = 0; n < 5; n++) {
+        for (uint_fast8_t n = 0; n < 5; n++) {
             uint8_t c = packet[5] + n;
             if (c < sizeof(bindHopData)) {
                 bindHopData[c] = packet[6 + n];
@@ -1291,7 +1291,7 @@ void AP_Radio_cc2500::parse_frSkyX(const uint8_t *packet)
     c[7] = (uint16_t)((packet[20]<<4)&0xFF0) | (packet[19]>>4);
 
     uint8_t j;
-    for (uint8_t i=0; i<8; i++) {
+    for (uint_fast8_t i=0; i<8; i++) {
         if (c[i] > 2047)  {
             j = 8;
             c[i] = c[i] - 2048;
@@ -1317,7 +1317,7 @@ void AP_Radio_cc2500::parse_frSkyX(const uint8_t *packet)
 uint16_t AP_Radio_cc2500::calc_crc(const uint8_t *data, uint8_t len)
 {
     uint16_t crc = 0;
-    for (uint8_t i=0; i < len; i++) {
+    for (uint_fast8_t i=0; i < len; i++) {
         crc = (crc<<8) ^ (CRCTable[((uint8_t)(crc>>8) ^ *data++) & 0xFF]);
     }
     return crc;

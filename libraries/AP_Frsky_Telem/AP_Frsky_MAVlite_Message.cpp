@@ -40,7 +40,7 @@ bool AP_Frsky_MAVlite_Message::set_string(const char* value, const uint8_t offse
 uint8_t AP_Frsky_MAVlite_Message::bit8_unpack(const uint8_t value, const uint8_t bit_count, const uint8_t bit_offset)
 {
     uint8_t mask = 0;
-    for (uint8_t i=bit_offset; i<=bit_count; i++) {
+    for (uint_fast8_t i=bit_offset; i<=bit_count; i++) {
         mask |= 1 << i;
     }
     return (value & mask) >> bit_offset;
@@ -49,7 +49,7 @@ uint8_t AP_Frsky_MAVlite_Message::bit8_unpack(const uint8_t value, const uint8_t
 void AP_Frsky_MAVlite_Message::bit8_pack(uint8_t &value, const uint8_t bit_value, const uint8_t bit_count, const uint8_t bit_offset)
 {
     uint8_t mask = 0;
-    for (uint8_t i=bit_offset; i<=bit_count; i++) {
+    for (uint_fast8_t i=bit_offset; i<=bit_count; i++) {
         mask |= 1 << i;
     }
     value |= (bit_value<<bit_offset) & mask;

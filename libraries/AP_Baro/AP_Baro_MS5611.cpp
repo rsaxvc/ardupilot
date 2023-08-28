@@ -207,7 +207,7 @@ bool AP_Baro_MS56XX::_read_prom_5611(uint16_t prom[8])
      * CRC field must me removed for CRC-4 calculation.
      */
     bool all_zero = true;
-    for (uint8_t i = 0; i < 8; i++) {
+    for (uint_fast8_t i = 0; i < 8; i++) {
         prom[i] = _read_prom_word(i);
         if (prom[i] != 0) {
             all_zero = false;
@@ -238,7 +238,7 @@ bool AP_Baro_MS56XX::_read_prom_5637(uint16_t prom[8])
      * calculation.
      */
     bool all_zero = true;
-    for (uint8_t i = 0; i < 7; i++) {
+    for (uint_fast8_t i = 0; i < 7; i++) {
         prom[i] = _read_prom_word(i);
         if (prom[i] != 0) {
             all_zero = false;

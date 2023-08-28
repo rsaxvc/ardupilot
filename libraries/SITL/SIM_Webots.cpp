@@ -119,7 +119,7 @@ Webots::Webots(const char *frame_str) :
         output_type = OUTPUT_ROVER;
     }
 
-    for (uint8_t i=0; i<ARRAY_SIZE(sim_defaults); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(sim_defaults); i++) {
         AP_Param::set_default_by_name(sim_defaults[i].name, sim_defaults[i].value);
         if (sim_defaults[i].save) {
             enum ap_var_type ptype;
@@ -160,7 +160,7 @@ Webots::Webots(const char *frame_str) :
 bool Webots::parse_sensors(const char *json)
 {
     //printf("%s\n", json);
-   for (uint16_t i=0; i<ARRAY_SIZE(keytable); i++) {
+   for (uint_fast16_t i=0; i<ARRAY_SIZE(keytable); i++) {
         struct keytable &key = keytable[i];
         //printf("search   %s/%s\n", key.section, key.key);
         // look for section header 

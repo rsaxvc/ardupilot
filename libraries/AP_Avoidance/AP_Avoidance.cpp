@@ -475,7 +475,7 @@ void AP_Avoidance::check_for_threats()
     // is most likely our own position and/or velocity have changed
     // determine the current most-serious-threat
     _current_most_serious_threat = -1;
-    for (uint8_t i=0; i<_obstacle_count; i++) {
+    for (uint_fast8_t i=0; i<_obstacle_count; i++) {
 
         AP_Avoidance::Obstacle &obstacle = _obstacles[i];
         const uint32_t obstacle_age = AP_HAL::millis() - obstacle.timestamp_ms;

@@ -51,7 +51,7 @@ void RF_Wasp::check_configuration()
         bool set = false;
         if (!set) {
             // check for string settings
-            for (uint8_t i=0; i<ARRAY_SIZE(string_configs); i++) {
+            for (uint_fast8_t i=0; i<ARRAY_SIZE(string_configs); i++) {
                 if (!strncmp(&_buffer[1], string_configs[i].name, strlen(string_configs[i].name))) {
                     uint8_t offs = strlen(string_configs[i].name);
                     offs += 1; // for '>'
@@ -72,7 +72,7 @@ void RF_Wasp::check_configuration()
         }
         if (!set) {
             // check for integer settings
-            for (uint8_t i=0; i<ARRAY_SIZE(integer_configs); i++) {
+            for (uint_fast8_t i=0; i<ARRAY_SIZE(integer_configs); i++) {
                 if (!strncmp(&_buffer[1], integer_configs[i].name, strlen(integer_configs[i].name))) {
                     uint8_t offs = strlen(integer_configs[i].name);
                     offs += 1; // for '>'

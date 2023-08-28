@@ -46,7 +46,7 @@ void GPIO_BBB::init()
         AP_HAL::panic("unable to map CM_PER registers");
     }
     off_t cm_offsets[LINUX_GPIO_NUM_BANKS-1] = { CM_PER_GPIO1_CLKCTRL, CM_PER_GPIO2_CLKCTRL, CM_PER_GPIO3_CLKCTRL };
-    for (uint8_t i=0; i<LINUX_GPIO_NUM_BANKS-1; i++) {
+    for (uint_fast8_t i=0; i<LINUX_GPIO_NUM_BANKS-1; i++) {
         unsigned reg_value = *(cm_per + cm_offsets[i]);
         *(cm_per + cm_offsets[i]) = (reg_value & ~0b11) | 0b10;
     }
@@ -54,7 +54,7 @@ void GPIO_BBB::init()
 
     /* mmap GPIO */
     off_t offsets[LINUX_GPIO_NUM_BANKS] = { GPIO0_BASE, GPIO1_BASE, GPIO2_BASE, GPIO3_BASE };
-    for (uint8_t i=0; i<LINUX_GPIO_NUM_BANKS; i++) {
+    for (uint_fast8_t i=0; i<LINUX_GPIO_NUM_BANKS; i++) {
         gpio_bank[i].base = (volatile unsigned *)mmap(0, GPIO_SIZE, PROT_READ|PROT_WRITE, MAP_SHARED, mem_fd, offsets[i]);
         if ((char *)gpio_bank[i].base == MAP_FAILED) {
             AP_HAL::panic("unable to map GPIO bank");

@@ -55,7 +55,7 @@ CANSensor::CANSensor_Periph CANSensor::_periph[HAL_NUM_CAN_IFACES];
 
 void CANSensor::register_driver_periph(const AP_CANManager::Driver_Type dtype)
 {
-    for (uint8_t i = 0; i < HAL_NUM_CAN_IFACES; i++) {
+    for (uint_fast8_t i = 0; i < HAL_NUM_CAN_IFACES; i++) {
         if (_periph[i].protocol != dtype) {
             continue;
         }

@@ -113,7 +113,7 @@ bool AP_FlashIface_JEDEC::init()
 {
     // Get device bus by name
     _dev = nullptr;
-    for (uint8_t i = 0; i < ARRAY_SIZE(supported_devices); i++) {
+    for (uint_fast8_t i = 0; i < ARRAY_SIZE(supported_devices); i++) {
 #ifdef HAL_BOOTLOADER_BUILD
         _dev = qspi.get_device(supported_devices[i].name);
 #else
@@ -302,7 +302,7 @@ bool AP_FlashIface_JEDEC::detect_device()
         }
 
         // Erase Flash Memory details Ref. JESD216D 6.4.11 6.4.12
-        for (uint8_t i = 0; i < 4; i++) {
+        for (uint_fast8_t i = 0; i < 4; i++) {
             uint32_t size = 1UL<<SFDP_GET_BITS(param_table[7 + (i/2)], 0 + 16*(i%2), 7 + 16*(i%2));
             uint8_t ins = SFDP_GET_BITS(param_table[7 + (i/2)], 8 + 16*(i%2), 15 + 16*(i%2));
             if ((size-1) > 0) {
@@ -322,7 +322,7 @@ bool AP_FlashIface_JEDEC::detect_device()
         }
         // Read Erase Times 6.4.13
         uint8_t timeout_mult = 2*(SFDP_GET_BITS(param_table[9], 0, 3) + 1);
-        for (uint8_t i = 0; i < 4; i++) {
+        for (uint_fast8_t i = 0; i < 4; i++) {
             if (_desc.erase_type[i].size) {
                 uint32_t unit = SFDP_GET_BITS(param_table[9], 9+(7*i), 10+(7*i));
                 uint8_t val = SFDP_GET_BITS(param_table[9], 4+(7*i), 8+(7*i));
@@ -672,7 +672,7 @@ bool AP_FlashIface_JEDEC::start_erase_offset(uint32_t offset, uint32_t size, uin
     uint32_t erase_size = 0;
     erasing = 0;
     // Find the maximum size we can erase
-    for (uint8_t i=0; i < 4; i++) {
+    for (uint_fast8_t i=0; i < 4; i++) {
         if (_desc.erase_type[i].size == 0) {
             continue;
         }
@@ -734,7 +734,7 @@ bool AP_FlashIface_JEDEC::verify_sector_erase(uint32_t sector)
     uint8_t buf[MAX_READ_SIZE] {};  // Read 1KB per read
     for (uint32_t offset = _desc.sector_size*sector; offset < (_desc.sector_size*(sector+1)); offset+=sizeof(buf)) {
         if (read(offset, buf, sizeof(buf))) {
-            for (uint16_t i = 0; i < sizeof(buf); i++) {
+            for (uint_fast16_t i = 0; i < sizeof(buf); i++) {
                 if (buf[i] != 0xFF) {
                     Debug("Found unerased byte %x @ offset %ld", (unsigned int)buf[i], (unsigned long)offset);
                     return false;

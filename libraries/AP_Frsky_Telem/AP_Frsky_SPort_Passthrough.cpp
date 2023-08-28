@@ -374,7 +374,7 @@ void AP_Frsky_SPort_Passthrough::send(void)
     }
     // keep only the last two bytes of the data found in the serial buffer, as we shouldn't respond to old poll requests
     uint8_t prev_byte = 0;
-    for (uint16_t i = 0; i < numc; i++) {
+    for (uint_fast16_t i = 0; i < numc; i++) {
         prev_byte = _passthrough.new_byte;
         _passthrough.new_byte = _port->read();
 #if HAL_WITH_FRSKY_TELEM_BIDIRECTIONAL
@@ -418,7 +418,7 @@ bool AP_Frsky_SPort_Passthrough::get_next_msg_chunk(void)
         uint8_t character = 0;
         _msg_chunk.chunk = 0; // clear the 4 bytes of the chunk buffer
 
-        for (uint8_t i = 0; i < 4 && _msg_chunk.char_index < sizeof(_statustext.next.text); i++) {
+        for (uint_fast8_t i = 0; i < 4 && _msg_chunk.char_index < sizeof(_statustext.next.text); i++) {
             character = _statustext.next.text[_msg_chunk.char_index++];
 
             if (!character) {
@@ -827,7 +827,7 @@ bool AP_Frsky_SPort_Passthrough::get_telem_data(sport_packet_t* packet_array, ui
     // max_size >= WFQ_LAST_ITEM
     // get a packet per enabled type
     if (max_size >= WFQ_LAST_ITEM) {
-        for (uint8_t i=0; i<WFQ_LAST_ITEM; i++) {
+        for (uint_fast8_t i=0; i<WFQ_LAST_ITEM; i++) {
             if (process_scheduler_entry(i)) {
                 if (external_data.pending) {
                     packet_array[idx].frame = external_data.packet.frame;
@@ -842,7 +842,7 @@ bool AP_Frsky_SPort_Passthrough::get_telem_data(sport_packet_t* packet_array, ui
         // max_size < WFQ_LAST_ITEM
         // call run_wfq_scheduler(false) enough times to create a packet of up to max_size unique elements
         uint32_t item_mask = 0;
-        for (uint8_t i=0; i<max_size; i++) {
+        for (uint_fast8_t i=0; i<max_size; i++) {
             // call the scheduler with the shaper "disabled"
             const uint8_t item = run_wfq_scheduler(false);
             if (!BIT_IS_SET(item_mask, item) && external_data.pending) {

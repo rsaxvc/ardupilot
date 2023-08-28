@@ -53,7 +53,7 @@ void NavEKF3_core::ResetVelocity(resetDataSource velResetSource)
         velTimeout = false;
         lastVelPassTime_ms = imuSampleTime_ms;
     }
-    for (uint8_t i=0; i<imu_buffer_length; i++) {
+    for (uint_fast8_t i=0; i<imu_buffer_length; i++) {
         storedOutput[i].velocity.x = stateStruct.velocity.x;
         storedOutput[i].velocity.y = stateStruct.velocity.y;
     }
@@ -123,7 +123,7 @@ void NavEKF3_core::ResetPosition(resetDataSource posResetSource)
 #endif // EK3_FEATURE_EXTERNAL_NAV
         }
     }
-    for (uint8_t i=0; i<imu_buffer_length; i++) {
+    for (uint_fast8_t i=0; i<imu_buffer_length; i++) {
         storedOutput[i].position.x = stateStruct.position.x;
         storedOutput[i].position.y = stateStruct.position.y;
     }
@@ -162,7 +162,7 @@ void NavEKF3_core::ResetPositionNE(ftype posN, ftype posE)
     posResetNE.y = stateStruct.position.y - posOrig.y;
 
     // Add the offset to the output observer states
-    for (uint8_t i=0; i<imu_buffer_length; i++) {
+    for (uint_fast8_t i=0; i<imu_buffer_length; i++) {
         storedOutput[i].position.x += posResetNE.x;
         storedOutput[i].position.y += posResetNE.y;
     }
@@ -194,7 +194,7 @@ void NavEKF3_core::ResetPositionD(ftype posD)
     outputDataNew.position.z += posResetD;
     vertCompFiltState.pos = outputDataNew.position.z;
     outputDataDelayed.position.z += posResetD;
-    for (uint8_t i=0; i<imu_buffer_length; i++) {
+    for (uint_fast8_t i=0; i<imu_buffer_length; i++) {
         storedOutput[i].position.z += posResetD;
     }
 
@@ -221,7 +221,7 @@ void NavEKF3_core::ResetHeight(void)
         // can make no assumption other than vehicle is not below ground level
         terrainState = MAX(stateStruct.position.z + rngOnGnd , terrainState);
     }
-    for (uint8_t i=0; i<imu_buffer_length; i++) {
+    for (uint_fast8_t i=0; i<imu_buffer_length; i++) {
         storedOutput[i].position.z = stateStruct.position.z;
     }
     vertCompFiltState.pos = stateStruct.position.z;
@@ -258,7 +258,7 @@ void NavEKF3_core::ResetHeight(void)
     } else if (onGround) {
         stateStruct.velocity.z = 0.0f;
     }
-    for (uint8_t i=0; i<imu_buffer_length; i++) {
+    for (uint_fast8_t i=0; i<imu_buffer_length; i++) {
         storedOutput[i].velocity.z = stateStruct.velocity.z;
     }
     outputDataNew.velocity.z = stateStruct.velocity.z;
@@ -641,7 +641,7 @@ void NavEKF3_core::FuseVelPosNED()
             R_OBS[2] = R_OBS[0];
             R_OBS[3] = R_OBS[0];
             R_OBS[4] = R_OBS[0];
-            for (uint8_t i=0; i<=2; i++) R_OBS_DATA_CHECKS[i] = R_OBS[i];
+            for (uint_fast8_t i=0; i<=2; i++) R_OBS_DATA_CHECKS[i] = R_OBS[i];
         } else {
             if (gpsSpdAccuracy > 0.0f) {
                 // use GPS receivers reported speed accuracy if available and floor at value set by GPS velocity noise parameter
@@ -683,7 +683,7 @@ void NavEKF3_core::FuseVelPosNED()
             R_OBS_DATA_CHECKS[0] = R_OBS_DATA_CHECKS[1] = R_OBS_DATA_CHECKS[2] = obs_data_chk;
         }
         R_OBS[5] = posDownObsNoise;
-        for (uint8_t i=3; i<=5; i++) R_OBS_DATA_CHECKS[i] = R_OBS[i];
+        for (uint_fast8_t i=3; i<=5; i++) R_OBS_DATA_CHECKS[i] = R_OBS[i];
 
         // if vertical GPS velocity data and an independent height source is being used, check to see if the GPS vertical velocity and altimeter
         // innovations have the same sign and are outside limits. If so, then it is likely aliasing is affecting
@@ -786,7 +786,7 @@ void NavEKF3_core::FuseVelPosNED()
             ftype innovVelSumSq = 0; // sum of squares of velocity innovations
             ftype varVelSum = 0; // sum of velocity innovation variances
 
-            for (uint8_t i = 0; i<=imax; i++) {
+            for (uint_fast8_t i = 0; i<=imax; i++) {
                 stateIndex   = i + 4;
                 const float innovation = stateStruct.velocity[i] - velPosObs[i];
                 innovVelSumSq += sq(innovation);
@@ -912,13 +912,13 @@ void NavEKF3_core::FuseVelPosNED()
                 // calculate the Kalman gain and calculate innovation variances
                 varInnovVelPos[obsIndex] = P[stateIndex][stateIndex] + R_OBS[obsIndex];
                 SK = 1.0f/varInnovVelPos[obsIndex];
-                for (uint8_t i= 0; i<=9; i++) {
+                for (uint_fast8_t i= 0; i<=9; i++) {
                     Kfusion[i] = P[i][stateIndex]*SK;
                 }
 
                 // inhibit delta angle bias state estimation by setting Kalman gains to zero
                 if (!inhibitDelAngBiasStates) {
-                    for (uint8_t i = 10; i<=12; i++) {
+                    for (uint_fast8_t i = 10; i<=12; i++) {
                         // Don't try to learn gyro bias if not aiding and the axis is
                         // less than 45 degrees from vertical because the bias is poorly observable
                         bool poorObservability = false;
@@ -948,7 +948,7 @@ void NavEKF3_core::FuseVelPosNED()
                 // periods of non-aiding to learn bias as these can give incorrect esitmates.
                 const bool horizInhibit = PV_AidingMode == AID_NONE && obsIndex != 2 && obsIndex != 5;
                 if (!horizInhibit && !inhibitDelVelBiasStates && !badIMUdata) {
-                    for (uint8_t i = 13; i<=15; i++) {
+                    for (uint_fast8_t i = 13; i<=15; i++) {
                         if (!dvelBiasAxisInhibit[i-13]) {
                             Kfusion[i] = P[i][stateIndex]*SK;
                         } else {
@@ -962,7 +962,7 @@ void NavEKF3_core::FuseVelPosNED()
 
                 // inhibit magnetic field state estimation by setting Kalman gains to zero
                 if (!inhibitMagStates) {
-                    for (uint8_t i = 16; i<=21; i++) {
+                    for (uint_fast8_t i = 16; i<=21; i++) {
                         Kfusion[i] = P[i][stateIndex]*SK;
                     }
                 } else {
@@ -981,22 +981,22 @@ void NavEKF3_core::FuseVelPosNED()
 
                 // update the covariance - take advantage of direct observation of a single state at index = stateIndex to reduce computations
                 // this is a numerically optimised implementation of standard equation P = (I - K*H)*P;
-                for (uint8_t i= 0; i<=stateIndexLim; i++) {
-                    for (uint8_t j= 0; j<=stateIndexLim; j++) {
+                for (uint_fast8_t i= 0; i<=stateIndexLim; i++) {
+                    for (uint_fast8_t j= 0; j<=stateIndexLim; j++) {
                         KHP[i][j] = Kfusion[i] * P[stateIndex][j];
                     }
                 }
                 // Check that we are not going to drive any variances negative and skip the update if so
                 bool healthyFusion = true;
-                for (uint8_t i= 0; i<=stateIndexLim; i++) {
+                for (uint_fast8_t i= 0; i<=stateIndexLim; i++) {
                     if (KHP[i][i] > P[i][i]) {
                         healthyFusion = false;
                     }
                 }
                 if (healthyFusion) {
                     // update the covariance matrix
-                    for (uint8_t i= 0; i<=stateIndexLim; i++) {
-                        for (uint8_t j= 0; j<=stateIndexLim; j++) {
+                    for (uint_fast8_t i= 0; i<=stateIndexLim; i++) {
+                        for (uint_fast8_t j= 0; j<=stateIndexLim; j++) {
                             P[i][j] = P[i][j] - KHP[i][j];
                         }
                     }
@@ -1006,7 +1006,7 @@ void NavEKF3_core::FuseVelPosNED()
                     ConstrainVariances();
 
                     // update states and renormalise the quaternions
-                    for (uint8_t i = 0; i<=stateIndexLim; i++) {
+                    for (uint_fast8_t i = 0; i<=stateIndexLim; i++) {
                         statesArray[i] = statesArray[i] - Kfusion[i] * innovVelPos[obsIndex];
                     }
                     stateStruct.quat.normalize();
@@ -1279,7 +1279,7 @@ void NavEKF3_core::FuseBodyVel()
     ftype vd = stateStruct.velocity.z;
 
     // Fuse X, Y and Z axis measurements sequentially assuming observation errors are uncorrelated
-    for (uint8_t obsIndex=0; obsIndex<=2; obsIndex++) {
+    for (uint_fast8_t obsIndex=0; obsIndex<=2; obsIndex++) {
 
         // calculate relative velocity in sensor frame including the relative motion due to rotation
         bodyVelPred = (prevTnb * stateStruct.velocity);
@@ -1303,7 +1303,7 @@ void NavEKF3_core::FuseBodyVel()
             H_VEL[4] = q0*q0+q1*q1-q2*q2-q3*q3;
             H_VEL[5] = q0*q3*2.0f+q1*q2*2.0f;
             H_VEL[6] = q0*q2*-2.0f+q1*q3*2.0f;
-            for (uint8_t index = 7; index < 24; index++) {
+            for (uint_fast8_t index = 7; index < 24; index++) {
                 H_VEL[index] = 0.0f;
             }
 
@@ -1439,7 +1439,7 @@ void NavEKF3_core::FuseBodyVel()
             }
 
             if (!inhibitDelVelBiasStates && !badIMUdata) {
-                for (uint8_t index = 0; index < 3; index++) {
+                for (uint_fast8_t index = 0; index < 3; index++) {
                     const uint8_t stateIndex = index + 13;
                     if (!dvelBiasAxisInhibit[index]) {
                         Kfusion[stateIndex] = t77*(P[stateIndex][5]*t4+P[stateIndex][4]*t9+P[stateIndex][0]*t14-P[stateIndex][6]*t11+P[stateIndex][1]*t18-P[stateIndex][2]*t21+P[stateIndex][3]*t24);
@@ -1480,7 +1480,7 @@ void NavEKF3_core::FuseBodyVel()
             H_VEL[4] = q0*q3*-2.0f+q1*q2*2.0f;
             H_VEL[5] = q0*q0-q1*q1+q2*q2-q3*q3;
             H_VEL[6] = q0*q1*2.0f+q2*q3*2.0f;
-            for (uint8_t index = 7; index < 24; index++) {
+            for (uint_fast8_t index = 7; index < 24; index++) {
                 H_VEL[index] = 0.0f;
             }
 
@@ -1616,7 +1616,7 @@ void NavEKF3_core::FuseBodyVel()
             }
 
             if (!inhibitDelVelBiasStates && !badIMUdata) {
-                for (uint8_t index = 0; index < 3; index++) {
+                for (uint_fast8_t index = 0; index < 3; index++) {
                     const uint8_t stateIndex = index + 13;
                     if (!dvelBiasAxisInhibit[index]) {
                         Kfusion[stateIndex] = t77*(-P[stateIndex][4]*t3+P[stateIndex][5]*t8+P[stateIndex][0]*t15+P[stateIndex][6]*t12+P[stateIndex][1]*t18+P[stateIndex][2]*t22-P[stateIndex][3]*t25);
@@ -1657,7 +1657,7 @@ void NavEKF3_core::FuseBodyVel()
             H_VEL[4] = q0*q2*2.0f+q1*q3*2.0f;
             H_VEL[5] = q0*q1*-2.0f+q2*q3*2.0f;
             H_VEL[6] = q0*q0-q1*q1-q2*q2+q3*q3;
-            for (uint8_t index = 7; index < 24; index++) {
+            for (uint_fast8_t index = 7; index < 24; index++) {
                 H_VEL[index] = 0.0f;
             }
 
@@ -1794,7 +1794,7 @@ void NavEKF3_core::FuseBodyVel()
             }
 
             if (!inhibitDelVelBiasStates && !badIMUdata) {
-                for (uint8_t index = 0; index < 3; index++) {
+                for (uint_fast8_t index = 0; index < 3; index++) {
                     const uint8_t stateIndex = index + 13;
                     if (!dvelBiasAxisInhibit[index]) {
                         Kfusion[stateIndex] = t77*(P[stateIndex][4]*t4+P[stateIndex][0]*t14+P[stateIndex][6]*t9-P[stateIndex][5]*t11-P[stateIndex][1]*t17+P[stateIndex][2]*t20+P[stateIndex][3]*t24);
@@ -1871,7 +1871,7 @@ void NavEKF3_core::FuseBodyVel()
 
             // Check that we are not going to drive any variances negative and skip the update if so
             bool healthyFusion = true;
-            for (uint8_t i= 0; i<=stateIndexLim; i++) {
+            for (uint_fast8_t i= 0; i<=stateIndexLim; i++) {
                 if (KHP[i][i] > P[i][i]) {
                     healthyFusion = false;
                 }
@@ -1879,8 +1879,8 @@ void NavEKF3_core::FuseBodyVel()
 
             if (healthyFusion) {
                 // update the covariance matrix
-                for (uint8_t i= 0; i<=stateIndexLim; i++) {
-                    for (uint8_t j= 0; j<=stateIndexLim; j++) {
+                for (uint_fast8_t i= 0; i<=stateIndexLim; i++) {
+                    for (uint_fast8_t j= 0; j<=stateIndexLim; j++) {
                         P[i][j] = P[i][j] - KHP[i][j];
                     }
                 }
@@ -1890,7 +1890,7 @@ void NavEKF3_core::FuseBodyVel()
                 ConstrainVariances();
 
                 // correct the state vector
-                for (uint8_t j= 0; j<=stateIndexLim; j++) {
+                for (uint_fast8_t j= 0; j<=stateIndexLim; j++) {
                     statesArray[j] = statesArray[j] - Kfusion[j] * innovBodyVel[obsIndex];
                 }
                 stateStruct.quat.normalize();

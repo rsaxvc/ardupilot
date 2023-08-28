@@ -86,7 +86,7 @@ void AP_Beacon_Nooploop::request_setting()
     uart->write((uint8_t)0x54);
     uart->write((uint8_t)0);
     uart->write((uint8_t)1);
-    for (uint8_t i = 0; i < 124; i++) {
+    for (uint_fast8_t i = 0; i < 124; i++) {
         uart->write((uint8_t)0); //manual states filled with any char, but in fact only 0 works
     }
     uart->write((uint8_t)0x55);
@@ -215,7 +215,7 @@ void AP_Beacon_Nooploop::parse_node_frame2()
     set_vehicle_position(pos_m, pos_err);
 
     const uint8_t valid_nodes = _msgbuf[NOOPLOOP_NODE_FRAME2_VALID_NODES];
-    for (uint8_t i = 0; i < valid_nodes; i++) {
+    for (uint_fast8_t i = 0; i < valid_nodes; i++) {
         uint16_t offset = NOOPLOOP_NODE_FRAME2_NODE_BLOCK + i * 13;
         uint8_t id = _msgbuf[offset+1]; //nooploop id starts from 0, increments clockwise, 0 -> 1 define Y axis.
         const int32_t dist = ((int32_t)_msgbuf[offset+2+2] << 24 | (int32_t)_msgbuf[offset+2+1] << 16 | (int32_t)_msgbuf[offset+2] << 8) >> 8;
@@ -225,7 +225,7 @@ void AP_Beacon_Nooploop::parse_node_frame2()
 
 void AP_Beacon_Nooploop::parse_setting_frame0()
 {
-    for (uint8_t i = 0; i < 4; i++) {
+    for (uint_fast8_t i = 0; i < 4; i++) {
         uint16_t offset = NOOPLOOP_SETTING_FRAME0_A0 + i * 9;
 
         // x,y,z position in m*1000 in ENU frame

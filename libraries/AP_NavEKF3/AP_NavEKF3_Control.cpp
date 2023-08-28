@@ -98,7 +98,7 @@ void NavEKF3_core::setWindMagStateLearningMode()
             // set the variances using a typical max wind speed for small UAV operation
             zeroCols(P, 22, 23);
             zeroRows(P, 22, 23);
-            for (uint8_t index=22; index<=23; index++) {
+            for (uint_fast8_t index=22; index<=23; index++) {
                 P[index][index] = sq(WIND_VEL_VARIANCE_MAX);
             }
         }
@@ -137,7 +137,7 @@ void NavEKF3_core::setWindMagStateLearningMode()
             P[21][21] = bodyMagFieldVar.z;
         } else {
             // set the variances equal to the observation variances
-            for (uint8_t index=16; index<=21; index++) {
+            for (uint_fast8_t index=16; index<=21; index++) {
                 P[index][index] = sq(frontend->_magNoise);
             }
 
@@ -236,24 +236,24 @@ void NavEKF3_core::setAidingMode()
         ResetPosition(resetDataSource::DEFAULT);
         ResetHeight();
         // preserve quaternion 4x4 covariances, but zero the other rows and columns
-        for (uint8_t row=0; row<4; row++) {
-            for (uint8_t col=4; col<24; col++) {
+        for (uint_fast8_t row=0; row<4; row++) {
+            for (uint_fast8_t col=4; col<24; col++) {
                 P[row][col] = 0.0f;
             }
         }
-        for (uint8_t col=0; col<4; col++) {
-            for (uint8_t row=4; row<24; row++) {
+        for (uint_fast8_t col=0; col<4; col++) {
+            for (uint_fast8_t row=4; row<24; row++) {
                 P[row][col] = 0.0f;
             }
         }
         // keep the IMU bias state variances, but zero the covariances
         ftype oldBiasVariance[6];
-        for (uint8_t row=0; row<6; row++) {
+        for (uint_fast8_t row=0; row<6; row++) {
             oldBiasVariance[row] = P[row+10][row+10];
         }
         zeroCols(P,10,15);
         zeroRows(P,10,15);
-        for (uint8_t row=0; row<6; row++) {
+        for (uint_fast8_t row=0; row<6; row++) {
             P[row+10][row+10] = oldBiasVariance[row];
         }
     }

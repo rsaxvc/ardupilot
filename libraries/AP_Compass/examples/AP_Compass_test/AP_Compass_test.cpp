@@ -79,7 +79,7 @@ static void loop()
         compass.read();
         const uint32_t read_time = AP_HAL::micros() - timer;
 
-        for (uint8_t i = 0; i < compass_count; i++) {
+        for (uint_fast8_t i = 0; i < compass_count; i++) {
             float heading;
 
             hal.console->printf("Compass #%u: ", i);

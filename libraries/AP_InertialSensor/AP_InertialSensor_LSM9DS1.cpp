@@ -523,7 +523,7 @@ void AP_InertialSensor_LSM9DS1::_dump_registers(void)
 
     const uint8_t first = LSM9DS1XG_ACT_THS;
     const uint8_t last = LSM9DS1XG_INT_GEN_DUR_G;
-    for (uint8_t reg=first; reg<=last; reg++) {
+    for (uint_fast8_t reg=first; reg<=last; reg++) {
         uint8_t v = _register_read(reg);
         hal.console->printf("%02x:%02x ", reg, v);
         if ((reg - (first-1)) % 16 == 0) {

@@ -70,7 +70,7 @@ void setup()
     fft = hal.dsp->fft_init(WINDOW_SIZE, SAMPLE_RATE);
     attenuation_cutoff = powf(10.0f, -attenuation_power_db / 10.0f);
 
-    for(uint16_t i = 0; i < WINDOW_SIZE; i++) {
+    for (uint_fast16_t i = 0; i < WINDOW_SIZE; i++) {
         float sample = sinf(2.0f * M_PI * frequency1 * i / SAMPLE_RATE) * ToRad(20) * 2000;
         sample += sinf(2.0f * M_PI * frequency2 * i / SAMPLE_RATE) * ToRad(10) * 2000;
         sample += sinf(2.0f * M_PI * frequency3 * i / SAMPLE_RATE) * ToRad(10) * 2000;
@@ -104,10 +104,10 @@ void do_fft(const float* data)
 
     const float max_energy = fft->_freq_bins[fft->_peak_data[AP_HAL::DSP::CENTER]._bin];
 
-    for (uint16_t i = 0; i < 32; i++) {
+    for (uint_fast16_t i = 0; i < 32; i++) {
         const uint16_t height = uint16_t(roundf(80.0f * fft->_freq_bins[i] / max_energy));
         hal.console->printf("[%3.f]", i * fft->_bin_resolution);
-        for (uint16_t j = 0; j < height; j++) {
+        for (uint_fast16_t j = 0; j < height; j++) {
             hal.console->printf("\u2588");
         }
         hal.console->printf("\n");
@@ -130,7 +130,7 @@ void do_fft(const float* data)
 
 void update()
 {
-    for (uint16_t i = 0; i < FRAME_SIZE / WINDOW_SIZE; i++) {
+    for (uint_fast16_t i = 0; i < FRAME_SIZE / WINDOW_SIZE; i++) {
         do_fft(&gyro_frames[frame_num].x[i * WINDOW_SIZE]);
     }
     if (++frame_num > NUM_FRAMES) {

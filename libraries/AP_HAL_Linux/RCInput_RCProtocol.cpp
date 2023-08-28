@@ -140,7 +140,7 @@ void RCInput_RCProtocol::_timer_tick(void)
     if (fd_inverted != -1) {
         ssize_t n = ::read(fd_inverted, &b[0], sizeof(b));
         if (n > 0) {
-            for (uint8_t i=0; i<n; i++) {
+            for (uint_fast8_t i=0; i<n; i++) {
                 AP::RC().process_byte(b[i], inverted_is_115200?115200:100000);
             }
         }
@@ -148,7 +148,7 @@ void RCInput_RCProtocol::_timer_tick(void)
     if (fd_115200 != -1) {
         ssize_t n = ::read(fd_115200, &b[0], sizeof(b));
         if (n > 0 && !inverted_is_115200) {
-            for (uint8_t i=0; i<n; i++) {
+            for (uint_fast8_t i=0; i<n; i++) {
                 AP::RC().process_byte(b[i], 115200);
             }
         }
@@ -157,7 +157,7 @@ void RCInput_RCProtocol::_timer_tick(void)
     if (AP::RC().new_input()) {
         last_frame_ms = AP_HAL::millis();
         uint8_t n = AP::RC().num_channels();
-        for (uint8_t i=0; i<n; i++) {
+        for (uint_fast8_t i=0; i<n; i++) {
             _pwm_values[i] = AP::RC().read(i);
         }
         _num_channels = n;

@@ -603,7 +603,7 @@ bool AP_RangeFinder_VL53L0X::init()
     uint8_t first_spad_to_enable = spad_type_is_aperture ? 12 : 0; // 12 is the first aperture spad
     uint8_t spads_enabled = 0;
 
-    for (uint8_t i = 0; i < 48; i++) {
+    for (uint_fast8_t i = 0; i < 48; i++) {
         if (i < first_spad_to_enable || spads_enabled == spad_count) {
             // This bit is lower than the first one that should be enabled, or
             // (reference_spad_count) bits have already been enabled, so zero this bit
@@ -617,7 +617,7 @@ bool AP_RangeFinder_VL53L0X::init()
     memcpy(&reg_spad_map[1], ref_spad_map, 6);
     dev->transfer(reg_spad_map, 7, nullptr, 0);
 
-    for (uint16_t i=0; i<ARRAY_SIZE(tuning_data); i++) {
+    for (uint_fast16_t i=0; i<ARRAY_SIZE(tuning_data); i++) {
         write_register(tuning_data[i].reg, tuning_data[i].value);
     }
 

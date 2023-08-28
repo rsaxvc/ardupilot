@@ -39,7 +39,7 @@ void NavEKF2_core::readRangeFinder(void)
         // store samples and sample time into a ring buffer if valid
         // use data from two range finders if available
 
-        for (uint8_t sensorIndex = 0; sensorIndex < ARRAY_SIZE(rngMeasIndex); sensorIndex++) {
+        for (uint_fast8_t sensorIndex = 0; sensorIndex < ARRAY_SIZE(rngMeasIndex); sensorIndex++) {
             auto *sensor = _rng->get_backend(sensorIndex);
             if (sensor == nullptr) {
                 continue;
@@ -57,7 +57,7 @@ void NavEKF2_core::readRangeFinder(void)
 
             // check for three fresh samples
             bool sampleFresh[DOWNWARD_RANGEFINDER_MAX_INSTANCES][3] = {};
-            for (uint8_t index = 0; index <= 2; index++) {
+            for (uint_fast8_t index = 0; index <= 2; index++) {
                 sampleFresh[sensorIndex][index] = (imuSampleTime_ms - storedRngMeasTime_ms[sensorIndex][index]) < 500;
             }
 
@@ -190,7 +190,7 @@ void NavEKF2_core::tryChangeCompass(void)
     const uint8_t maxCount = compass.get_count();
 
     // search through the list of magnetometers
-    for (uint8_t i=1; i<maxCount; i++) {
+    for (uint_fast8_t i=1; i<maxCount; i++) {
         uint8_t tempIndex = magSelectIndex + i;
         // loop back to the start index if we have exceeded the bounds
         if (tempIndex >= maxCount) {
@@ -1001,7 +1001,7 @@ void NavEKF2_core::learnInactiveBiases(void)
     const auto &ins = dal.ins();
 
     // learn gyro biases
-    for (uint8_t i=0; i<INS_MAX_INSTANCES; i++) {
+    for (uint_fast8_t i=0; i<INS_MAX_INSTANCES; i++) {
         if (!ins.use_gyro(i)) {
             // can't use this gyro
             continue;
@@ -1031,7 +1031,7 @@ void NavEKF2_core::learnInactiveBiases(void)
     }
 
     // learn accel biases
-    for (uint8_t i=0; i<INS_MAX_INSTANCES; i++) {
+    for (uint_fast8_t i=0; i<INS_MAX_INSTANCES; i++) {
         if (!ins.use_accel(i)) {
             // can't use this accel
             continue;

@@ -172,7 +172,7 @@ void RichenPower::update_control_pin(const struct sitl_input &input)
 void RichenPower::RichenUnion::update_checksum()
 {
     packet.checksum = 0;
-    for (uint8_t i=1; i<6; i++) {
+    for (uint_fast8_t i=1; i<6; i++) {
         packet.checksum += htobe16(checksum_buffer[i]);
     }
     packet.checksum = htobe16(packet.checksum);

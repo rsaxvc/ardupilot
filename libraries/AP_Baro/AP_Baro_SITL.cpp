@@ -99,7 +99,7 @@ void AP_Baro_SITL::_timer()
     const uint32_t delayed_time = now - _sitl->baro[_instance].delay;  // get time corresponding to delay
 
     // find data corresponding to delayed time in buffer
-    for (uint8_t i = 0; i <= _buffer_length - 1; i++) {
+    for (uint_fast8_t i = 0; i <= _buffer_length - 1; i++) {
         // find difference between delayed time and time stamp in buffer
         uint32_t time_delta = abs(
                 (int32_t)(delayed_time - _buffer[i].time));

@@ -498,7 +498,7 @@ AP_GPS_SBP2::logging_log_raw_sbp(uint16_t msg_type,
     memcpy(pkt.data, msg_buff, MIN(msg_len, 48));
     AP::logger().WriteBlock(&pkt, sizeof(pkt));
 
-    for (uint8_t i = 0; i < pages - 1; i++) {
+    for (uint_fast8_t i = 0; i < pages - 1; i++) {
         struct log_SbpRAWM pkt2 = {
             LOG_PACKET_HEADER_INIT(LOG_MSG_SBPRAWM),
             time_us         : time_us,

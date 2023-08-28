@@ -232,13 +232,13 @@ void CANTester::main_thread()
             break;
         }
 
-        for (uint8_t i = 0; i < 2; i++) {
+        for (uint_fast8_t i = 0; i < 2; i++) {
             if (_can_ifaces[i] != nullptr) {
                 _can_ifaces[i]->flush_tx();
             }
         }
         hal.scheduler->delay(5000);
-        for (uint8_t i = 0; i < 2; i++) {
+        for (uint_fast8_t i = 0; i < 2; i++) {
             if (_can_ifaces[i] != nullptr) {
                 _can_ifaces[i]->clear_rx();
             }
@@ -266,7 +266,7 @@ bool CANTester::test_loopback(uint32_t loop_rate)
     memset(&_loopback_stats[1], 0, sizeof(_loopback_stats[1]));
 
     while (num_loops--) {
-        for (uint8_t i = 0; i < 2; i++) {
+        for (uint_fast8_t i = 0; i < 2; i++) {
             // Write as many frames as we can on an iface
             for (uint32_t tx_frames = 0; tx_frames < NUM_MAX_TX_FRAMES; tx_frames++) {
                 create_loopback_frame(_loopback_stats[i], frame);
@@ -299,7 +299,7 @@ bool CANTester::test_loopback(uint32_t loop_rate)
     _can_ifaces[1]->flush_tx();
     hal.scheduler->delay_microseconds(1000);
     // flush the rx data still buffered in the interface
-    for (uint8_t i = 0; i < 2; i++) {
+    for (uint_fast8_t i = 0; i < 2; i++) {
         while (true) {
             reset_frame(frame);
             if (read_frame((i+1)%2, frame, 0, flags)) {
@@ -314,7 +314,7 @@ bool CANTester::test_loopback(uint32_t loop_rate)
         }
     }
 
-    for (uint8_t i = 0; i < _num_ifaces; i++) {
+    for (uint_fast8_t i = 0; i < _num_ifaces; i++) {
         DEV_PRINTF("Loopback Test Results %d->%d:\n", i, (i+1)%2);
         DEV_PRINTF("num_tx: %lu, failed_tx: %lu\n",
                             (long unsigned int)_loopback_stats[i].num_tx, (long unsigned int)_loopback_stats[i].failed_tx);
@@ -679,7 +679,7 @@ bool CANTester::test_uavcan_esc(bool enable_canfd)
             gcs().send_text(MAV_SEVERITY_ALERT, "UC ESC Command Rate: %d", uavcan_esc_command_rate);
             uavcan_esc_command_rate = 0;
             // send fake ESC stats as well
-            for (uint8_t i = 0; i < NUM_ESCS; i++) {
+            for (uint_fast8_t i = 0; i < NUM_ESCS; i++) {
                 uavcan::equipment::esc::Status status_msg;
                 status_msg.esc_index = i;
                 status_msg.error_count = 0;

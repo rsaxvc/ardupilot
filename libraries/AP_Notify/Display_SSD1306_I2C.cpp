@@ -118,7 +118,7 @@ void Display_SSD1306_I2C::_timer()
     } display_buffer = { 0x40, {} };
 
     // write buffer to display
-    for (uint8_t i = 0; i < (SSD1306_ROWS / SSD1306_ROWS_PER_PAGE); i++) {
+    for (uint_fast8_t i = 0; i < (SSD1306_ROWS / SSD1306_ROWS_PER_PAGE); i++) {
         command.cmd[4] = i;
         _dev->transfer((uint8_t *)&command, sizeof(command), nullptr, 0);
 

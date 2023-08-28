@@ -32,7 +32,7 @@ bool AP_RCProtocol_IBUS::ibus_decode(const uint8_t frame[IBUS_FRAME_SIZE], uint1
     }
 
     /* use the decoder matrix to extract channel data */
-    for (uint8_t channel = 0, pick=2; channel < IBUS_INPUT_CHANNELS; channel++, pick+=2) {
+    for (uint_fast8_t channel = 0, pick=2; channel < IBUS_INPUT_CHANNELS; channel++, pick+=2) {
         values[channel]=frame[pick]|(frame[pick+1] & 0x0F)<<8;
         chksum+=frame[pick]+frame[pick+1];
     }

@@ -11,8 +11,8 @@
 template <typename T, uint8_t N>
 void MatrixN<T,N>::mult(const VectorN<T,N> &A, const VectorN<T,N> &B)
 {
-    for (uint8_t i = 0; i < N; i++) {
-        for (uint8_t j = 0; j < N; j++) {
+    for (uint_fast8_t i = 0; i < N; i++) {
+        for (uint_fast8_t j = 0; j < N; j++) {
             v[i][j] = A[i] * B[j];
         }
     }
@@ -22,8 +22,8 @@ void MatrixN<T,N>::mult(const VectorN<T,N> &A, const VectorN<T,N> &B)
 template <typename T, uint8_t N>
 MatrixN<T,N> &MatrixN<T,N>::operator -=(const MatrixN<T,N> &B)
 {
-    for (uint8_t i = 0; i < N; i++) {
-        for (uint8_t j = 0; j < N; j++) {
+    for (uint_fast8_t i = 0; i < N; i++) {
+        for (uint_fast8_t j = 0; j < N; j++) {
             v[i][j] -= B.v[i][j];
         }
     }
@@ -34,8 +34,8 @@ MatrixN<T,N> &MatrixN<T,N>::operator -=(const MatrixN<T,N> &B)
 template <typename T, uint8_t N>
 MatrixN<T,N> &MatrixN<T,N>::operator +=(const MatrixN<T,N> &B)
 {
-    for (uint8_t i = 0; i < N; i++) {
-        for (uint8_t j = 0; j < N; j++) {
+    for (uint_fast8_t i = 0; i < N; i++) {
+        for (uint_fast8_t j = 0; j < N; j++) {
             v[i][j] += B.v[i][j];
         }
     }
@@ -46,8 +46,8 @@ MatrixN<T,N> &MatrixN<T,N>::operator +=(const MatrixN<T,N> &B)
 template <typename T, uint8_t N>
 void MatrixN<T,N>::force_symmetry(void)
 {
-    for (uint8_t i = 0; i < N; i++) {
-        for (uint8_t j = 0; j < (i - 1); j++) {
+    for (uint_fast8_t i = 0; i < N; i++) {
+        for (uint_fast8_t j = 0; j < (i - 1); j++) {
             v[i][j] = (v[i][j] + v[j][i]) / 2;
             v[j][i] = v[i][j];
         }

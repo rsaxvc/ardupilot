@@ -398,7 +398,7 @@ void AP_RCProtocol_DSM::update(void)
             // 9 pulses works with all satellite receivers, and supports the highest
             // available protocol
             const uint8_t num_pulses = 9;
-            for (uint8_t i=0; i<num_pulses; i++) {
+            for (uint_fast8_t i=0; i<num_pulses; i++) {
                 hal.scheduler->delay_microseconds(120);
                 hal.gpio->write(HAL_GPIO_SPEKTRUM_RC, 0);
                 hal.scheduler->delay_microseconds(120);

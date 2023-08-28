@@ -122,7 +122,7 @@ void GCS_MAVLINK::handle_device_op_write(const mavlink_message_t &msg)
             retcode = 4;
         }
     } else {
-        for (uint8_t i=0; i<packet.count; i++) {
+        for (uint_fast8_t i=0; i<packet.count; i++) {
             if (!dev->write_bank_register(packet.bank, packet.regstart+i, packet.data[i])) {
                 retcode = 4;
                 break;

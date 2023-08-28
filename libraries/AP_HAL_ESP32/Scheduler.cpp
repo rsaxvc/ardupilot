@@ -127,7 +127,7 @@ bool Scheduler::thread_create(AP_HAL::MemberProc proc, const char *name, uint32_
         { PRIORITY_STORAGE, STORAGE_PRIO},
         { PRIORITY_SCRIPTING, IO_PRIO},
     };
-    for (uint8_t i=0; i<ARRAY_SIZE(priority_map); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(priority_map); i++) {
         if (priority_map[i].base == base) {
 #ifdef SCHEDDEBUG
             printf("%s:%d \n", __PRETTY_FUNCTION__, __LINE__);
@@ -174,7 +174,7 @@ void Scheduler::register_timer_process(AP_HAL::MemberProc proc)
 #ifdef SCHEDDEBUG
     printf("%s:%d \n", __PRETTY_FUNCTION__, __LINE__);
 #endif
-    for (uint8_t i = 0; i < _num_timer_procs; i++) {
+    for (uint_fast8_t i = 0; i < _num_timer_procs; i++) {
         if (_timer_proc[i] == proc) {
             return;
         }
@@ -195,7 +195,7 @@ void Scheduler::register_io_process(AP_HAL::MemberProc proc)
     printf("%s:%d \n", __PRETTY_FUNCTION__, __LINE__);
 #endif
     _io_sem.take_blocking();
-    for (uint8_t i = 0; i < _num_io_procs; i++) {
+    for (uint_fast8_t i = 0; i < _num_io_procs; i++) {
         if (_io_proc[i] == proc) {
             _io_sem.give();
             return;
@@ -434,7 +434,7 @@ void Scheduler::_uart_thread(void *arg)
 #endif
     while (true) {
         sched->delay_microseconds(1000);
-        for (uint8_t i=0; i<hal.num_serial; i++) {
+        for (uint_fast8_t i=0; i<hal.num_serial; i++) {
             hal.serial(i)->_timer_tick();
         }
         hal.console->_timer_tick();

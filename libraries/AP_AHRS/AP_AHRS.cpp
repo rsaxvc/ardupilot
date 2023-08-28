@@ -2292,7 +2292,7 @@ bool AP_AHRS::attitudes_consistent(char *failure_msg, const uint8_t failure_msg_
 #if HAL_NAVEKF2_AVAILABLE
     // check primary vs ekf2
     if (ekf_type() == EKFType::TWO || active_EKF_type() == EKFType::TWO) {
-        for (uint8_t i = 0; i < EKF2.activeCores(); i++) {
+        for (uint_fast8_t i = 0; i < EKF2.activeCores(); i++) {
             Quaternion ekf2_quat;
             EKF2.getQuaternionBodyToNED(i, ekf2_quat);
 
@@ -2319,7 +2319,7 @@ bool AP_AHRS::attitudes_consistent(char *failure_msg, const uint8_t failure_msg_
 #if HAL_NAVEKF3_AVAILABLE
     // check primary vs ekf3
     if (ekf_type() == EKFType::THREE || active_EKF_type() == EKFType::THREE) {
-        for (uint8_t i = 0; i < EKF3.activeCores(); i++) {
+        for (uint_fast8_t i = 0; i < EKF3.activeCores(); i++) {
             Quaternion ekf3_quat;
             EKF3.getQuaternionBodyToNED(i, ekf3_quat);
 

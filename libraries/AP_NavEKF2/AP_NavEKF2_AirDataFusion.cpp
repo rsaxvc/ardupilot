@@ -49,13 +49,13 @@ void NavEKF2_core::FuseAirspeed()
         SH_TAS[0] = 1.0f/(sqrtF(sq(ve - vwe) + sq(vn - vwn) + sq(vd)));
         SH_TAS[1] = (SH_TAS[0]*(2*ve - 2*vwe))/2;
         SH_TAS[2] = (SH_TAS[0]*(2*vn - 2*vwn))/2;
-        for (uint8_t i=0; i<=2; i++) H_TAS[i] = 0.0f;
+        for (uint_fast8_t i=0; i<=2; i++) H_TAS[i] = 0.0f;
         H_TAS[3] = SH_TAS[2];
         H_TAS[4] = SH_TAS[1];
         H_TAS[5] = vd*SH_TAS[0];
         H_TAS[22] = -SH_TAS[2];
         H_TAS[23] = -SH_TAS[1];
-        for (uint8_t i=6; i<=21; i++) H_TAS[i] = 0.0f;
+        for (uint_fast8_t i=6; i<=21; i++) H_TAS[i] = 0.0f;
         // calculate Kalman gains
         ftype temp = (R_TAS + SH_TAS[2]*(P[3][3]*SH_TAS[2] + P[4][3]*SH_TAS[1] - P[22][3]*SH_TAS[2] - P[23][3]*SH_TAS[1] + P[5][3]*vd*SH_TAS[0]) + SH_TAS[1]*(P[3][4]*SH_TAS[2] + P[4][4]*SH_TAS[1] - P[22][4]*SH_TAS[2] - P[23][4]*SH_TAS[1] + P[5][4]*vd*SH_TAS[0]) - SH_TAS[2]*(P[3][22]*SH_TAS[2] + P[4][22]*SH_TAS[1] - P[22][22]*SH_TAS[2] - P[23][22]*SH_TAS[1] + P[5][22]*vd*SH_TAS[0]) - SH_TAS[1]*(P[3][23]*SH_TAS[2] + P[4][23]*SH_TAS[1] - P[22][23]*SH_TAS[2] - P[23][23]*SH_TAS[1] + P[5][23]*vd*SH_TAS[0]) + vd*SH_TAS[0]*(P[3][5]*SH_TAS[2] + P[4][5]*SH_TAS[1] - P[22][5]*SH_TAS[2] - P[23][5]*SH_TAS[1] + P[5][5]*vd*SH_TAS[0]));
         if (temp >= R_TAS) {
@@ -95,7 +95,7 @@ void NavEKF2_core::FuseAirspeed()
             Kfusion[20] = SK_TAS*(P[20][3]*SH_TAS[2] - P[20][22]*SH_TAS[2] + P[20][4]*SH_TAS[1] - P[20][23]*SH_TAS[1] + P[20][5]*vd*SH_TAS[0]);
             Kfusion[21] = SK_TAS*(P[21][3]*SH_TAS[2] - P[21][22]*SH_TAS[2] + P[21][4]*SH_TAS[1] - P[21][23]*SH_TAS[1] + P[21][5]*vd*SH_TAS[0]);
         } else {
-            for (uint8_t i=16; i<=21; i++) {
+            for (uint_fast8_t i=16; i<=21; i++) {
                 Kfusion[i] = 0.0f;
             }
         }
@@ -130,7 +130,7 @@ void NavEKF2_core::FuseAirspeed()
             stateStruct.angErr.zero();
 
             // correct the state vector
-            for (uint8_t j= 0; j<=stateIndexLim; j++) {
+            for (uint_fast8_t j= 0; j<=stateIndexLim; j++) {
                 statesArray[j] = statesArray[j] - Kfusion[j] * innovVtas;
             }
 
@@ -306,7 +306,7 @@ void NavEKF2_core::FuseSideslip()
         H_BETA[3] = - SH_BETA[6]*SH_BETA[9] - SH_BETA[1]*SH_BETA[3]*SH_BETA[5];
         H_BETA[4] = SH_BETA[4] - SH_BETA[1]*SH_BETA[3]*SH_BETA[8];
         H_BETA[5] = SH_BETA[6]*(2*q0*q1 + 2*q2*q3) + SH_BETA[1]*SH_BETA[3]*(2*q0*q2 - 2*q1*q3);
-        for (uint8_t i=6; i<=21; i++) {
+        for (uint_fast8_t i=6; i<=21; i++) {
             H_BETA[i] = 0.0f;
         }
         H_BETA[22] = SH_BETA[6]*SH_BETA[9] + SH_BETA[1]*SH_BETA[3]*SH_BETA[5];
@@ -355,7 +355,7 @@ void NavEKF2_core::FuseSideslip()
             Kfusion[20] = SK_BETA[0]*(P[20][5]*SK_BETA[1] - P[20][2]*SK_BETA[4] - P[20][3]*SK_BETA[2] + P[20][4]*SK_BETA[3] + P[20][22]*SK_BETA[2] - P[20][23]*SK_BETA[3] + P[20][0]*SH_BETA[6]*SH_BETA[2] + P[20][1]*SH_BETA[1]*SH_BETA[3]*SH_BETA[2]);
             Kfusion[21] = SK_BETA[0]*(P[21][5]*SK_BETA[1] - P[21][2]*SK_BETA[4] - P[21][3]*SK_BETA[2] + P[21][4]*SK_BETA[3] + P[21][22]*SK_BETA[2] - P[21][23]*SK_BETA[3] + P[21][0]*SH_BETA[6]*SH_BETA[2] + P[21][1]*SH_BETA[1]*SH_BETA[3]*SH_BETA[2]);
         } else {
-            for (uint8_t i=16; i<=21; i++) {
+            for (uint_fast8_t i=16; i<=21; i++) {
                 Kfusion[i] = 0.0f;
             }
         }
@@ -372,7 +372,7 @@ void NavEKF2_core::FuseSideslip()
         stateStruct.angErr.zero();
 
         // correct the state vector
-        for (uint8_t j= 0; j<=stateIndexLim; j++) {
+        for (uint_fast8_t j= 0; j<=stateIndexLim; j++) {
             statesArray[j] = statesArray[j] - Kfusion[j] * innovBeta;
         }
 

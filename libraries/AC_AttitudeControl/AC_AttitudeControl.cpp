@@ -1126,7 +1126,7 @@ bool AC_AttitudeControl::pre_arm_checks(const char *param_prefix,
         { "ANG_RLL", get_angle_roll_p() },
         { "ANG_YAW", get_angle_yaw_p() }
     };
-    for (uint8_t i=0; i<ARRAY_SIZE(ps); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(ps); i++) {
         // all AC_P's must have a positive P value:
         if (!is_positive(ps[i].p.kP())) {
             hal.util->snprintf(failure_msg, failure_msg_len, "%s_%s_P must be > 0", param_prefix, ps[i].pid_name);
@@ -1143,7 +1143,7 @@ bool AC_AttitudeControl::pre_arm_checks(const char *param_prefix,
         { "RAT_PIT", get_rate_pitch_pid() },
         { "RAT_YAW", get_rate_yaw_pid() },
     };
-    for (uint8_t i=0; i<ARRAY_SIZE(pids); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(pids); i++) {
         // if the PID has a positive FF then we just ensure kP and
         // kI aren't negative
         AC_PID &pid = pids[i].pid;

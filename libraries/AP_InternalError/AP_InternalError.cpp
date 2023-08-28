@@ -76,7 +76,7 @@ void AP_InternalError::errors_as_string(uint8_t *buffer, const uint16_t len) con
 {
     buffer[0] = 0;
     uint32_t buffer_used = 0;
-    for (uint8_t i=0; i<ARRAY_SIZE(error_bit_descriptions); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(error_bit_descriptions); i++) {
         if (buffer_used >= len) {
             break;
         }

@@ -177,7 +177,7 @@ bool AP_Baro_ICP101XX::read_calibration_data(void)
     if (!send_command(CMD_SET_ADDR, cmd, 3)) {
         return false;
     }
-    for (uint8_t i = 0; i < 4; i++) {
+    for (uint_fast8_t i = 0; i < 4; i++) {
         uint8_t d[3];
         uint8_t crc = 0xff;
         read_response(CMD_READ_OTP, d, 3);

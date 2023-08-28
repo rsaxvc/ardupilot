@@ -32,7 +32,7 @@ extern const AP_HAL::HAL& hal;
 
 void AP_CANTester_KDECAN::count_msg(uint32_t frame_id)
 {
-    for (uint16_t i=0; i<ARRAY_SIZE(counters); i++) {
+    for (uint_fast16_t i=0; i<ARRAY_SIZE(counters); i++) {
         if (counters[i].frame_id == frame_id) {
             counters[i].count++;
             break;
@@ -203,7 +203,7 @@ void AP_CANTester_KDECAN::loop(void)
 void AP_CANTester_KDECAN::print_stats(void)
 {
     DEV_PRINTF("KDECANTester: TimeStamp: %u\n", (unsigned)AP_HAL::micros());
-    for (uint16_t i=0; i<100; i++) {
+    for (uint_fast16_t i=0; i<100; i++) {
         if (counters[i].frame_id == 0) {
             break;
         }

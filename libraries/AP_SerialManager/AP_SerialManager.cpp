@@ -394,7 +394,7 @@ void AP_SerialManager::init()
     init_console();
 
     // initialise serial ports
-    for (uint8_t i=1; i<SERIALMANAGER_NUM_PORTS; i++) {
+    for (uint_fast8_t i=1; i<SERIALMANAGER_NUM_PORTS; i++) {
         auto *uart = hal.serial(i);
 
         if (uart != nullptr) {
@@ -538,7 +538,7 @@ const AP_SerialManager::UARTState *AP_SerialManager::find_protocol_instance(enum
     uint8_t found_instance = 0;
 
     // search for matching protocol
-    for(uint8_t i=0; i<SERIALMANAGER_NUM_PORTS; i++) {
+    for (uint_fast8_t i=0; i<SERIALMANAGER_NUM_PORTS; i++) {
         if (protocol_match(protocol, (enum SerialProtocol)state[i].protocol.get())) {
             if (found_instance == instance) {
                 return &state[i];
@@ -611,7 +611,7 @@ AP_HAL::UARTDriver *AP_SerialManager::get_serial_by_id(uint8_t id)
 void AP_SerialManager::set_blocking_writes_all(bool blocking)
 {
     // set block_writes for all initialised serial ports
-    for (uint8_t i=0; i<SERIALMANAGER_NUM_PORTS; i++) {
+    for (uint_fast8_t i=0; i<SERIALMANAGER_NUM_PORTS; i++) {
         auto *uart = hal.serial(i);
         if (uart != nullptr) {
             uart->set_blocking_writes(blocking);

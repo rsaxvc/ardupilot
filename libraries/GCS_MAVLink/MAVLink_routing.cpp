@@ -148,7 +148,7 @@ bool MAVLink_routing::check_and_forward(GCS_MAVLINK &in_link, const mavlink_mess
     bool forwarded = false;
     bool sent_to_chan[MAVLINK_COMM_NUM_BUFFERS];
     memset(sent_to_chan, 0, sizeof(sent_to_chan));
-    for (uint8_t i=0; i<num_routes; i++) {
+    for (uint_fast8_t i=0; i<num_routes; i++) {
 
         // Skip if channel is private and the target system or component IDs do not match
         GCS_MAVLINK *out_link = gcs().chan(routes[i].channel);
@@ -212,7 +212,7 @@ void MAVLink_routing::send_to_components(const char *pkt, const mavlink_msg_entr
     bool sent_to_chan[MAVLINK_COMM_NUM_BUFFERS] {};
 
     // check learned routes
-    for (uint8_t i=0; i<num_routes; i++) {
+    for (uint_fast8_t i=0; i<num_routes; i++) {
         if (routes[i].sysid != mavlink_system.sysid) {
             // our system ID hasn't been seen on this link
             continue;
@@ -256,7 +256,7 @@ void MAVLink_routing::send_to_components(const char *pkt, const mavlink_msg_entr
 bool MAVLink_routing::find_by_mavtype(uint8_t mavtype, uint8_t &sysid, uint8_t &compid, mavlink_channel_t &channel)
 {
     // check learned routes
-    for (uint8_t i=0; i<num_routes; i++) {
+    for (uint_fast8_t i=0; i<num_routes; i++) {
         if (routes[i].mavtype == mavtype) {
             sysid = routes[i].sysid;
             compid = routes[i].compid;
@@ -275,7 +275,7 @@ bool MAVLink_routing::find_by_mavtype(uint8_t mavtype, uint8_t &sysid, uint8_t &
  */
 bool MAVLink_routing::find_by_mavtype_and_compid(uint8_t mavtype, uint8_t compid, uint8_t &sysid, mavlink_channel_t &channel) const
 {
-    for (uint8_t i=0; i<num_routes; i++) {
+    for (uint_fast8_t i=0; i<num_routes; i++) {
         if ((routes[i].mavtype == mavtype) && (routes[i].compid == compid)) {
             sysid = routes[i].sysid;
             channel = routes[i].channel;
@@ -355,7 +355,7 @@ void MAVLink_routing::handle_heartbeat(GCS_MAVLINK &link, const mavlink_message_
     mask &= ~no_route_mask;
     
     // mask out channels that are known sources for this sysid/compid
-    for (uint8_t i=0; i<num_routes; i++) {
+    for (uint_fast8_t i=0; i<num_routes; i++) {
         if (routes[i].sysid == msg.sysid && routes[i].compid == msg.compid) {
             mask &= ~(1U<<((unsigned)(routes[i].channel-MAVLINK_COMM_0)));
         }
@@ -367,7 +367,7 @@ void MAVLink_routing::handle_heartbeat(GCS_MAVLINK &link, const mavlink_message_
     }
 
     // send on the remaining channels
-    for (uint8_t i=0; i<MAVLINK_COMM_NUM_BUFFERS; i++) {
+    for (uint_fast8_t i=0; i<MAVLINK_COMM_NUM_BUFFERS; i++) {
         if (mask & (1U<<i)) {
             mavlink_channel_t channel = (mavlink_channel_t)(MAVLINK_COMM_0 + i);
             if (comm_get_txspace(channel) >= ((uint16_t)msg.len) +

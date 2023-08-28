@@ -153,7 +153,7 @@ AP_GPS_GSOF::requestBaud(uint8_t portindex)
     buffer[4] = packetcount++;
 
     uint8_t checksum = 0;
-    for (uint8_t a = 1; a < (sizeof(buffer) - 1); a++) {
+    for (uint_fast8_t a = 1; a < (sizeof(buffer) - 1); a++) {
         checksum += buffer[a];
     }
 
@@ -175,7 +175,7 @@ AP_GPS_GSOF::requestGSOF(uint8_t messagetype, uint8_t portindex)
     buffer[17] = messagetype;
 
     uint8_t checksum = 0;
-    for (uint8_t a = 1; a < (sizeof(buffer) - 1); a++) {
+    for (uint_fast8_t a = 1; a < (sizeof(buffer) - 1); a++) {
         checksum += buffer[a];
     }
 

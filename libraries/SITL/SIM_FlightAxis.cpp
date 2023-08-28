@@ -116,7 +116,7 @@ FlightAxis::FlightAxis(const char *frame_str) :
     if (colon) {
         controller_ip = colon+1;
     }
-    for (uint8_t i=0; i<ARRAY_SIZE(sim_defaults); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(sim_defaults); i++) {
         AP_Param::set_default_by_name(sim_defaults[i].name, sim_defaults[i].value);
         if (sim_defaults[i].save) {
             enum ap_var_type ptype;
@@ -139,7 +139,7 @@ FlightAxis::FlightAxis(const char *frame_str) :
 void FlightAxis::parse_reply(const char *reply)
 {
     const char *reply0 = reply;
-    for (uint16_t i=0; i<num_keys; i++) {
+    for (uint_fast16_t i=0; i<num_keys; i++) {
         const char *p = strstr(reply, keytable[i].key);
         if (p == nullptr) {
             p = strstr(reply0, keytable[i].key);
@@ -297,7 +297,7 @@ void FlightAxis::exchange_data(const struct sitl_input &input)
 
     // maximum number of servos to send is 12 with new FlightAxis
     float scaled_servos[12];
-    for (uint8_t i=0; i<ARRAY_SIZE(scaled_servos); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(scaled_servos); i++) {
         scaled_servos[i] = (input.servos[i] - 1000) / 1000.0f;
     }
 
@@ -517,7 +517,7 @@ void FlightAxis::update(const struct sitl_input &input)
       the interlink interface supports 12 input channels
      */
     rcin_chan_count = 12;
-    for (uint8_t i=0; i<rcin_chan_count; i++) {
+    for (uint_fast8_t i=0; i<rcin_chan_count; i++) {
         rcin[i] = state.rcin[i];
     }
 

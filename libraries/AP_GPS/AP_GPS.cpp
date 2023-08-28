@@ -442,7 +442,7 @@ void AP_GPS::init(const AP_SerialManager& serial_manager)
 
     // search for serial ports with gps protocol
     uint8_t uart_idx = 0;
-    for (uint8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
+    for (uint_fast8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
         if (needs_uart((GPS_Type)_type[i].get())) {
             _port[i] = serial_manager.find_serial(AP_SerialManager::SerialProtocol_GPS, uart_idx);
             uart_idx++;
@@ -454,12 +454,12 @@ void AP_GPS::init(const AP_SerialManager& serial_manager)
     _omega_lpf = 1.0f / constrain_float(_blend_tc, 5.0f, 30.0f);
 
     // prep the state instance fields
-    for (uint8_t i = 0; i < GPS_MAX_INSTANCES; i++) {
+    for (uint_fast8_t i = 0; i < GPS_MAX_INSTANCES; i++) {
         state[i].instance = i;
     }
 
     // sanity check update rate
-    for (uint8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
+    for (uint_fast8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
         if (_rate_ms[i] <= 0 || _rate_ms[i] > GPS_MAX_RATE_MS) {
             _rate_ms[i].set(GPS_MAX_RATE_MS);
         }
@@ -956,7 +956,7 @@ void AP_GPS::update_instance(uint8_t instance)
         const uint8_t *rtcm_data;
         uint16_t rtcm_len;
         if (drivers[instance]->get_RTCMV3(rtcm_data, rtcm_len)) {
-            for (uint8_t i=0; i< GPS_MAX_RECEIVERS; i++) {
+            for (uint_fast8_t i=0; i< GPS_MAX_RECEIVERS; i++) {
                 if (i != instance && _type[i] == GPS_TYPE_UBLOX_RTK_ROVER) {
                     // pass the data to the rover
                     inject_data(i, rtcm_data, rtcm_len);
@@ -1009,7 +1009,7 @@ void AP_GPS::update_instance(uint8_t instance)
 #if GPS_MOVING_BASELINE
 void AP_GPS::get_RelPosHeading(uint32_t &timestamp, float &relPosHeading, float &relPosLength, float &relPosD, float &accHeading)
 {
-    for (uint8_t i=0; i< GPS_MAX_RECEIVERS; i++) {
+    for (uint_fast8_t i=0; i< GPS_MAX_RECEIVERS; i++) {
         if (drivers[i] &&
             state[i].relposheading_ts != 0 &&
             AP_HAL::millis() - state[i].relposheading_ts < 500) {
@@ -1024,7 +1024,7 @@ void AP_GPS::get_RelPosHeading(uint32_t &timestamp, float &relPosHeading, float 
 
 bool AP_GPS::get_RTCMV3(const uint8_t *&bytes, uint16_t &len)
 {
-    for (uint8_t i=0; i< GPS_MAX_RECEIVERS; i++) {
+    for (uint_fast8_t i=0; i< GPS_MAX_RECEIVERS; i++) {
         if (drivers[i] && _type[i] == GPS_TYPE_UBLOX_RTK_BASE) {
             return drivers[i]->get_RTCMV3(bytes, len);
         }
@@ -1034,7 +1034,7 @@ bool AP_GPS::get_RTCMV3(const uint8_t *&bytes, uint16_t &len)
 
 void AP_GPS::clear_RTCMV3()
 {
-    for (uint8_t i=0; i< GPS_MAX_RECEIVERS; i++) {
+    for (uint_fast8_t i=0; i< GPS_MAX_RECEIVERS; i++) {
         if (drivers[i] && _type[i] == GPS_TYPE_UBLOX_RTK_BASE) {
             drivers[i]->clear_RTCMV3();
         }
@@ -1046,7 +1046,7 @@ void AP_GPS::clear_RTCMV3()
 */
 void AP_GPS::inject_MBL_data(uint8_t* data, uint16_t length)
 {
-    for (uint8_t i=0; i< GPS_MAX_RECEIVERS; i++) {
+    for (uint_fast8_t i=0; i< GPS_MAX_RECEIVERS; i++) {
         if (_type[i] == GPS_TYPE_UBLOX_RTK_ROVER) {
             // pass the data to the rover
             inject_data(i, data, length);
@@ -1063,12 +1063,12 @@ void AP_GPS::update(void)
 {
     WITH_SEMAPHORE(rsem);
 
-    for (uint8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
+    for (uint_fast8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
         update_instance(i);
     }
 
     // calculate number of instances
-    for (uint8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
+    for (uint_fast8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
         if (drivers[i] != nullptr) {
             num_instances = i+1;
         }
@@ -1151,7 +1151,7 @@ void AP_GPS::update_primary(void)
     // base. This overrides the normal logic which would select the
     // rover as it typically is in fix type 6 (RTK) whereas base is
     // usually fix type 3
-    for (uint8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
+    for (uint_fast8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
         if (((_type[i] == GPS_TYPE_UBLOX_RTK_BASE) || (_type[i] == GPS_TYPE_UAVCAN_RTK_BASE)) &&
             ((_type[i^1] == GPS_TYPE_UBLOX_RTK_ROVER) || (_type[i^1] == GPS_TYPE_UAVCAN_RTK_ROVER)) &&
             ((state[i].status >= GPS_OK_FIX_3D) || (state[i].status >= state[i^1].status))) {
@@ -1169,7 +1169,7 @@ void AP_GPS::update_primary(void)
     // handling switching away from blended GPS
     if (primary_instance == GPS_BLENDED_INSTANCE) {
         primary_instance = 0;
-        for (uint8_t i=1; i<GPS_MAX_RECEIVERS; i++) {
+        for (uint_fast8_t i=1; i<GPS_MAX_RECEIVERS; i++) {
             // choose GPS with highest state or higher number of
             // satellites. Reject a GPS with an old update time, as it
             // may be the old timestamp that triggered the loss of
@@ -1213,7 +1213,7 @@ void AP_GPS::update_primary(void)
     }
 
     // handle switch between real GPSs
-    for (uint8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
+    for (uint_fast8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
         if (i == primary_instance) {
             continue;
         }
@@ -1286,7 +1286,7 @@ void AP_GPS::handle_msg(const mavlink_message_t &msg)
 #if HAL_MSP_GPS_ENABLED
 void AP_GPS::handle_msp(const MSP::msp_gps_data_message_t &pkt)
 {
-    for (uint8_t i=0; i<num_instances; i++) {
+    for (uint_fast8_t i=0; i<num_instances; i++) {
         if (drivers[i] != nullptr && _type[i] == GPS_TYPE_MSP) {
             drivers[i]->handle_msp(pkt);
         }
@@ -1297,7 +1297,7 @@ void AP_GPS::handle_msp(const MSP::msp_gps_data_message_t &pkt)
 #if HAL_EXTERNAL_AHRS_ENABLED
 void AP_GPS::handle_external(const AP_ExternalAHRS::gps_data_message_t &pkt)
 {
-    for (uint8_t i=0; i<num_instances; i++) {
+    for (uint_fast8_t i=0; i<num_instances; i++) {
         if (drivers[i] != nullptr && _type[i] == GPS_TYPE_EXTERNAL_AHRS) {
             drivers[i]->handle_external(pkt);
         }
@@ -1328,7 +1328,7 @@ void AP_GPS::inject_data(const uint8_t *data, uint16_t len)
 {
     //Support broadcasting to all GPSes.
     if (_inject_to == GPS_RTK_INJECT_TO_ALL) {
-        for (uint8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
+        for (uint_fast8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
             if ((_type[i] == GPS_TYPE_UBLOX_RTK_ROVER) || (_type[i] == GPS_TYPE_UAVCAN_RTK_ROVER)) {
                 // we don't externally inject to moving baseline rover
                 continue;
@@ -1597,7 +1597,7 @@ void AP_GPS::handle_gps_rtcm_data(const mavlink_message_t &msg)
 
 void AP_GPS::Write_AP_Logger_Log_Startup_messages()
 {
-    for (uint8_t instance=0; instance<num_instances; instance++) {
+    for (uint_fast8_t instance=0; instance<num_instances; instance++) {
         if (drivers[instance] == nullptr || state[instance].status == NO_GPS) {
             continue;
         }
@@ -1702,7 +1702,7 @@ bool AP_GPS::calc_blend_weights(void)
     uint32_t max_ms = 0; // newest non-zero system time of arrival of a GPS message
     uint32_t min_ms = -1; // oldest non-zero system time of arrival of a GPS message
     uint32_t max_rate_ms = 0; // largest update interval of a GPS receiver
-    for (uint8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
+    for (uint_fast8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
         // Find largest and smallest times
         if (state[i].last_gps_time_ms > max_ms) {
             max_ms = state[i].last_gps_time_ms;
@@ -1728,7 +1728,7 @@ bool AP_GPS::calc_blend_weights(void)
     // calculate the sum squared speed accuracy across all GPS sensors
     float speed_accuracy_sum_sq = 0.0f;
     if (_blend_mask & BLEND_MASK_USE_SPD_ACC) {
-        for (uint8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
+        for (uint_fast8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
             if (state[i].status >= GPS_OK_FIX_3D) {
                 if (state[i].have_speed_accuracy && state[i].speed_accuracy > 0.0f) {
                     speed_accuracy_sum_sq += sq(state[i].speed_accuracy);
@@ -1744,7 +1744,7 @@ bool AP_GPS::calc_blend_weights(void)
     // calculate the sum squared horizontal position accuracy across all GPS sensors
     float horizontal_accuracy_sum_sq = 0.0f;
     if (_blend_mask & BLEND_MASK_USE_HPOS_ACC) {
-        for (uint8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
+        for (uint_fast8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
             if (state[i].status >= GPS_OK_FIX_2D) {
                 if (state[i].have_horizontal_accuracy && state[i].horizontal_accuracy > 0.0f) {
                     horizontal_accuracy_sum_sq += sq(state[i].horizontal_accuracy);
@@ -1760,7 +1760,7 @@ bool AP_GPS::calc_blend_weights(void)
     // calculate the sum squared vertical position accuracy across all GPS sensors
     float vertical_accuracy_sum_sq = 0.0f;
     if (_blend_mask & BLEND_MASK_USE_VPOS_ACC) {
-        for (uint8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
+        for (uint_fast8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
             if (state[i].status >= GPS_OK_FIX_3D) {
                 if (state[i].have_vertical_accuracy && state[i].vertical_accuracy > 0.0f) {
                     vertical_accuracy_sum_sq += sq(state[i].vertical_accuracy);
@@ -1787,7 +1787,7 @@ bool AP_GPS::calc_blend_weights(void)
     if (horizontal_accuracy_sum_sq > 0.0f) {
         // calculate the weights using the inverse of the variances
         float sum_of_hpos_weights = 0.0f;
-        for (uint8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
+        for (uint_fast8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
             if (state[i].status >= GPS_OK_FIX_2D && state[i].horizontal_accuracy >= 0.001f) {
                 hpos_blend_weights[i] = horizontal_accuracy_sum_sq / sq(state[i].horizontal_accuracy);
                 sum_of_hpos_weights += hpos_blend_weights[i];
@@ -1795,7 +1795,7 @@ bool AP_GPS::calc_blend_weights(void)
         }
         // normalise the weights
         if (sum_of_hpos_weights > 0.0f) {
-            for (uint8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
+            for (uint_fast8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
                 hpos_blend_weights[i] = hpos_blend_weights[i] / sum_of_hpos_weights;
             }
             sum_of_all_weights += 1.0f;
@@ -1807,7 +1807,7 @@ bool AP_GPS::calc_blend_weights(void)
     if (vertical_accuracy_sum_sq > 0.0f) {
         // calculate the weights using the inverse of the variances
         float sum_of_vpos_weights = 0.0f;
-        for (uint8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
+        for (uint_fast8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
             if (state[i].status >= GPS_OK_FIX_3D && state[i].vertical_accuracy >= 0.001f) {
                 vpos_blend_weights[i] = vertical_accuracy_sum_sq / sq(state[i].vertical_accuracy);
                 sum_of_vpos_weights += vpos_blend_weights[i];
@@ -1815,7 +1815,7 @@ bool AP_GPS::calc_blend_weights(void)
         }
         // normalise the weights
         if (sum_of_vpos_weights > 0.0f) {
-            for (uint8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
+            for (uint_fast8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
                 vpos_blend_weights[i] = vpos_blend_weights[i] / sum_of_vpos_weights;
             }
             sum_of_all_weights += 1.0f;
@@ -1827,7 +1827,7 @@ bool AP_GPS::calc_blend_weights(void)
     if (speed_accuracy_sum_sq > 0.0f) {
         // calculate the weights using the inverse of the variances
         float sum_of_spd_weights = 0.0f;
-        for (uint8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
+        for (uint_fast8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
             if (state[i].status >= GPS_OK_FIX_3D && state[i].speed_accuracy >= 0.001f) {
                 spd_blend_weights[i] = speed_accuracy_sum_sq / sq(state[i].speed_accuracy);
                 sum_of_spd_weights += spd_blend_weights[i];
@@ -1835,7 +1835,7 @@ bool AP_GPS::calc_blend_weights(void)
         }
         // normalise the weights
         if (sum_of_spd_weights > 0.0f) {
-            for (uint8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
+            for (uint_fast8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
                 spd_blend_weights[i] = spd_blend_weights[i] / sum_of_spd_weights;
             }
             sum_of_all_weights += 1.0f;
@@ -1847,7 +1847,7 @@ bool AP_GPS::calc_blend_weights(void)
     }
 
     // calculate an overall weight
-    for (uint8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
+    for (uint_fast8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
         _blend_weights[i] = (hpos_blend_weights[i] + vpos_blend_weights[i] + spd_blend_weights[i]) / sum_of_all_weights;
     }
 
@@ -1899,7 +1899,7 @@ void AP_GPS::calc_blended_state(void)
     }
 
     // combine the states into a blended solution
-    for (uint8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
+    for (uint_fast8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
         // use the highest status
         if (state[i].status > state[GPS_BLENDED_INSTANCE].status) {
             state[GPS_BLENDED_INSTANCE].status = state[i].status;
@@ -1963,7 +1963,7 @@ void AP_GPS::calc_blended_state(void)
     // Use the GPS with the highest weighting as the reference position
     float best_weight = 0.0f;
     uint8_t best_index = 0;
-    for (uint8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
+    for (uint_fast8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
         if (_blend_weights[i] > best_weight) {
             best_weight = _blend_weights[i];
             best_index = i;
@@ -1975,7 +1975,7 @@ void AP_GPS::calc_blended_state(void)
     Vector2f blended_NE_offset_m;
     float blended_alt_offset_cm = 0.0f;
     blended_NE_offset_m.zero();
-    for (uint8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
+    for (uint_fast8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
         if (_blend_weights[i] > 0.0f && i != best_index) {
             blended_NE_offset_m += state[GPS_BLENDED_INSTANCE].location.get_distance_NE(state[i].location) * _blend_weights[i];
             blended_alt_offset_cm += (float)(state[i].location.alt - state[GPS_BLENDED_INSTANCE].location.alt) * _blend_weights[i];
@@ -1995,7 +1995,7 @@ void AP_GPS::calc_blended_state(void)
     // detect inconsistent week data
     uint8_t last_week_instance = 0;
     bool weeks_consistent = true;
-    for (uint8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
+    for (uint_fast8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
         if (last_week_instance == 0 && _blend_weights[i] > 0) {
             // this is our first valid sensor week data
             last_week_instance = state[i].time_week;
@@ -2014,7 +2014,7 @@ void AP_GPS::calc_blended_state(void)
         state[GPS_BLENDED_INSTANCE].time_week = state[best_index].time_week;
         // calculate a blended value for the number of ms lapsed in the week
         double temp_time_0 = 0.0;
-        for (uint8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
+        for (uint_fast8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
             if (_blend_weights[i] > 0.0f) {
                 temp_time_0 += (double)state[i].time_week_ms * (double)_blend_weights[i];
             }
@@ -2025,7 +2025,7 @@ void AP_GPS::calc_blended_state(void)
     // calculate a blended value for the timing data and lag
     double temp_time_1 = 0.0;
     double temp_time_2 = 0.0;
-    for (uint8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
+    for (uint_fast8_t i=0; i<GPS_MAX_RECEIVERS; i++) {
         if (_blend_weights[i] > 0.0f) {
             temp_time_1 += (double)timing[i].last_fix_time_ms * (double) _blend_weights[i];
             temp_time_2 += (double)timing[i].last_message_time_ms * (double)_blend_weights[i];
@@ -2089,7 +2089,7 @@ bool AP_GPS::is_healthy(uint8_t instance) const
 
 bool AP_GPS::prepare_for_arming(void) {
     bool all_passed = true;
-    for (uint8_t i = 0; i < GPS_MAX_RECEIVERS; i++) {
+    for (uint_fast8_t i = 0; i < GPS_MAX_RECEIVERS; i++) {
         if (drivers[i] != nullptr) {
             all_passed &= drivers[i]->prepare_for_arming();
         }
@@ -2098,7 +2098,7 @@ bool AP_GPS::prepare_for_arming(void) {
 }
 
 bool AP_GPS::backends_healthy(char failure_msg[], uint16_t failure_msg_len) {
-    for (uint8_t i = 0; i < GPS_MAX_RECEIVERS; i++) {
+    for (uint_fast8_t i = 0; i < GPS_MAX_RECEIVERS; i++) {
 #if HAL_ENABLE_LIBUAVCAN_DRIVERS
         if (_type[i] == GPS_TYPE_UAVCAN ||
             _type[i] == GPS_TYPE_UAVCAN_RTK_BASE ||
@@ -2124,7 +2124,7 @@ bool AP_GPS::logging_failed(void) const {
         return false;
     }
 
-    for (uint8_t i = 0; i < GPS_MAX_RECEIVERS; i++) {
+    for (uint_fast8_t i = 0; i < GPS_MAX_RECEIVERS; i++) {
         if ((drivers[i] != nullptr) && !(drivers[i]->logging_healthy())) {
             return true;
         }

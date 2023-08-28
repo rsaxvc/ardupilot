@@ -135,13 +135,13 @@ void loop()
 
     ssize_t ret = read(fd, buf, sizeof(buf));
 
-    for (uint8_t i=0; i<ret; i++) {
+    for (uint_fast8_t i=0; i<ret; i++) {
         rcprot->process_byte(buf[i], 115200);
         if (rcprot->new_input()) {
             nchan = MIN(rcprot->num_channels(), 16);
             rcprot->read(chan, nchan);
             printf("%u: ", nchan);
-            for (uint8_t j=0; j<nchan; j++) {
+            for (uint_fast8_t j=0; j<nchan; j++) {
                 // normalize data for SITL
                 chan[j] = constrain_int16(chan[j], 1100, 1900);
                 printf("%04u ", chan[j]);

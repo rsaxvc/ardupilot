@@ -142,7 +142,7 @@ void AP_InertialSensor::BatchSampler::rotate_to_next_sensor()
 
     // find next backend instance to log:
     bool haveinstance = false;
-    for (uint8_t i=instance+1; i<_count; i++) {
+    for (uint_fast8_t i=instance+1; i<_count; i++) {
         if (_sensor_mask & (1U<<i)) {
             instance = i;
             haveinstance = true;
@@ -150,7 +150,7 @@ void AP_InertialSensor::BatchSampler::rotate_to_next_sensor()
         }
     }
     if (!haveinstance) {
-        for (uint8_t i=0; i<=instance; i++) {
+        for (uint_fast8_t i=0; i<=instance; i++) {
             if (_sensor_mask & (1U<<i)) {
                 instance = i;
                 haveinstance = true;

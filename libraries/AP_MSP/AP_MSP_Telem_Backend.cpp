@@ -710,7 +710,7 @@ MSPCommandResult AP_MSP_Telem_Backend::msp_process_out_name(sbuf_t *dst)
             strncpy(buffer, notify->get_text(), ARRAY_SIZE(buffer));
             const uint8_t len = strnlen(buffer, ARRAY_SIZE(buffer));
 
-            for (uint8_t i=0; i<len; i++) {
+            for (uint_fast8_t i=0; i<len; i++) {
                 //normalize whitespace
                 if (isspace(buffer[i])) {
                     buffer[i] = ' ';
@@ -833,7 +833,7 @@ MSPCommandResult AP_MSP_Telem_Backend::msp_process_out_osd_config(sbuf_t *dst)
     osd_config.item_count = OSD_ITEM_COUNT;
     // Element position and visibility
     uint16_t pos = 0;   // default is hide this element
-    for (uint8_t i = 0; i < OSD_ITEM_COUNT; i++) {
+    for (uint_fast8_t i = 0; i < OSD_ITEM_COUNT; i++) {
         pos = 0;    // 0 is hide this item
         if (msp->_osd_item_settings[i] != nullptr) {      // ok supported
             if (msp->_osd_item_settings[i]->enabled) {    // ok enabled
@@ -971,7 +971,7 @@ MSPCommandResult AP_MSP_Telem_Backend::msp_process_out_esc_sensor_data(sbuf_t *d
         } esc_sensor {};
 
         esc_sensor.num_motors = telem.get_num_active_escs();
-        for (uint8_t i = 0; i < esc_sensor.num_motors; i++) {
+        for (uint_fast8_t i = 0; i < esc_sensor.num_motors; i++) {
             int16_t temp = 0;
             float rpm = 0.0f;
             IGNORE_RETURN(telem.get_rpm(i, rpm));

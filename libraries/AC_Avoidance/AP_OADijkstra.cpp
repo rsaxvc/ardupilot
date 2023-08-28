@@ -296,7 +296,7 @@ bool AP_OADijkstra::create_inclusion_polygon_with_margin(float margin_cm, AP_OAD
         // for each point in inclusion polygon
         // Note: boundary is "unclosed" meaning the last point is *not* the same as the first
         uint16_t new_points = 0;
-        for (uint16_t j = 0; j < num_points; j++) {
+        for (uint_fast16_t j = 0; j < num_points; j++) {
 
             // find points before and after current point (relative to current point)
             const uint16_t before_idx = (j == 0) ? num_points-1 : j-1;
@@ -397,7 +397,7 @@ bool AP_OADijkstra::create_exclusion_polygon_with_margin(float margin_cm, AP_OAD
         // for each point in exclusion polygon
         // Note: boundary is "unclosed" meaning the last point is *not* the same as the first
         uint16_t new_points = 0;
-        for (uint16_t j = 0; j < num_points; j++) {
+        for (uint_fast16_t j = 0; j < num_points; j++) {
 
             // find points before and after current point (relative to current point)
             const uint16_t before_idx = (j == 0) ? num_points-1 : j-1;
@@ -728,7 +728,7 @@ void AP_OADijkstra::update_visible_node_distances(node_index curr_node_idx)
         }
 
         // search visibility graph for items visible from current_node
-        for (uint16_t i = 0; i < curr_visgraph.num_items(); i++) {
+        for (uint_fast16_t i = 0; i < curr_visgraph.num_items(); i++) {
             const AP_OAVisGraph::VisGraphItem &item = curr_visgraph[i];
             // match if current node's id matches either of the id's in the graph (i.e. either end of the vector)
             if ((curr_node.id == item.id1) || (curr_node.id == item.id2)) {
@@ -864,7 +864,7 @@ bool AP_OADijkstra::calc_shortest_path(const Location &origin, const Location &d
     node_index current_node_idx = 0;
 
     // update nodes visible from source point
-    for (uint16_t i = 0; i < _source_visgraph.num_items(); i++) {
+    for (uint_fast16_t i = 0; i < _source_visgraph.num_items(); i++) {
         node_index node_idx;
         if (find_node_from_id(_source_visgraph[i].id2, node_idx)) {
             _short_path_data[node_idx].distance_cm = _source_visgraph[i].distance_cm;

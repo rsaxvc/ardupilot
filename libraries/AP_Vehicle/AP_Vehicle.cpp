@@ -291,7 +291,7 @@ void AP_Vehicle::setup()
     custom_rotations.init();
 
 #if HAL_WITH_ESC_TELEM && HAL_GYROFFT_ENABLED
-    for (uint8_t i = 0; i<ESC_TELEM_MAX_ESCS; i++) {
+    for (uint_fast8_t i = 0; i<ESC_TELEM_MAX_ESCS; i++) {
         esc_noise[i].set_cutoff_frequency(2);
     }
 #endif
@@ -581,7 +581,7 @@ void AP_Vehicle::update_dynamic_notch(AP_InertialSensor::HarmonicNotch &notch)
                 float notches[INS_MAX_NOTCHES];
                 // ESC telemetry will return 0 for missing data, but only after 1s
                 const uint8_t num_notches = AP::esc_telem().get_motor_frequencies_hz(INS_MAX_NOTCHES, notches);
-                for (uint8_t i = 0; i < num_notches; i++) {
+                for (uint_fast8_t i = 0; i < num_notches; i++) {
                     if (!is_zero(notches[i])) {
                         notches[i] =  MAX(ref_freq, notches[i]);
                     }
@@ -604,7 +604,7 @@ void AP_Vehicle::update_dynamic_notch(AP_InertialSensor::HarmonicNotch &notch)
                 const uint8_t peaks = gyro_fft.get_weighted_noise_center_frequencies_hz(notch.num_dynamic_notches, notches);
 
                 if (peaks > 0) {
-                    for (uint8_t i = 0; i < peaks; i++) {
+                    for (uint_fast8_t i = 0; i < peaks; i++) {
                         notches[i] =  MAX(ref_freq, notches[i]);
                     }
                     notch.update_frequencies_hz(peaks, notches);
@@ -799,7 +799,7 @@ void AP_Vehicle::check_motor_noise()
     const uint8_t numf = AP::esc_telem().get_motor_frequencies_hz(ESC_TELEM_MAX_ESCS, esc_data);
     bool output_error = false;
 
-    for (uint8_t i = 0; i<numf; i++) {
+    for (uint_fast8_t i = 0; i<numf; i++) {
         if (is_zero(esc_data[i])) {
             continue;
         }

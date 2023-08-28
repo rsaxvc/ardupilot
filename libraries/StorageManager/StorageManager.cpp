@@ -124,7 +124,7 @@ StorageAccess::StorageAccess(StorageManager::StorageType _type) :
 #if AP_SDCARD_STORAGE_ENABLED
     file = nullptr;
 #endif
-    for (uint8_t i=0; i<STORAGE_NUM_AREAS; i++) {
+    for (uint_fast8_t i=0; i<STORAGE_NUM_AREAS; i++) {
         const StorageManager::StorageArea &area = StorageManager::layout[i];
         if (area.type == type) {
             total_size += area.length;
@@ -152,7 +152,7 @@ bool StorageAccess::read_block(void *data, uint16_t addr, size_t n) const
     }
 #endif
 
-    for (uint8_t i=0; i<STORAGE_NUM_AREAS; i++) {
+    for (uint_fast8_t i=0; i<STORAGE_NUM_AREAS; i++) {
         const StorageManager::StorageArea &area = StorageManager::layout[i];
         uint16_t length = area.length;
         uint16_t offset = area.offset;
@@ -203,14 +203,14 @@ bool StorageAccess::write_block(uint16_t addr, const void *data, size_t n) const
         WITH_SEMAPHORE(file->sem);
         const size_t n2 = MIN(n, file->bufsize - addr);
         memcpy(&file->buffer[addr], b, n2);
-        for (uint8_t i=addr/1024U; i<(addr+n2+1023U)/1024U; i++) {
+        for (uint_fast8_t i=addr/1024U; i<(addr+n2+1023U)/1024U; i++) {
             file->dirty_mask |= (1ULL<<i);
         }
         return n == n2;
     }
 #endif
 
-    for (uint8_t i=0; i<STORAGE_NUM_AREAS; i++) {
+    for (uint_fast8_t i=0; i<STORAGE_NUM_AREAS; i++) {
         const StorageManager::StorageArea &area = StorageManager::layout[i];
         uint16_t length = area.length;
         uint16_t offset = area.offset;

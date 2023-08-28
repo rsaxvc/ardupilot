@@ -39,7 +39,7 @@ void setup(void)
     hal.console->begin(115200);
     hal.console->printf("\n\ncalibration index test\n\n");
 
-    for (uint8_t n=0; n < ROTATION_MAX; n++) {
+    for (uint_fast8_t n=0; n < ROTATION_MAX; n++) {
         Rotation r = cal.auto_rotation_index_test(n);
         hal.console->printf("index: %i got %i%s\n",n,r,cal.right_angle_rotation_test(Rotation(n)) ? ", R" : "");
     }

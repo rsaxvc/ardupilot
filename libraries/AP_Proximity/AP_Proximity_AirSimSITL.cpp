@@ -49,7 +49,7 @@ void AP_Proximity_AirSimSITL::update(void)
     // clear temp boundary since we have a new message
     temp_boundary.reset();
 
-    for (uint16_t i=0; i<points.length; i++) {
+    for (uint_fast16_t i=0; i<points.length; i++) {
         Vector3f &point = points.data[i];
         if (point.is_zero()) {
             continue;

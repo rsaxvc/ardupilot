@@ -185,7 +185,7 @@ static const AP_OSD_ParamSetting::Initializer PARAM_DEFAULTS[AP_OSD_NUM_PARAM_SC
 
 AP_OSD_ParamScreen::AP_OSD_ParamScreen(uint8_t index)
 {
-    for (uint8_t i = 0; i < NUM_PARAMS; i++) {
+    for (uint_fast8_t i = 0; i < NUM_PARAMS; i++) {
         params[i] = PARAM_DEFAULTS[index][i];
     }
     AP_Param::setup_object_defaults(this, var_info);
@@ -474,7 +474,7 @@ void AP_OSD_ParamScreen::update_state_machine()
     // if we were armed then there is no selected parameter - so find one
     if (_selected_param == 0) {
         _selected_param = 1;
-        for (uint8_t i = 0; i < NUM_PARAMS && !params[_selected_param-1].enabled; i++) {
+        for (uint_fast8_t i = 0; i < NUM_PARAMS && !params[_selected_param-1].enabled; i++) {
             _selected_param++;
         }
     }
@@ -511,7 +511,7 @@ void AP_OSD_ParamScreen::update_state_machine()
                 _selected_param = SAVE_PARAM;
             }
             // skip over parameters that are not enabled
-            for (uint8_t i = 0; i < NUM_PARAMS + 1 && (_selected_param != SAVE_PARAM && !params[_selected_param-1].enabled); i++) {
+            for (uint_fast8_t i = 0; i < NUM_PARAMS + 1 && (_selected_param != SAVE_PARAM && !params[_selected_param-1].enabled); i++) {
                 _selected_param--;
                 if (_selected_param < 1) {
                     _selected_param = SAVE_PARAM;
@@ -536,7 +536,7 @@ void AP_OSD_ParamScreen::update_state_machine()
                 _selected_param = 1;
             }
             // skip over parameters that are not enabled
-            for (uint8_t i = 0; i < NUM_PARAMS + 1 && (_selected_param != SAVE_PARAM && !params[_selected_param-1].enabled); i++) {
+            for (uint_fast8_t i = 0; i < NUM_PARAMS + 1 && (_selected_param != SAVE_PARAM && !params[_selected_param-1].enabled); i++) {
                 _selected_param++;
                 if (_selected_param > SAVE_PARAM) {
                     _selected_param = 1;
@@ -584,7 +584,7 @@ void AP_OSD_ParamScreen::draw(void)
         _selected_param = 0;
     }
 
-    for (uint8_t i = 0; i < NUM_PARAMS; i++) {
+    for (uint_fast8_t i = 0; i < NUM_PARAMS; i++) {
         AP_OSD_ParamSetting n = params[i];
         if (n.enabled) {
             draw_parameter(n._param_number, n.xpos, n.ypos);
@@ -617,7 +617,7 @@ void AP_OSD_ParamScreen::save_parameters()
         return;
     }
 
-    for (uint8_t i = 0; i < NUM_PARAMS; i++) {
+    for (uint_fast8_t i = 0; i < NUM_PARAMS; i++) {
         if (params[i].enabled && (_requires_save & (1 << i))) {
             AP_Param* p = params[i]._param;
             if (p != nullptr) {

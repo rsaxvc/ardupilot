@@ -139,7 +139,7 @@ LeddarOne_Status AP_RangeFinder_LeddarOne::parse_response(uint8_t &number_detect
     uint32_t nbytes = uart->available();
 
     if (nbytes != 0)  {
-        for (uint8_t index=read_len; index<nbytes+read_len; index++) {
+        for (uint_fast8_t index=read_len; index<nbytes+read_len; index++) {
             if (index >= LEDDARONE_READ_BUFFER_SIZE) {
                 return LEDDARONE_STATE_ERR_BAD_RESPONSE;
             }
@@ -172,7 +172,7 @@ LeddarOne_Status AP_RangeFinder_LeddarOne::parse_response(uint8_t &number_detect
     }
 
     sum_distance_mm = 0;
-    for (uint8_t index=0; index<number_detections; index++) {
+    for (uint_fast8_t index=0; index<number_detections; index++) {
         // construct data word from two bytes
         sum_distance_mm += read_buffer[index_offset]<<8 | read_buffer[index_offset+1];
 

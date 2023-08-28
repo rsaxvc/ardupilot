@@ -137,7 +137,7 @@ void AP_Camera::init()
     convert_params();
 
     // create each instance
-    for (uint8_t instance = 0; instance < AP_CAMERA_MAX_INSTANCES; instance++) {
+    for (uint_fast8_t instance = 0; instance < AP_CAMERA_MAX_INSTANCES; instance++) {
         switch ((CameraType)_params[instance].type.get()) {
 #if AP_CAMERA_SERVO_ENABLED
         case CameraType::SERVO:
@@ -178,7 +178,7 @@ void AP_Camera::init()
     }
 
     // init each instance, do it after all instances were created, so that they all know things
-    for (uint8_t instance = 0; instance < AP_CAMERA_MAX_INSTANCES; instance++) {
+    for (uint_fast8_t instance = 0; instance < AP_CAMERA_MAX_INSTANCES; instance++) {
         if (_backends[instance] != nullptr) {
             _backends[instance]->init();
         }
@@ -197,7 +197,7 @@ void AP_Camera::handle_message(mavlink_channel_t chan, const mavlink_message_t &
     }
 
     // call each instance
-    for (uint8_t instance = 0; instance < AP_CAMERA_MAX_INSTANCES; instance++) {
+    for (uint_fast8_t instance = 0; instance < AP_CAMERA_MAX_INSTANCES; instance++) {
         if (_backends[instance] != nullptr) {
             _backends[instance]->handle_message(chan, msg);
         }
@@ -274,7 +274,7 @@ void AP_Camera::control(uint8_t instance, float session, float zoom_pos, float z
 void AP_Camera::send_feedback(mavlink_channel_t chan) const
 {
     // call each instance
-    for (uint8_t instance = 0; instance < AP_CAMERA_MAX_INSTANCES; instance++) {
+    for (uint_fast8_t instance = 0; instance < AP_CAMERA_MAX_INSTANCES; instance++) {
         if (_backends[instance] != nullptr) {
             _backends[instance]->send_camera_feedback(chan);
         }
@@ -287,7 +287,7 @@ void AP_Camera::send_feedback(mavlink_channel_t chan) const
 void AP_Camera::update()
 {
     // call each instance
-    for (uint8_t instance = 0; instance < AP_CAMERA_MAX_INSTANCES; instance++) {
+    for (uint_fast8_t instance = 0; instance < AP_CAMERA_MAX_INSTANCES; instance++) {
         if (_backends[instance] != nullptr) {
             _backends[instance]->update();
         }
@@ -418,7 +418,7 @@ void AP_Camera::convert_params()
         { k_param_camera_key, 9, AP_PARAM_INT8, "CAM1_FEEDBAK_POL" },
     };
     uint8_t table_size = ARRAY_SIZE(camera_param_conversion_info);
-    for (uint8_t i=0; i<table_size; i++) {
+    for (uint_fast8_t i=0; i<table_size; i++) {
         AP_Param::convert_old_parameter(&camera_param_conversion_info[i], 1.0f);
     }
 }

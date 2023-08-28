@@ -773,7 +773,7 @@ void AP_MotorsMulticopter::set_throttle_passthrough_for_esc_calibration(float th
     if (armed()) {
         uint16_t pwm_out = get_pwm_output_min() + constrain_float(throttle_input, 0.0f, 1.0f) * (get_pwm_output_max() - get_pwm_output_min());
         // send the pilot's input directly to each enabled motor
-        for (uint16_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
+        for (uint_fast16_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
             if (motor_enabled[i]) {
                 rc_write(i, pwm_out);
             }
@@ -792,7 +792,7 @@ void AP_MotorsMulticopter::output_motor_mask(float thrust, uint16_t mask, float 
     const int16_t pwm_min = get_pwm_output_min();
     const int16_t pwm_range = get_pwm_output_max() - pwm_min;
 
-    for (uint8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
+    for (uint_fast8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
         if (motor_enabled[i]) {
             if ((mask & (1U << i)) && armed() && get_interlock()) {
                 /*
@@ -845,7 +845,7 @@ bool AP_MotorsMulticopter::arming_checks(size_t buflen, char *buffer) const
     }
 
     // Check output function is setup for each motor
-    for (uint8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
+    for (uint_fast8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
         if (!motor_enabled[i]) {
             continue;
         }

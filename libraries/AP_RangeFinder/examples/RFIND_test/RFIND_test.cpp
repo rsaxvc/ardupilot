@@ -42,7 +42,7 @@ void loop()
     sonar.update();
 
     bool had_data = false;
-    for (uint8_t i=0; i<sonar.num_sensors(); i++) {
+    for (uint_fast8_t i=0; i<sonar.num_sensors(); i++) {
         AP_RangeFinder_Backend *sensor = sonar.get_backend(i);
         if (sensor == nullptr) {
             continue;

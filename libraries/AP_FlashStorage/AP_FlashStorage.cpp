@@ -55,7 +55,7 @@ bool AP_FlashStorage::init(void)
     struct sector_header header[2];
 
     // read headers and possibly initialise if bad signature
-    for (uint8_t i=0; i<2; i++) {
+    for (uint_fast8_t i=0; i<2; i++) {
         if (!flash_read(i, 0, (uint8_t *)&header[i], sizeof(header[i]))) {
             return false;
         }
@@ -96,7 +96,7 @@ bool AP_FlashStorage::init(void)
     }
 
     // load data from any current sectors
-    for (uint8_t i=0; i<2; i++) {
+    for (uint_fast8_t i=0; i<2; i++) {
         uint8_t sector = (first_sector + i) & 1;
         if (states[sector] == SECTOR_STATE_IN_USE ||
             states[sector] == SECTOR_STATE_FULL) {
@@ -119,7 +119,7 @@ bool AP_FlashStorage::init(void)
     }
 
     // erase any sectors marked full
-    for (uint8_t i=0; i<2; i++) {
+    for (uint_fast8_t i=0; i<2; i++) {
         if (states[i] == SECTOR_STATE_FULL) {
             if (!erase_sector(i, true)) {
                 return false;
@@ -368,7 +368,7 @@ bool AP_FlashStorage::write_all()
 {
     debug("write_all to sector %u at %u with reserved_space=%u\n",
            current_sector, write_offset, reserved_space);
-    for (uint16_t ofs=0; ofs<storage_size; ofs += max_write) {
+    for (uint_fast16_t ofs=0; ofs<storage_size; ofs += max_write) {
         // local variable needed to overcome problem with MIN() macro and -O0
         const uint8_t max_write_local = max_write;
         uint8_t n = MIN(max_write_local, storage_size-ofs);
@@ -466,7 +466,7 @@ bool AP_FlashStorage::re_initialise(void)
  */
 bool AP_FlashStorage::sector_header::signature_ok(void) const
 {
-    for (uint8_t i=0; i<ARRAY_SIZE(pad1); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(pad1); i++) {
         if (pad1[i] != 0xFFFFFFFFU || pad2[i] != 0xFFFFFFFFU || pad3[i] != 0xFFFFFFFFU) {
             return false;
         }

@@ -15,14 +15,14 @@ void test_high_low_byte(void)
 {
 
     // test each value from 0 to 300
-    for (uint16_t i = 0; i <= 300; i++) {
+    for (uint_fast16_t i = 0; i <= 300; i++) {
         uint8_t high = HIGHBYTE(i);
         uint8_t low = LOWBYTE(i);
         hal.console->printf("\ni:%u high:%u low:%u", (unsigned int)i, (unsigned int)high, (unsigned int)low);
     }
 
     // test values from 300 to 65400 at increments of 200
-    for (uint16_t i = 301; i <= 65400; i += 200) {
+    for (uint_fast16_t i = 301; i <= 65400; i += 200) {
         uint8_t high = HIGHBYTE(i);
         uint8_t low = LOWBYTE(i);
         hal.console->printf("\ni:%u high:%u low:%u", (unsigned int)i, (unsigned int)high, (unsigned int)low);

@@ -51,7 +51,7 @@ void Storage::_mark_dirty(uint16_t loc, uint16_t length)
     printf("%s:%d \n", __PRETTY_FUNCTION__, __LINE__);
 #endif
     uint16_t end = loc + length;
-    for (uint16_t line=loc>>STORAGE_LINE_SHIFT;
+    for (uint_fast16_t line=loc>>STORAGE_LINE_SHIFT;
          line <= end>>STORAGE_LINE_SHIFT;
          line++) {
         _dirty_mask.set(line);

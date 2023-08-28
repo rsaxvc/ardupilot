@@ -167,12 +167,12 @@ void SCurve::set_speed_max(float speed_xy, float speed_up, float speed_down)
         segment[SEG_INIT].end_pos = segment[SEG_ACCEL_END].end_pos;
 
         // move speed change segments to acceleration segments
-        for (uint8_t i = SEG_INIT+1; i <= SEG_ACCEL_END; i++) {
+        for (uint_fast8_t i = SEG_INIT+1; i <= SEG_ACCEL_END; i++) {
             segment[i] = segment[i+7];
         }
 
         // set change segments to last acceleration speed
-        for (uint8_t i = SEG_ACCEL_END+1; i <= SEG_SPEED_CHANGE_END; i++) {
+        for (uint_fast8_t i = SEG_ACCEL_END+1; i <= SEG_SPEED_CHANGE_END; i++) {
             segment[i].seg_type = SegmentType::CONSTANT_JERK;
             segment[i].jerk_ref = 0.0f;
             segment[i].end_time = segment[SEG_ACCEL_END].end_time;
@@ -196,7 +196,7 @@ void SCurve::set_speed_max(float speed_xy, float speed_up, float speed_down)
         // set acceleration and change segments to current constant speed
         float Jt_out, At_out, Vt_out, Pt_out;
         get_jerk_accel_vel_pos_at_time(time, Jt_out, At_out, Vt_out, Pt_out);
-        for (uint8_t i = SEG_INIT+1; i <= SEG_SPEED_CHANGE_END; i++) {
+        for (uint_fast8_t i = SEG_INIT+1; i <= SEG_SPEED_CHANGE_END; i++) {
             segment[i].seg_type = SegmentType::CONSTANT_JERK;
             segment[i].jerk_ref = 0.0f;
             segment[i].end_time = time;
@@ -228,7 +228,7 @@ void SCurve::set_speed_max(float speed_xy, float speed_up, float speed_down)
         segment[SEG_ACCEL_END].end_accel = 0.0f;
 
         // add empty speed adjust segments
-        for (uint8_t i = SEG_ACCEL_END+1; i <= SEG_CONST; i++) {
+        for (uint_fast8_t i = SEG_ACCEL_END+1; i <= SEG_CONST; i++) {
             segment[i].seg_type = SegmentType::CONSTANT_JERK;
             segment[i].jerk_ref = 0.0f;
             segment[i].end_time = segment[SEG_ACCEL_END].end_time;
@@ -251,7 +251,7 @@ void SCurve::set_speed_max(float speed_xy, float speed_up, float speed_down)
         // add to constant velocity segment to end at the correct position
         const float dP = MAX(0.0f, Pend - segment[SEG_DECEL_END].end_pos);
         const float t15 =  dP / segment[SEG_CONST].end_vel;
-        for (uint8_t i = SEG_CONST; i <= SEG_DECEL_END; i++) {
+        for (uint_fast8_t i = SEG_CONST; i <= SEG_DECEL_END; i++) {
             segment[i].end_time += t15;
             segment[i].end_pos += dP;
         }
@@ -259,7 +259,7 @@ void SCurve::set_speed_max(float speed_xy, float speed_up, float speed_down)
 
     // adjust the speed change segments (8 to 14) for new speed
     // start with empty speed adjust segments
-    for (uint8_t i = SEG_ACCEL_END+1; i <= SEG_SPEED_CHANGE_END; i++) {
+    for (uint_fast8_t i = SEG_ACCEL_END+1; i <= SEG_SPEED_CHANGE_END; i++) {
         segment[i].seg_type = SegmentType::CONSTANT_JERK;
         segment[i].jerk_ref = 0.0f;
         segment[i].end_time = segment[SEG_ACCEL_END].end_time;
@@ -312,7 +312,7 @@ void SCurve::set_speed_max(float speed_xy, float speed_up, float speed_down)
         add_segments_jerk(seg, tj, Jm, t2);
     } else {
         // No deceleration is required
-        for (uint8_t i = SEG_CONST+1; i <= SEG_DECEL_END; i++) {
+        for (uint_fast8_t i = SEG_CONST+1; i <= SEG_DECEL_END; i++) {
             segment[i].seg_type = SegmentType::CONSTANT_JERK;
             segment[i].jerk_ref = 0.0f;
             segment[i].end_time = segment[SEG_CONST].end_time;
@@ -329,7 +329,7 @@ void SCurve::set_speed_max(float speed_xy, float speed_up, float speed_down)
     // add to constant velocity segment to end at the correct position
     const float dP = MAX(0.0f, Pend - segment[SEG_DECEL_END].end_pos);
     const float t15 =  dP / segment[SEG_CONST].end_vel;
-    for (uint8_t i = SEG_CONST; i <= SEG_DECEL_END; i++) {
+    for (uint_fast8_t i = SEG_CONST; i <= SEG_DECEL_END; i++) {
         segment[i].end_time += t15;
         segment[i].end_pos += dP;
     }
@@ -378,13 +378,13 @@ float SCurve::set_origin_speed_max(float speed)
     // offset acceleration segment if we can't fit it all into half the original length
     const float dPstart = MIN(0.0f, track_length * 0.5f - segment[SEG_ACCEL_END].end_pos);
     const float dt =  dPstart / segment[SEG_ACCEL_END].end_vel;
-    for (uint8_t i = SEG_INIT; i <= SEG_ACCEL_END; i++) {
+    for (uint_fast8_t i = SEG_INIT; i <= SEG_ACCEL_END; i++) {
         segment[i].end_time += dt;
         segment[i].end_pos += dPstart;
     }
 
     // add empty speed change segments and constant speed segment
-    for (uint8_t i = SEG_ACCEL_END+1; i <= SEG_SPEED_CHANGE_END; i++) {
+    for (uint_fast8_t i = SEG_ACCEL_END+1; i <= SEG_SPEED_CHANGE_END; i++) {
         segment[i].seg_type = SegmentType::CONSTANT_JERK;
         segment[i].jerk_ref = 0.0f;
         segment[i].end_time = segment[SEG_ACCEL_END].end_time;
@@ -409,7 +409,7 @@ float SCurve::set_origin_speed_max(float speed)
     // add to constant velocity segment to end at the correct position
     const float dP = MAX(0.0f, track_length - segment[SEG_DECEL_END].end_pos);
     const float t15 =  dP / segment[SEG_CONST].end_vel;
-    for (uint8_t i = SEG_CONST; i <= SEG_DECEL_END; i++) {
+    for (uint_fast8_t i = SEG_CONST; i <= SEG_DECEL_END; i++) {
         segment[i].end_time += t15;
         segment[i].end_pos += dP;
     }
@@ -462,7 +462,7 @@ void SCurve::set_destination_speed_max(float speed)
     // add to constant velocity segment to end at the correct position
     const float dP = MAX(0.0f, track_length - segment[SEG_DECEL_END].end_pos);
     const float t15 =  dP / segment[SEG_CONST].end_vel;
-    for (uint8_t i = SEG_CONST; i <= SEG_DECEL_END; i++) {
+    for (uint_fast8_t i = SEG_CONST; i <= SEG_DECEL_END; i++) {
         segment[i].end_time += t15;
         segment[i].end_pos += dP;
     }
@@ -640,7 +640,7 @@ void SCurve::get_jerk_accel_vel_pos_at_time(float time_now, float &Jt_out, float
     float Jm, tj, T0, A0, V0, P0;
 
     // find active segment at time_now
-    for (uint8_t i = 0; i < num_segs; i++) {
+    for (uint_fast8_t i = 0; i < num_segs; i++) {
         if (time_now < segment[num_segs - 1 - i].end_time) {
             pnt = num_segs - 1 - i;
         }
@@ -1054,7 +1054,7 @@ bool SCurve::valid() const
         return false;
     }
 
-    for (uint8_t i = 0; i < num_segs; i++) {
+    for (uint_fast8_t i = 0; i < num_segs; i++) {
         // jerk_ref should be finite (i.e. not NaN or infinity)
         // time, accel, vel and pos should finite and not negative
         if (!isfinite(segment[i].jerk_ref) ||
@@ -1090,7 +1090,7 @@ void SCurve::debug() const
     ::printf("num_segs:%u, time:%4.2f, snap_max:%4.2f, jerk_max:%4.2f, accel_max:%4.2f, vel_max:%4.2f\n",
                         (unsigned)num_segs, (double)time, (double)snap_max, (double)jerk_max, (double)accel_max, (double)vel_max);
     ::printf("T, Jt, J, A, V, P \n");
-    for (uint8_t i = 0; i < num_segs; i++) {
+    for (uint_fast8_t i = 0; i < num_segs; i++) {
         ::printf("i:%u, T:%4.2f, Jtype:%4.2f, J:%4.2f, A:%4.2f, V: %4.2f, P: %4.2f\n",
                             (unsigned)i, (double)segment[i].end_time, (double)segment[i].seg_type, (double)segment[i].jerk_ref,
                             (double)segment[i].end_accel, (double)segment[i].end_vel, (double)segment[i].end_pos);

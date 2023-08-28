@@ -79,7 +79,7 @@ void RC_UART::loop()
     }
 
     // and output
-    for (uint8_t i=0; i<NUM_CHANNELS; i++) {
+    for (uint_fast8_t i=0; i<NUM_CHANNELS; i++) {
         if (u.period[i] == 0) {
             continue;
         }

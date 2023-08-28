@@ -141,7 +141,7 @@ void setup(void)
     hal.rcin->init();
     hal.rcout->init();
 
-    for (uint8_t i = 0; i< 14; i++) {
+    for (uint_fast8_t i = 0; i< 14; i++) {
         hal.rcout->enable_ch(i);
     }
 
@@ -270,7 +270,7 @@ void AP_IOMCU_FW::pwm_out_update()
 {
     memcpy(reg_servo.pwm, reg_direct_pwm.pwm, sizeof(reg_direct_pwm));
     hal.rcout->cork();
-    for (uint8_t i = 0; i < SERVO_COUNT; i++) {
+    for (uint_fast8_t i = 0; i < SERVO_COUNT; i++) {
         if (reg_status.flag_safety_off || (reg_setup.ignore_safety & (1U<<i))) {
             hal.rcout->write(i, reg_servo.pwm[i]);
         } else {
@@ -633,7 +633,7 @@ bool AP_IOMCU_FW::handle_code_write()
         }
         memcpy(&GPIO, &rx_io_packet.regs[0] + rx_io_packet.offset, sizeof(GPIO));
         if (GPIO.channel_mask != last_GPIO_channel_mask) {
-            for (uint8_t i=0; i<8; i++) {
+            for (uint_fast8_t i=0; i<8; i++) {
                 if ((GPIO.channel_mask & (1U << i)) != 0) {
                     hal.rcout->disable_ch(i);
                     hal.gpio->pinMode(101+i, HAL_GPIO_OUTPUT);
@@ -785,7 +785,7 @@ void AP_IOMCU_FW::rcout_mode_update(void)
  */
 void AP_IOMCU_FW::fill_failsafe_pwm(void)
 {
-    for (uint8_t i=0; i<IOMCU_MAX_CHANNELS; i++) {
+    for (uint_fast8_t i=0; i<IOMCU_MAX_CHANNELS; i++) {
         if (reg_status.flag_safety_off) {
             reg_direct_pwm.pwm[i] = reg_failsafe_pwm.pwm[i];
         } else {
@@ -799,7 +799,7 @@ void AP_IOMCU_FW::fill_failsafe_pwm(void)
 
 void AP_IOMCU_FW::GPIO_write()
 {
-    for (uint8_t i=0; i<8; i++) {
+    for (uint_fast8_t i=0; i<8; i++) {
         if ((GPIO.channel_mask & (1U << i)) != 0) {
             hal.gpio->write(101+i, (GPIO.output_mask & (1U << i)) != 0);
         }

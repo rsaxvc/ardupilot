@@ -62,7 +62,7 @@ bool FlashTest::flash_write(uint8_t sector, uint32_t offset, const uint8_t *data
                       (unsigned)length);
     }
     uint16_t len16 = length/2;
-    for (uint16_t i=0; i<len16; i++) {
+    for (uint_fast16_t i=0; i<len16; i++) {
         const uint16_t v = le16toh_ptr(&data[i*2]);
         uint16_t v2 = le16toh_ptr(&b[i*2]);
         if (v & !v2) {
@@ -152,7 +152,7 @@ void FlashTest::loop(void)
         uint16_t length = get_random16() & 0x1F;
         length = MIN(length, sizeof(mem_buffer) - ofs);
         uint8_t data[length];
-        for (uint8_t j=0; j<length; j++) {
+        for (uint_fast8_t j=0; j<length; j++) {
             data[j] = get_random16() & 0xFF;
         }
 

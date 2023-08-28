@@ -67,7 +67,7 @@ void AP_NMEA_Output::init()
     const AP_SerialManager& sm = AP::serialmanager();
 
     _num_outputs = 0;
-    for (uint8_t i = 0; i < ARRAY_SIZE(_uart); i++) {
+    for (uint_fast8_t i = 0; i < ARRAY_SIZE(_uart); i++) {
         _uart[i] = sm.find_serial(AP_SerialManager::SerialProtocol_NMEAOutput, i);
 
         if (_uart[i] == nullptr) {
@@ -236,7 +236,7 @@ void AP_NMEA_Output::update()
 #endif
 
     // send to all NMEA output ports
-    for (uint8_t i = 0; i < _num_outputs; i++) {
+    for (uint_fast8_t i = 0; i < _num_outputs; i++) {
         if (_uart[i]->txspace() < space_required) {
             continue;
         }

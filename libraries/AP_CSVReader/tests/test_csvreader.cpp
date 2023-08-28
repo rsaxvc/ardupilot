@@ -37,7 +37,7 @@ TEST(AP_CSVReader, basic)
     for (const char *csv : csvs) {
         uint8_t termcount = 0;
         uint8_t linecount = 0;
-        for (uint8_t i=0; i<strlen(csv); i++) {
+        for (uint_fast8_t i=0; i<strlen(csv); i++) {
             switch (csvreader.feed(csv[i])) {
             case AP_CSVReader::RetCode::ERROR:
                 abort();
@@ -82,7 +82,7 @@ TEST(AP_CSVReader, commabasic)
 
     uint8_t termcount = 0;
     uint8_t linecount = 0;
-    for (uint8_t i=0; i<strlen(basic_csv); i++) {
+    for (uint_fast8_t i=0; i<strlen(basic_csv); i++) {
         switch (csvreader.feed(basic_csv[i])) {
         case AP_CSVReader::RetCode::ERROR:
             abort();
@@ -116,7 +116,7 @@ TEST(AP_CSVReader, missinglastcr)
 
     uint8_t termcount = 0;
     uint8_t linecount = 0;
-    for (uint8_t i=0; i<strlen(basic_csv); i++) {
+    for (uint_fast8_t i=0; i<strlen(basic_csv); i++) {
         switch (csvreader.feed(basic_csv[i])) {
         case AP_CSVReader::RetCode::ERROR:
             abort();

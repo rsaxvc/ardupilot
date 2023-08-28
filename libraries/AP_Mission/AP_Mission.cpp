@@ -186,7 +186,7 @@ bool AP_Mission::is_takeoff_next(uint16_t cmd_index)
     Mission_Command cmd = {};
     // check a maximum of 16 items, remembering that missions can have
     // loops in them
-    for (uint8_t i=0; i<16; i++, cmd_index++) {
+    for (uint_fast8_t i=0; i<16; i++, cmd_index++) {
         if (!get_next_nav_cmd(cmd_index, cmd)) {
             return false;
         }
@@ -480,7 +480,7 @@ bool AP_Mission::is_nav_cmd(const Mission_Command& cmd)
 bool AP_Mission::get_next_nav_cmd(uint16_t start_index, Mission_Command& cmd)
 {
     // search until the end of the mission command list
-    for (uint16_t cmd_index = start_index; cmd_index < (unsigned)_cmd_total; cmd_index++) {
+    for (uint_fast16_t cmd_index = start_index; cmd_index < (unsigned)_cmd_total; cmd_index++) {
         // get next command
         if (!get_next_cmd(cmd_index, cmd, false)) {
             // no more commands so return failure
@@ -1903,7 +1903,7 @@ bool AP_Mission::advance_current_nav_cmd(uint16_t starting_index)
             // and prevent history being re-written until vehicle returns to interrupted position
             if (_repeat_dist > 0 && !_flags.resuming_mission && _nav_cmd.index != AP_MISSION_CMD_INDEX_NONE && !(_nav_cmd.content.location.lat == 0 && _nav_cmd.content.location.lng == 0)) {
                 // update mission history. last index position is always the most recent wp loaded.
-                for (uint8_t i=0; i<AP_MISSION_MAX_WP_HISTORY-1; i++) {
+                for (uint_fast8_t i=0; i<AP_MISSION_MAX_WP_HISTORY-1; i++) {
                     _wp_index_history[i] = _wp_index_history[i+1];
                 }
                 _wp_index_history[AP_MISSION_MAX_WP_HISTORY-1] = _nav_cmd.index;
@@ -2102,7 +2102,7 @@ bool AP_Mission::jump_to_tag(const uint16_t tag)
 uint16_t AP_Mission::get_index_of_jump_tag(const uint16_t tag) const
 {
     const auto count = num_commands();
-    for (uint16_t i = 1; i < count; i++) {
+    for (uint_fast16_t i = 1; i < count; i++) {
         if (get_command_id(i) != uint16_t(MAV_CMD_JUMP_TAG)) {
             continue;
         }
@@ -2132,7 +2132,7 @@ bool AP_Mission::get_last_jump_tag(uint16_t &tag, uint16_t &age) const
 // init_jump_tracking - initialise jump_tracking variables
 void AP_Mission::init_jump_tracking()
 {
-    for (uint8_t i=0; i<AP_MISSION_MAX_NUM_DO_JUMP_COMMANDS; i++) {
+    for (uint_fast8_t i=0; i<AP_MISSION_MAX_NUM_DO_JUMP_COMMANDS; i++) {
         _jump_tracking[i].index = AP_MISSION_CMD_INDEX_NONE;
         _jump_tracking[i].num_times_run = 0;
     }
@@ -2148,7 +2148,7 @@ int16_t AP_Mission::get_jump_times_run(const Mission_Command& cmd)
     }
 
     // search through jump_tracking array for this cmd
-    for (uint8_t i=0; i<AP_MISSION_MAX_NUM_DO_JUMP_COMMANDS; i++) {
+    for (uint_fast8_t i=0; i<AP_MISSION_MAX_NUM_DO_JUMP_COMMANDS; i++) {
         if (_jump_tracking[i].index == cmd.index) {
             return _jump_tracking[i].num_times_run;
         } else if (_jump_tracking[i].index == AP_MISSION_CMD_INDEX_NONE) {
@@ -2174,7 +2174,7 @@ void AP_Mission::increment_jump_times_run(Mission_Command& cmd, bool send_gcs_ms
     }
 
     // search through jump_tracking array for this cmd
-    for (uint8_t i=0; i<AP_MISSION_MAX_NUM_DO_JUMP_COMMANDS; i++) {
+    for (uint_fast8_t i=0; i<AP_MISSION_MAX_NUM_DO_JUMP_COMMANDS; i++) {
         if (_jump_tracking[i].index == cmd.index) {
             _jump_tracking[i].num_times_run++;
             if (send_gcs_msg) {
@@ -2225,7 +2225,7 @@ uint16_t AP_Mission::get_landing_sequence_start()
 
     // Go through mission looking for nearest landing start command
     const auto count = num_commands();
-    for (uint16_t i = 1; i < count; i++) {
+    for (uint_fast16_t i = 1; i < count; i++) {
         if (get_command_id(i) != uint16_t(MAV_CMD_DO_LAND_START)) {
             continue;
         }
@@ -2292,7 +2292,7 @@ bool AP_Mission::jump_to_abort_landing_sequence(void)
         float min_distance = FLT_MAX;
 
         const auto count = num_commands();
-        for (uint16_t i = 1; i < count; i++) {
+        for (uint_fast16_t i = 1; i < count; i++) {
             if (get_command_id(i) != uint16_t(MAV_CMD_DO_GO_AROUND)) {
                 continue;
             }
@@ -2398,14 +2398,14 @@ bool AP_Mission::distance_to_landing(uint16_t index, float &tot_distance, Locati
 
     // back up jump tracking to reset after distance calculation
     jump_tracking_struct _jump_tracking_backup[AP_MISSION_MAX_NUM_DO_JUMP_COMMANDS];
-    for (uint8_t i=0; i<AP_MISSION_MAX_NUM_DO_JUMP_COMMANDS; i++) {
+    for (uint_fast8_t i=0; i<AP_MISSION_MAX_NUM_DO_JUMP_COMMANDS; i++) {
         _jump_tracking_backup[i] = _jump_tracking[i];
     }
 
     // run through remainder of mission to approximate a distance to landing
-    for (uint8_t i=0; i<255; i++) {
+    for (uint_fast8_t i=0; i<255; i++) {
         // search until the end of the mission command list
-        for (uint16_t cmd_index = index; cmd_index < (unsigned)_cmd_total; cmd_index++) {
+        for (uint_fast16_t cmd_index = index; cmd_index < (unsigned)_cmd_total; cmd_index++) {
             // get next command
             if (!get_next_cmd(cmd_index, temp_cmd, true, false)) {
                 // we got to the end of the mission
@@ -2437,7 +2437,7 @@ bool AP_Mission::distance_to_landing(uint16_t index, float &tot_distance, Locati
     }
 
 reset_do_jump_tracking:
-    for (uint8_t i=0; i<AP_MISSION_MAX_NUM_DO_JUMP_COMMANDS; i++) {
+    for (uint_fast8_t i=0; i<AP_MISSION_MAX_NUM_DO_JUMP_COMMANDS; i++) {
         _jump_tracking[i] = _jump_tracking_backup[i];
     }
 
@@ -2617,7 +2617,7 @@ uint16_t AP_Mission::get_command_id(uint16_t index) const
 bool AP_Mission::contains_item(MAV_CMD command) const
 {
     const auto count = num_commands();
-    for (uint16_t i = 1; i < count; i++) {
+    for (uint_fast16_t i = 1; i < count; i++) {
         if (get_command_id(i) != uint16_t(command)) {
             continue;
         }
@@ -2657,7 +2657,7 @@ bool AP_Mission::contains_terrain_alt_items(void)
 bool AP_Mission::calculate_contains_terrain_alt_items(void) const
 {
     const auto count = num_commands();
-    for (uint16_t i = 1; i < count; i++) {
+    for (uint_fast16_t i = 1; i < count; i++) {
         if (!stored_in_location(get_command_id(i))) {
             continue;
         }
@@ -2675,7 +2675,7 @@ bool AP_Mission::calculate_contains_terrain_alt_items(void) const
 // reset the mission history to prevent recalling previous mission histories after a mission restart.
 void AP_Mission::reset_wp_history(void)
 {
-    for (uint8_t i = 0; i<AP_MISSION_MAX_WP_HISTORY; i++) {
+    for (uint_fast8_t i = 0; i<AP_MISSION_MAX_WP_HISTORY; i++) {
         _wp_index_history[i] = AP_MISSION_CMD_INDEX_NONE;
     }
     _resume_cmd.index = AP_MISSION_CMD_INDEX_NONE;

@@ -99,7 +99,7 @@ void check_path(const std::vector<Vector3f>& correct_path, const char* test_name
     // check all points match
     bool points_match = true;
     uint16_t failure_index = 0;
-    for (uint16_t i = 0; i < points_to_compare; i++) {
+    for (uint_fast16_t i = 0; i < points_to_compare; i++) {
         if (smart_rtl.get_point(i) != correct_path[i]) {
             failure_index = i;
             points_match = false;
@@ -114,7 +114,7 @@ void check_path(const std::vector<Vector3f>& correct_path, const char* test_name
 
     // display the first failed point and all subsequent points
     if (!points_match) {
-        for (uint16_t j = failure_index; j < points_to_compare; j++) {
+        for (uint_fast16_t j = failure_index; j < points_to_compare; j++) {
             const Vector3f& smartrtl_point = smart_rtl.get_point(j);
             hal.console->printf("   expected point %d to be %4.2f,%4.2f,%4.2f, got %4.2f,%4.2f,%4.2f\n",
                             (int)j,

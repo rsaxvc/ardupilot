@@ -200,7 +200,7 @@ void AP_RCProtocol_SRXL2::_capture_scaled_input(const uint8_t *values_p, bool in
         _new_rssi = new_rssi * 255 / 100;
     }
 
-    for (uint8_t i = 0; i < MAX_CHANNELS; i++) {
+    for (uint_fast8_t i = 0; i < MAX_CHANNELS; i++) {
         /*
          * Store the decoded channel into the R/C input buffer, taking into
          * account the different ideas about channel assignement that we have.

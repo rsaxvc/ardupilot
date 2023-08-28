@@ -803,7 +803,7 @@ void AC_Avoid::adjust_velocity_inclusion_and_exclusion_polygons(float kP, float 
 
     // iterate through inclusion polygons
     const uint8_t num_inclusion_polygons = fence->polyfence().get_inclusion_polygon_count();
-    for (uint8_t i = 0; i < num_inclusion_polygons; i++) {
+    for (uint_fast8_t i = 0; i < num_inclusion_polygons; i++) {
         uint16_t num_points;
         const Vector2f* boundary = fence->polyfence().get_inclusion_polygon(i, num_points);
         Vector2f backup_vel_inc;
@@ -814,7 +814,7 @@ void AC_Avoid::adjust_velocity_inclusion_and_exclusion_polygons(float kP, float 
 
     // iterate through exclusion polygons
     const uint8_t num_exclusion_polygons = fence->polyfence().get_exclusion_polygon_count();
-    for (uint8_t i = 0; i < num_exclusion_polygons; i++) {
+    for (uint_fast8_t i = 0; i < num_exclusion_polygons; i++) {
         uint16_t num_points;
         const Vector2f* boundary = fence->polyfence().get_exclusion_polygon(i, num_points);
         Vector2f backup_vel_exc;
@@ -879,7 +879,7 @@ void AC_Avoid::adjust_velocity_inclusion_circles(float kP, float accel_cmss, Vec
     Vector2f quad_1_back_vel, quad_2_back_vel, quad_3_back_vel, quad_4_back_vel;
 
     // iterate through inclusion circles
-    for (uint8_t i = 0; i < num_circles; i++) {
+    for (uint_fast8_t i = 0; i < num_circles; i++) {
         Vector2f center_pos_cm;
         float radius;
         if (fence->polyfence().get_inclusion_circle(i, center_pos_cm, radius)) {
@@ -1010,7 +1010,7 @@ void AC_Avoid::adjust_velocity_exclusion_circles(float kP, float accel_cmss, Vec
         }
     }
     // iterate through exclusion circles
-    for (uint8_t i = 0; i < num_circles; i++) {
+    for (uint_fast8_t i = 0; i < num_circles; i++) {
         Vector2f center_pos_cm;
         float radius;
         if (fence->polyfence().get_exclusion_circle(i, center_pos_cm, radius)) {
@@ -1169,7 +1169,7 @@ void AC_Avoid::adjust_velocity_proximity(float kP, float accel_cmss, Vector3f &d
         stopping_point_plus_margin = safe_vel * ((2.0f + margin_cm + get_stopping_distance(kP, accel_cmss, speed))/speed);
     }
 
-    for (uint8_t i = 0; i<obstacle_num; i++) {
+    for (uint_fast8_t i = 0; i<obstacle_num; i++) {
         // get obstacle from proximity library
         Vector3f vector_to_obstacle;
         if (!_proximity.get_obstacle(i, vector_to_obstacle)) {
@@ -1313,7 +1313,7 @@ void AC_Avoid::adjust_velocity_polygon(float kP, float accel_cmss, Vector2f &des
     // for backing away
     Vector2f quad_1_back_vel, quad_2_back_vel, quad_3_back_vel, quad_4_back_vel;
    
-    for (uint16_t i=0; i<num_points; i++) {
+    for (uint_fast16_t i=0; i<num_points; i++) {
         uint16_t j = i+1;
         if (j >= num_points) {
             j = 0;
@@ -1444,7 +1444,7 @@ void AC_Avoid::get_proximity_roll_pitch_pct(float &roll_positive, float &roll_ne
     }
 
     // calculate maximum roll, pitch values from objects
-    for (uint8_t i=0; i<obj_count; i++) {
+    for (uint_fast8_t i=0; i<obj_count; i++) {
         float ang_deg, dist_m;
         if (_proximity.get_object_angle_and_distance(i, ang_deg, dist_m)) {
             if (dist_m < _dist_max) {

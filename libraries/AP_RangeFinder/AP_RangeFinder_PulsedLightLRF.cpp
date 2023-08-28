@@ -201,7 +201,7 @@ bool AP_RangeFinder_PulsedLightLRF::init(void)
 
     _dev->setup_checked_registers(num_settings);
 
-    for (uint8_t i = 0; i < num_settings; i++) {
+    for (uint_fast8_t i = 0; i < num_settings; i++) {
         if (!_dev->write_register(table[i].reg, table[i].value, true)) {
             goto failed;
         }

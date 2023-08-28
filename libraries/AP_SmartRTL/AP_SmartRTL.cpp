@@ -523,7 +523,7 @@ void AP_SmartRTL::detect_simplifications()
         // find the point between start and end points that is farthest from the start-end line segment
         float max_dist = 0.0f;
         uint16_t farthest_point_index = start_index;
-        for (uint16_t i = start_index + 1; i < end_index; i++) {
+        for (uint_fast16_t i = start_index + 1; i < end_index; i++) {
             // only check points that have not already been flagged for simplification
             if (_simplify.bitmask.get(i)) {
                 const float dist = _path[i].distance_to_segment(_path[start_index], _path[end_index]);
@@ -546,7 +546,7 @@ void AP_SmartRTL::detect_simplifications()
             _simplify.stack[_simplify.stack_count++] = simplify_start_finish_t {farthest_point_index, end_index};
         } else {
             // if the farthest point was closer than ACCURACY * 0.5 we can simplify all points between start and end
-            for (uint16_t i = start_index + 1; i < end_index; i++) {
+            for (uint_fast16_t i = start_index + 1; i < end_index; i++) {
                 _simplify.bitmask.clear(i);
                 _simplify.removal_required = true;
             }
@@ -668,7 +668,7 @@ void AP_SmartRTL::remove_points_by_simplify_bitmask()
     }
     uint16_t dest = 1;
     uint16_t removed = 0;
-    for (uint16_t src = 1; src < _path_points_count; src++) {
+    for (uint_fast16_t src = 1; src < _path_points_count; src++) {
         if (!_simplify.bitmask.get(src)) {
             log_action(SRTL_POINT_SIMPLIFY, _path[src]);
             removed++;
@@ -721,7 +721,7 @@ bool AP_SmartRTL::remove_points_by_loops(uint16_t num_points_to_remove)
 
         // shift points after the end of the loop down by the number of points in the loop
         uint16_t loop_num_points_to_remove = loop.end_index - loop.start_index;
-        for (uint16_t dest = loop.start_index + 1; dest < _path_points_count - loop_num_points_to_remove; dest++) {
+        for (uint_fast16_t dest = loop.start_index + 1; dest < _path_points_count - loop_num_points_to_remove; dest++) {
             log_action(SRTL_POINT_PRUNE, _path[dest]);
             _path[dest] = _path[dest + loop_num_points_to_remove];
         }
@@ -739,7 +739,7 @@ bool AP_SmartRTL::remove_points_by_loops(uint16_t num_points_to_remove)
 
         // fix the indices of any existing prune loops
         // we do not check for overlapping loops because add_loops should have caught them
-        for (uint16_t loop_cnt = 0; loop_cnt < i; loop_cnt++) {
+        for (uint_fast16_t loop_cnt = 0; loop_cnt < i; loop_cnt++) {
             if (_prune.loops[loop_cnt].start_index >= loop.end_index) {
                 _prune.loops[loop_cnt].start_index -= loop_num_points_to_remove;
             }
@@ -774,14 +774,14 @@ bool AP_SmartRTL::add_loop(uint16_t start_index, uint16_t end_index, const Vecto
     // create new loop structure and calculate length squared of loop
     prune_loop_t new_loop = {start_index, end_index, midpoint, 0.0f};
     new_loop.length_squared = midpoint.distance_squared(_path[start_index]) + midpoint.distance_squared(_path[end_index]);
-    for (uint16_t i = start_index; i < end_index; i++) {
+    for (uint_fast16_t i = start_index; i < end_index; i++) {
         new_loop.length_squared += _path[i].distance_squared(_path[i+1]);
     }
 
     // look for overlapping loops and find their combined length
     bool overlapping_loops = false;
     float overlapping_loop_length = 0.0f;
-    for (uint16_t loop_idx = 0; loop_idx < _prune.loops_count; loop_idx++) {
+    for (uint_fast16_t loop_idx = 0; loop_idx < _prune.loops_count; loop_idx++) {
         if (loops_overlap(_prune.loops[loop_idx], new_loop)) {
             overlapping_loops = true;
             overlapping_loop_length += _prune.loops[loop_idx].length_squared;
@@ -797,7 +797,7 @@ bool AP_SmartRTL::add_loop(uint16_t start_index, uint16_t end_index, const Vecto
         // remove overlapping loops
         uint16_t dest_idx = 0;
         uint16_t removed = 0;
-        for (uint16_t src_idx = 0; src_idx < _prune.loops_count; src_idx++) {
+        for (uint_fast16_t src_idx = 0; src_idx < _prune.loops_count; src_idx++) {
             if (loops_overlap(_prune.loops[src_idx], new_loop)) {
                 removed++;
             } else {

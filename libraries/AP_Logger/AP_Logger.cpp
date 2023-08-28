@@ -233,7 +233,7 @@ void AP_Logger::Init(const struct LogStructure *structures, uint8_t num_types)
         _next_backend++;
     }
 
-    for (uint8_t i=0; i<_next_backend; i++) {
+    for (uint_fast8_t i=0; i<_next_backend; i++) {
         backends[i]->Init();
     }
 
@@ -254,7 +254,7 @@ extern const AP_HAL::HAL& hal;
 static uint8_t count_commas(const char *string)
 {
     uint8_t ret = 0;
-    for (uint8_t i=0; i<strlen(string); i++) {
+    for (uint_fast8_t i=0; i<strlen(string); i++) {
         if (string[i] == ',') {
             ret++;
         }
@@ -265,7 +265,7 @@ static uint8_t count_commas(const char *string)
 /// return a unit name given its ID
 const char* AP_Logger::unit_name(const uint8_t unit_id)
 {
-    for (uint8_t i=0; i<unit_id; i++) {
+    for (uint_fast8_t i=0; i<unit_id; i++) {
         if (_units[i].ID == unit_id) {
             return _units[i].unit;
         }
@@ -276,7 +276,7 @@ const char* AP_Logger::unit_name(const uint8_t unit_id)
 /// return a multiplier value given its ID
 double AP_Logger::multiplier_name(const uint8_t multiplier_id)
 {
-    for (uint8_t i=0; i<multiplier_id; i++) {
+    for (uint_fast8_t i=0; i<multiplier_id; i++) {
         if (_multipliers[i].ID == multiplier_id) {
             return _multipliers[i].multiplier;
         }
@@ -296,13 +296,13 @@ void AP_Logger::dump_structure_field(const struct LogStructure *logstructure, co
 void AP_Logger::dump_structures(const struct LogStructure *logstructures, const uint8_t num_types)
 {
 #if DEBUG_LOG_STRUCTURES
-    for (uint16_t i=0; i<num_types; i++) {
+    for (uint_fast16_t i=0; i<num_types; i++) {
         const struct LogStructure *logstructure = &logstructures[i];
         ::fprintf(stderr, "%s\n", logstructure->name);
         char label[32] = { };
         uint8_t labeloffset = 0;
         int8_t fieldnum = 0;
-        for (uint8_t j=0; j<strlen(logstructure->labels); j++) {
+        for (uint_fast8_t j=0; j<strlen(logstructure->labels); j++) {
             char labelchar = logstructure->labels[j];
             if (labelchar == '\0') {
                 break;
@@ -342,7 +342,7 @@ bool AP_Logger::labels_string_is_good(const char *labels) const
     }
     label_offsets[label_offsets_offset++] = labels_copy;
     const uint8_t len = strnlen(labels_copy, LS_LABELS_SIZE);
-    for (uint8_t i=0; i<len; i++) {
+    for (uint_fast8_t i=0; i<len; i++) {
         if (labels_copy[i] == ',') {
             if (labels_copy[i+1] == '\0') {
                 Debug("Trailing comma in (%s)", labels);
@@ -353,8 +353,8 @@ bool AP_Logger::labels_string_is_good(const char *labels) const
             label_offsets[label_offsets_offset++] = &labels_copy[i+1];
         }
     }
-    for (uint8_t i=0; i<label_offsets_offset-1; i++) {
-        for (uint8_t j=i+1; j<label_offsets_offset; j++) {
+    for (uint_fast8_t i=0; i<label_offsets_offset-1; i++) {
+        for (uint_fast8_t j=i+1; j<label_offsets_offset; j++) {
             if (!strcmp(label_offsets[i], label_offsets[j])) {
                 Debug("Duplicate label (%s) in (%s)", label_offsets[i], labels);
                 passed = false;
@@ -429,7 +429,7 @@ bool AP_Logger::validate_structure(const struct LogStructure *logstructure, cons
     }
 
     // ensure the FMTU messages reference valid units
-    for (uint8_t j=0; j<strlen(logstructure->units); j++) {
+    for (uint_fast8_t j=0; j<strlen(logstructure->units); j++) {
         char logunit = logstructure->units[j];
         uint8_t k;
         for (k=0; k<_num_units; k++) {
@@ -445,7 +445,7 @@ bool AP_Logger::validate_structure(const struct LogStructure *logstructure, cons
     }
 
     // ensure the FMTU messages reference valid multipliers
-    for (uint8_t j=0; j<strlen(logstructure->multipliers); j++) {
+    for (uint_fast8_t j=0; j<strlen(logstructure->multipliers); j++) {
         char logmultiplier = logstructure->multipliers[j];
         uint8_t k;
         for (k=0; k<_num_multipliers; k++) {
@@ -462,7 +462,7 @@ bool AP_Logger::validate_structure(const struct LogStructure *logstructure, cons
 
     // ensure any float has a multiplier of zero
     if (false && passed) {
-        for (uint8_t j=0; j<strlen(logstructure->multipliers); j++) {
+        for (uint_fast8_t j=0; j<strlen(logstructure->multipliers); j++) {
             const char fmt = logstructure->format[j];
             if (fmt != 'f') {
                 continue;
@@ -489,15 +489,15 @@ void AP_Logger::validate_structures(const struct LogStructure *logstructures, co
     Debug("Validating structures");
     bool passed = true;
 
-    for (uint16_t i=0; i<num_types; i++) {
+    for (uint_fast16_t i=0; i<num_types; i++) {
         const struct LogStructure *logstructure = &logstructures[i];
         passed = validate_structure(logstructure, i) && passed;
     }
 
     // ensure units are unique:
-    for (uint16_t i=0; i<ARRAY_SIZE(log_Units); i++) {
+    for (uint_fast16_t i=0; i<ARRAY_SIZE(log_Units); i++) {
         const struct UnitStructure &a = log_Units[i];
-        for (uint16_t j=i+1; j<ARRAY_SIZE(log_Units); j++) {
+        for (uint_fast16_t j=i+1; j<ARRAY_SIZE(log_Units); j++) {
             const struct UnitStructure &b = log_Units[j];
             if (a.ID == b.ID) {
                 Debug("duplicate unit id=%c (%s/%s)", a.ID, a.unit, b.unit);
@@ -511,9 +511,9 @@ void AP_Logger::validate_structures(const struct LogStructure *logstructures, co
     }
 
     // ensure multipliers are unique:
-    for (uint16_t i=0; i<ARRAY_SIZE(log_Multipliers); i++) {
+    for (uint_fast16_t i=0; i<ARRAY_SIZE(log_Multipliers); i++) {
         const struct MultiplierStructure &a = log_Multipliers[i];
-        for (uint16_t j=i+1; j<ARRAY_SIZE(log_Multipliers); j++) {
+        for (uint_fast16_t j=i+1; j<ARRAY_SIZE(log_Multipliers); j++) {
             const struct MultiplierStructure &b = log_Multipliers[j];
             if (a.ID == b.ID) {
                 Debug("duplicate multiplier id=%c (%f/%f)",
@@ -553,7 +553,7 @@ bool AP_Logger::logging_enabled() const
     if (_next_backend == 0) {
         return false;
     }
-    for (uint8_t i=0; i<_next_backend; i++) {
+    for (uint_fast8_t i=0; i<_next_backend; i++) {
         if (backends[i]->logging_enabled()) {
             return true;
         }
@@ -566,7 +566,7 @@ bool AP_Logger::logging_failed() const
         // we should not have been called!
         return true;
     }
-    for (uint8_t i=0; i<_next_backend; i++) {
+    for (uint_fast8_t i=0; i<_next_backend; i++) {
         if (backends[i]->logging_failed()) {
             return true;
         }
@@ -590,7 +590,7 @@ void AP_Logger::backend_starting_new_log(const AP_Logger_Backend *backend)
 {
     _log_start_count++;
 
-    for (uint8_t i=0; i<_next_backend; i++) {
+    for (uint_fast8_t i=0; i<_next_backend; i++) {
         if (backends[i] == backend) { // pointer comparison!
             // reset sent masks
             for (struct log_write_fmt *f = log_write_fmts; f; f=f->next) {
@@ -645,7 +645,7 @@ const struct MultiplierStructure *AP_Logger::multiplier(uint16_t num) const
 
 #define FOR_EACH_BACKEND(methodcall)              \
     do {                                          \
-        for (uint8_t i=0; i<_next_backend; i++) { \
+        for (uint_fast8_t i=0; i<_next_backend; i++) { \
             backends[i]->methodcall;              \
         }                                         \
     } while (0)
@@ -717,7 +717,7 @@ bool AP_Logger::WriteBlock_first_succeed(const void *pBuffer, uint16_t size)
         return false;
     }
     
-    for (uint8_t i=1; i<_next_backend; i++) {
+    for (uint_fast8_t i=1; i<_next_backend; i++) {
         backends[i]->WriteBlock(pBuffer, size);
     }
 
@@ -734,7 +734,7 @@ bool AP_Logger::WriteReplayBlock(uint8_t msg_id, const void *pBuffer, uint16_t s
         buf[1] = HEAD_BYTE2;
         buf[2] = msg_id;
         memcpy(&buf[3], pBuffer, size);
-        for (uint8_t i=0; i<_next_backend; i++) {
+        for (uint_fast8_t i=0; i<_next_backend; i++) {
             if (!backends[i]->WritePrioritisedBlock(buf, sizeof(buf), true)) {
                 ret = false;
             }
@@ -765,7 +765,7 @@ void AP_Logger::EraseAll() {
 }
 // change me to "LoggingAvailable"?
 bool AP_Logger::CardInserted(void) {
-    for (uint8_t i=0; i< _next_backend; i++) {
+    for (uint_fast8_t i=0; i< _next_backend; i++) {
         if (backends[i]->CardInserted()) {
             return true;
         }
@@ -811,7 +811,7 @@ uint16_t AP_Logger::get_num_logs(void) {
 
 /* we're started if any of the backends are started */
 bool AP_Logger::logging_started(void) {
-    for (uint8_t i=0; i< _next_backend; i++) {
+    for (uint_fast8_t i=0; i< _next_backend; i++) {
         if (backends[i]->logging_started()) {
             return true;
         }
@@ -902,7 +902,7 @@ void AP_Logger::Write_Fence()
 // output a FMT message for each backend if not already done so
 void AP_Logger::Safe_Write_Emit_FMT(log_write_fmt *f)
 {
-    for (uint8_t i=0; i<_next_backend; i++) {
+    for (uint_fast8_t i=0; i<_next_backend; i++) {
         if (!(f->sent_mask & (1U<<i))) {
             if (!backends[i]->Write_Emit_FMT(f->msg_type)) {
                 continue;
@@ -993,7 +993,7 @@ void AP_Logger::WriteV(const char *name, const char *labels, const char *units, 
         return;
     }
 
-    for (uint8_t i=0; i<_next_backend; i++) {
+    for (uint_fast8_t i=0; i<_next_backend; i++) {
         if (!(f->sent_mask & (1U<<i))) {
             if (!backends[i]->Write_Emit_FMT(f->msg_type)) {
                 continue;
@@ -1018,7 +1018,7 @@ bool AP_Logger::allow_start_ekf() const
         return true;
     }
 
-    for (uint8_t i=0; i<_next_backend; i++) {
+    for (uint_fast8_t i=0; i<_next_backend; i++) {
         if (!backends[i]->allow_start_ekf()) {
             return false;
         }
@@ -1206,7 +1206,7 @@ AP_Logger::log_write_fmt *AP_Logger::msg_fmt_for_name(const char *name, const ch
 
 const struct LogStructure *AP_Logger::structure_for_msg_type(const uint8_t msg_type) const
 {
-    for (uint16_t i=0; i<_num_types;i++) {
+    for (uint_fast16_t i=0; i<_num_types;i++) {
         const struct LogStructure *s = structure(i);
         if (s->msg_type == msg_type) {
             // in use
@@ -1233,7 +1233,7 @@ bool AP_Logger::msg_type_in_use(const uint8_t msg_type) const
 {
     // check static list of messages (e.g. from LOG_COMMON_STRUCTURES)
     // check the write format types to see if we've used this one
-    for (uint16_t i=0; i<_num_types;i++) {
+    for (uint_fast16_t i=0; i<_num_types;i++) {
         if (structure(i)->msg_type == msg_type) {
             // in use
             return true;
@@ -1254,7 +1254,7 @@ int16_t AP_Logger::find_free_msg_type() const
 {
     const uint8_t start = LOGGING_FIRST_DYNAMIC_MSGID;
     // avoid using 255 here; perhaps we want to use it to extend things later
-    for (uint16_t msg_type=start; msg_type>0; msg_type--) { // more likely to be free at end
+    for (uint_fast16_t msg_type=start; msg_type>0; msg_type--) { // more likely to be free at end
         if (! msg_type_in_use(msg_type)) {
             return msg_type;
         }
@@ -1313,7 +1313,7 @@ bool AP_Logger::fill_log_write_logstructure(struct LogStructure &logstruct, cons
 int16_t AP_Logger::Write_calc_msg_len(const char *fmt) const
 {
     uint8_t len =  LOG_PACKET_HEADER_LEN;
-    for (uint8_t i=0; i<strlen(fmt); i++) {
+    for (uint_fast8_t i=0; i<strlen(fmt); i++) {
         switch(fmt[i]) {
         case 'a' : len += sizeof(int16_t[32]); break;
         case 'b' : len += sizeof(int8_t); break;

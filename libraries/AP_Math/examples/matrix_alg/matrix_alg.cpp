@@ -35,8 +35,8 @@ static void show_matrix(Ftype *A, int n) {
 
 static bool compare_mat(const Ftype *A, const Ftype *B, const uint8_t n)
 {
-    for(uint8_t i = 0; i < n; i++) {
-        for(uint8_t j = 0; j < n; j++) {
+    for (uint_fast8_t i = 0; i < n; i++) {
+        for (uint_fast8_t j = 0; j < n; j++) {
             if(fabsf(A[i*n + j] - B[i*n + j]) > MAT_ALG_ACCURACY) {
                 return false;
             }
@@ -50,7 +50,7 @@ static void test_matrix_inverse(void)
     //fast inverses
     Ftype test_mat[25],ident_mat[25];
     Ftype out_mat[25], out_mat2[25], mat[25];
-    for(uint8_t i = 0;i<25;i++) {
+    for (uint_fast8_t i = 0;i<25;i++) {
         test_mat[i] = powf(-1,i)*get_random()/0.7f;
     }
 

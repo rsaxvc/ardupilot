@@ -470,7 +470,7 @@ bool SITL_State::_read_rc_sitl_input()
     if (_sitl->rc_fail == SITL::SIM::SITL_RCFail_Throttle950) {
         // discard anything we just read from the "receiver" and set
         // values to bind values:
-        for (uint8_t i=0; i<ARRAY_SIZE(pwm_input); i++) {
+        for (uint_fast8_t i=0; i<ARRAY_SIZE(pwm_input); i++) {
             pwm_input[0] = 1500;  // centre all inputs
         }
         pwm_input[2] = 950;  // reset throttle (assumed to be on channel 3...)
@@ -483,7 +483,7 @@ bool SITL_State::_read_rc_sitl_input()
     case 8*2:
     case 16*2: {
         // a packet giving the receiver PWM inputs
-        for (uint8_t i=0; i<size/2; i++) {
+        for (uint_fast8_t i=0; i<size/2; i++) {
             // setup the pwm input for the RC channel inputs
             if (i < _sitl->state.rcin_chan_count) {
                 // we're using rc from simulator
@@ -522,7 +522,7 @@ void SITL_State::_output_to_flightgear(void)
     fdm.vcas  = sfdm.velocity_air_bf.length()/0.3048;
     if (_vehicle == ArduCopter) {
         fdm.num_engines = 4;
-        for (uint8_t i=0; i<4; i++) {
+        for (uint_fast8_t i=0; i<4; i++) {
             fdm.rpm[i] = constrain_float((pwm_output[i]-1000), 0, 1000);
         }
     } else {
@@ -566,7 +566,7 @@ void SITL_State::_fdm_input_local(void)
         sitl_model->fill_fdm(_sitl->state);
 
         if (_sitl->rc_fail == SITL::SIM::SITL_RCFail_None) {
-            for (uint8_t i=0; i< _sitl->state.rcin_chan_count; i++) {
+            for (uint_fast8_t i=0; i< _sitl->state.rcin_chan_count; i++) {
                 pwm_input[i] = 1000 + _sitl->state.rcin[i]*1000;
             }
         }
@@ -692,7 +692,7 @@ void SITL_State::_fdm_input_local(void)
         ais->update();
     }
 #endif
-    for (uint8_t i=0; i<ARRAY_SIZE(gps); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(gps); i++) {
         if (gps[i] != nullptr) {
             gps[i]->update();
         }
@@ -727,7 +727,7 @@ void SITL_State::_simulator_servos(struct sitl_input &input)
      * to change */
 
     if (last_update_usec == 0 || !output_ready) {
-        for (uint8_t i=0; i<SITL_NUM_CHANNELS; i++) {
+        for (uint_fast8_t i=0; i<SITL_NUM_CHANNELS; i++) {
             pwm_output[i] = 1000;
         }
         if (_vehicle == ArduPlane) {
@@ -786,7 +786,7 @@ void SITL_State::_simulator_servos(struct sitl_input &input)
     input.wind.turbulence = _sitl?_sitl->wind_turbulance:0;
     input.wind.dir_z = wind_dir_z;
 
-    for (uint8_t i=0; i<SITL_NUM_CHANNELS; i++) {
+    for (uint_fast8_t i=0; i<SITL_NUM_CHANNELS; i++) {
         if (pwm_output[i] == 0xFFFF) {
             input.servos[i] = 0;
         } else {
@@ -802,7 +802,7 @@ void SITL_State::_simulator_servos(struct sitl_input &input)
         if (_sitl != nullptr) {
             if (_sitl->fetteconewireesc_sim.enabled()) {
                 _sitl->fetteconewireesc_sim.update_sitl_input_pwm(input);
-                for (uint8_t i=0; i<ARRAY_SIZE(input.servos); i++) {
+                for (uint_fast8_t i=0; i<ARRAY_SIZE(input.servos); i++) {
                     if (input.servos[i] != 0 && input.servos[i] < 1000) {
                         AP_HAL::panic("Bad input servo value (%u)", input.servos[i]);
                     }
@@ -884,7 +884,7 @@ void SITL_State::_simulator_servos(struct sitl_input &input)
         if (_sitl->state.battery_voltage <= 0) {
             if (_vehicle == ArduSub) {
                 voltage = _sitl->batt_voltage;
-                for (uint8_t i=0; i<6; i++) {
+                for (uint_fast8_t i=0; i<6; i++) {
                     float pwm = input.servos[i];
                     //printf("i: %d, pwm: %.2f\n", i, pwm);
                     float fraction = fabsf((pwm - 1500) / 500.0f);

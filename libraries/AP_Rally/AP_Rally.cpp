@@ -143,7 +143,7 @@ bool AP_Rally::find_nearest_rally_point(const Location &current_loc, RallyLocati
 {
     float min_dis = -1;
 
-    for (uint8_t i = 0; i < (uint8_t) _rally_point_total_count; i++) {
+    for (uint_fast8_t i = 0; i < (uint8_t) _rally_point_total_count; i++) {
         RallyLocation next_rally;
         if (!get_rally_point_with_index(i, next_rally)) {
             continue;

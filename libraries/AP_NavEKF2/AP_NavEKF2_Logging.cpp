@@ -296,7 +296,7 @@ void NavEKF2::Log_Write()
 
     // note that several of these functions exit-early if they're not
     // attempting to log the primary core.
-    for (uint8_t i=0; i<activeCores(); i++) {
+    for (uint_fast8_t i=0; i<activeCores(); i++) {
         core[i].Log_Write(time_us);
     }
 

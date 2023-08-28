@@ -43,7 +43,7 @@ bool MultiHeap::create(uint32_t total_size, uint8_t max_heaps)
         return false;
     }
     num_heaps = max_heaps;
-    for (uint8_t i=0; i<max_heaps; i++) {
+    for (uint_fast8_t i=0; i<max_heaps; i++) {
         uint32_t alloc_size = total_size;
         while (alloc_size > 0) {
             heaps[i] = hal.util->allocate_heap_memory(alloc_size);
@@ -70,7 +70,7 @@ void MultiHeap::destroy(void)
     if (!available()) {
         return;
     }
-    for (uint8_t i=0; i<num_heaps; i++) {
+    for (uint_fast8_t i=0; i<num_heaps; i++) {
         if (heaps[i] != nullptr) {
             free(heaps[i]);
             heaps[i] = nullptr;
@@ -95,7 +95,7 @@ void *MultiHeap::allocate(uint32_t size)
     if (!available()) {
         return nullptr;
     }
-    for (uint8_t i=0; i<num_heaps; i++) {
+    for (uint_fast8_t i=0; i<num_heaps; i++) {
         if (heaps[i] == nullptr) {
             break;
         }

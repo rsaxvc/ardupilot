@@ -33,7 +33,7 @@ void setup(void)
 #if CONFIG_HAL_BOARD == HAL_BOARD_CHIBIOS
     BoardConfig.init();
 #endif
-    for (uint8_t i = 0; i < MAX_CHANNELS; i++) {
+    for (uint_fast8_t i = 0; i < MAX_CHANNELS; i++) {
         hal.rcout->enable_ch(i);
     }
 }
@@ -47,7 +47,7 @@ void loop(void)
        nchannels = MAX_CHANNELS;
     }
 
-    for (uint8_t i = 0; i < nchannels; i++) {
+    for (uint_fast8_t i = 0; i < nchannels; i++) {
         uint16_t v = hal.rcin->read(i);
         if (last_value[i] != v) {
             hal.rcout->write(i, v);
@@ -59,7 +59,7 @@ void loop(void)
         }
     }
     if (changed) {
-        for (uint8_t i = 0; i < max_channels; i++) {
+        for (uint_fast8_t i = 0; i < max_channels; i++) {
             hal.console->printf("%2u:%04u ", (unsigned)(i + 1), (unsigned)last_value[i]);
         }
         hal.console->printf("\n");

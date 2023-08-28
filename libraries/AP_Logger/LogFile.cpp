@@ -425,7 +425,7 @@ void AP_Logger::Write_Compass()
 {
     const uint64_t time_us = AP_HAL::micros64();
     const Compass &compass = AP::compass();
-    for (uint8_t i=0; i<compass.get_count(); i++) {
+    for (uint_fast8_t i=0; i<compass.get_count(); i++) {
         Write_Compass_instance(time_us, i);
     }
 }

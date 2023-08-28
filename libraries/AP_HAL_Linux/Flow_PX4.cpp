@@ -288,7 +288,7 @@ uint8_t Flow_PX4::compute_flow(uint8_t *image1, uint8_t *image2,
                                  2 * _search_size);
                 uint32_t mindist = dist; // best SAD until now
                 uint8_t mindir = 8; // direction 8 for no direction
-                for (uint8_t k = 0; k < 2 * _search_size; k++) {
+                for (uint_fast8_t k = 0; k < 2 * _search_size; k++) {
                     if (acc[k] < mindist) {
                         // SAD becomes better in direction k
                         mindist = acc[k];
@@ -312,7 +312,7 @@ uint8_t Flow_PX4::compute_flow(uint8_t *image1, uint8_t *image2,
         uint32_t meancount_x = 0;
         uint32_t meancount_y = 0;
 
-        for (uint16_t h = 0; h < meancount; h++) {
+        for (uint_fast16_t h = 0; h < meancount; h++) {
             float subdirx = 0.0f;
             if (subdirs[h] == 0 || subdirs[h] == 1 || subdirs[h] == 7) {
                 subdirx = 0.5f;

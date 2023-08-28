@@ -134,7 +134,7 @@ static uint16_t srxlCrc16(uint8_t* packet)
     {
 #if(SRXL_CRC_OPTIMIZE_MODE == SRXL_CRC_OPTIMIZE_SIZE)
         // Use bitwise method
-        for(uint8_t i = 0; i < length; ++i)
+        for (uint_fast8_t i = 0; i < length; ++i)
         {
             crc = crc ^ ((uint16_t)packet[i] << 8);
             for(int b = 0; b < 8; b++)
@@ -536,7 +536,7 @@ static void srxlSend(SrxlBus* pBus, SRXL_CMD srxlCmd, uint8_t replyID)
 
         uint8_t channelIndex = 0;
         uint32_t channelMaskBit = 1;
-        for(uint8_t i = 0; i < 32; ++i, channelMaskBit <<= 1)
+        for (uint_fast8_t i = 0; i < 32; ++i, channelMaskBit <<= 1)
         {
             if(channelMask & channelMaskBit)
             {

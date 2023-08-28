@@ -91,7 +91,7 @@ void AP_BattMonitor_SMBus_SUI::read_cell_voltages()
     }
     float pack_voltage_mv = 0.0f;
         
-    for (uint8_t i = 0; i < MIN(SUI_MAX_CELL_READ, cell_count); i++) {
+    for (uint_fast8_t i = 0; i < MIN(SUI_MAX_CELL_READ, cell_count); i++) {
         const uint16_t cell = voltbuff[i];
         _state.cell_voltages.cells[i] = cell;
         pack_voltage_mv += (float)cell;
@@ -106,14 +106,14 @@ void AP_BattMonitor_SMBus_SUI::read_cell_voltages()
             // read zero volts for the extra cells.
             total_mv = MAX(total_mv, pack_voltage_mv);
             const uint16_t cell_mv = (total_mv - pack_voltage_mv) / (cell_count - SUI_MAX_CELL_READ);
-            for (uint8_t i = SUI_MAX_CELL_READ; i < cell_count; i++) {
+            for (uint_fast8_t i = SUI_MAX_CELL_READ; i < cell_count; i++) {
                 _state.cell_voltages.cells[i] = cell_mv;
             }
             pack_voltage_mv = total_mv;
         } else {
             // we can't get total pack voltage. Use average of cells we have so far
             const uint16_t cell_mv = pack_voltage_mv / SUI_MAX_CELL_READ;
-            for (uint8_t i = SUI_MAX_CELL_READ; i < cell_count; i++) {
+            for (uint_fast8_t i = SUI_MAX_CELL_READ; i < cell_count; i++) {
                 _state.cell_voltages.cells[i] = cell_mv;
             }
             pack_voltage_mv += cell_mv * (cell_count - SUI_MAX_CELL_READ);

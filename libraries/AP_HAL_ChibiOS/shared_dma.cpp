@@ -34,7 +34,7 @@ volatile Shared_DMA::dma_stats* Shared_DMA::_contention_stats;
 
 void Shared_DMA::init(void)
 {
-    for (uint8_t i=0; i<SHARED_DMA_MAX_STREAM_ID; i++) {
+    for (uint_fast8_t i=0; i<SHARED_DMA_MAX_STREAM_ID; i++) {
         chMtxObjectInit(&locks[i].mutex);
     }
 }
@@ -234,7 +234,7 @@ void Shared_DMA::unlock(bool success)
  */
 void Shared_DMA::lock_all(void)
 {
-    for (uint8_t i=0; i<SHARED_DMA_MAX_STREAM_ID; i++) {
+    for (uint_fast8_t i=0; i<SHARED_DMA_MAX_STREAM_ID; i++) {
         lock_stream(i);
     }
 }
@@ -251,7 +251,7 @@ void Shared_DMA::dma_info(ExpandingString &str)
     // a header to allow for machine parsers to determine format
     str.printf("DMAV1\n");
 
-    for (uint8_t i = 0; i < SHARED_DMA_MAX_STREAM_ID; i++) {
+    for (uint_fast8_t i = 0; i < SHARED_DMA_MAX_STREAM_ID; i++) {
         // ignore locks not in use
         if (_contention_stats[i].contended_locks == 0
             && _contention_stats[i].uncontended_locks == 0

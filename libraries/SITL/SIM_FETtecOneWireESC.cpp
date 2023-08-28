@@ -78,11 +78,11 @@ FETtecOneWireESC::FETtecOneWireESC() : SerialDevice::SerialDevice()
     AP_Param::setup_object_defaults(this, var_info);
 
     // initialise serial numbers and IDs
-    for (uint8_t n=0; n<ARRAY_SIZE(escs); n++) {
+    for (uint_fast8_t n=0; n<ARRAY_SIZE(escs); n++) {
         ESC &esc = escs[n];
         esc.ofs = n;  // so we can index for RPM, for example
         esc.id = n+1;  // really should parameterise this
-        for (uint8_t i=0; i<ARRAY_SIZE(esc.sn); i++) {
+        for (uint_fast8_t i=0; i<ARRAY_SIZE(esc.sn); i++) {
             esc.sn[i] = n+1;
         }
     }
@@ -337,7 +337,7 @@ void FETtecOneWireESC::handle_fast_esc_data()
     uint32_t window = u.buffer[byte_ofs++]<<24;
     window <<= 7;
     uint8_t bits_free = 32-1;
-    for (uint8_t i=esc0_ofs+1; i<esc0_ofs+fast_com.id_count; i++) {
+    for (uint_fast8_t i=esc0_ofs+1; i<esc0_ofs+fast_com.id_count; i++) {
         while (bits_free > 7) {
             window |= u.buffer[byte_ofs++] << (bits_free-8);
             bits_free -= 8;
@@ -354,7 +354,7 @@ void FETtecOneWireESC::handle_fast_esc_data()
         bits_free += 11;
     }
 
-    for (uint8_t i=0; i<ARRAY_SIZE(escs); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(escs); i++) {
         const ESC &esc { escs[i] };
         if (esc.pwm == 0) {
             continue;
@@ -418,7 +418,7 @@ void FETtecOneWireESC::update_input()
     // no config message, so let's see if there's fast PWM input.
     if (fast_com.id_count == 255) {
         // see if any ESC has been configured:
-        for (uint8_t i=0; i<ARRAY_SIZE(escs); i++) {
+        for (uint_fast8_t i=0; i<ARRAY_SIZE(escs); i++) {
             if (escs[i].fast_com.id_count == 255) {
                 continue;
             }

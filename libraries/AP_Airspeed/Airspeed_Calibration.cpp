@@ -157,7 +157,7 @@ void AP_Airspeed::update_calibration(uint8_t i, const Vector3f &vground, int16_t
  */
 void AP_Airspeed::update_calibration(const Vector3f &vground, int16_t max_airspeed_allowed_during_cal)
 {
-    for (uint8_t i=0; i<AIRSPEED_MAX_SENSORS; i++) {
+    for (uint_fast8_t i=0; i<AIRSPEED_MAX_SENSORS; i++) {
         update_calibration(i, vground, max_airspeed_allowed_during_cal);
     }
     send_airspeed_calibration(vground);

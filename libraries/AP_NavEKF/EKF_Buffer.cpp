@@ -174,7 +174,7 @@ void ekf_imu_buffer::get_oldest_element(void *element)
 // writes the same data to all elements in the ring buffer
 void ekf_imu_buffer::reset_history(const void *element)
 {
-    for (uint8_t index=0; index<_size; index++) {
+    for (uint_fast8_t index=0; index<_size; index++) {
         memcpy(get_offset(index), element, elsize);
     }
 }

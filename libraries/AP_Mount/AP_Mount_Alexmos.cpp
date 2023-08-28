@@ -199,7 +199,7 @@ void AP_Mount_Alexmos::send_command(uint8_t cmd, uint8_t* data, uint8_t size)
     _port->write( size );  // write body size
     _port->write( cmd+size ); // write header checkum
 
-    for (uint8_t i = 0;  i != size ; i++) {
+    for (uint_fast8_t i = 0;  i != size ; i++) {
         checksum += data[i];
         _port->write( data[i] );
     }

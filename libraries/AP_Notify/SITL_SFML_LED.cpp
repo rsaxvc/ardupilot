@@ -119,7 +119,7 @@ void SITL_SFML_LED::update_serial_LEDs()
     SITL::LedLayout layout = SITL::LedLayout(sitl->led_layout.get());
     if (w == nullptr) {
         uint8_t max_leds = 0;
-        for (uint8_t i=0; i<16; i++) {
+        for (uint_fast8_t i=0; i<16; i++) {
             max_leds = MAX(max_leds, sitl->led.num_leds[i]);
         }
         uint16_t xsize=0, ysize=0;
@@ -145,8 +145,8 @@ void SITL_SFML_LED::update_serial_LEDs()
         return;
     }
 
-    for (uint8_t chan=0; chan<16; chan++) {
-        for (uint8_t led=0; led<sitl->led.num_leds[chan]; led++) {
+    for (uint_fast8_t chan=0; chan<16; chan++) {
+        for (uint_fast8_t led=0; led<sitl->led.num_leds[chan]; led++) {
             uint8_t *rgb = &sitl->led.rgb[chan][led].rgb[0];
 
             if (leds[chan][led] == nullptr) {

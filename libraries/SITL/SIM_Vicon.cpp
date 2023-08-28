@@ -60,7 +60,7 @@ void Vicon::maybe_send_heartbeat()
 // get unused index in msg_buf
 bool Vicon::get_free_msg_buf_index(uint8_t &index)
 {
-    for (uint8_t i=0; i<ARRAY_SIZE(msg_buf); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(msg_buf); i++) {
         if (msg_buf[i].time_send_us == 0) {
             index = i;
             return true;
@@ -85,7 +85,7 @@ void Vicon::update_vicon_position_estimate(const Location &loc,
 
     // send all messages in the buffer
     bool waiting_to_send = false;
-    for (uint8_t i=0; i<ARRAY_SIZE(msg_buf); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(msg_buf); i++) {
         if ((msg_buf[i].time_send_us > 0) && (now_us >= msg_buf[i].time_send_us)) {
             uint8_t buf[300];
             uint16_t buf_len = mavlink_msg_to_send_buffer(buf, &msg_buf[i].obs_msg);

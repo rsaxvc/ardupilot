@@ -238,7 +238,7 @@ bool AP_Logger_Backend::Write(const uint8_t msg_type, va_list arg_list, bool is_
     buffer[offset++] = HEAD_BYTE1;
     buffer[offset++] = HEAD_BYTE2;
     buffer[offset++] = msg_type;
-    for (uint8_t i=0; i<strlen(fmt); i++) {
+    for (uint_fast8_t i=0; i<strlen(fmt); i++) {
         uint8_t charlen = 0;
         switch(fmt[i]) {
         case 'b': {

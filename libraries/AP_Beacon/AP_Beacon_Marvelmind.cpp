@@ -82,7 +82,7 @@ void AP_Beacon_Marvelmind::process_position_highres_datagram()
 AP_Beacon_Marvelmind::StationaryBeaconPosition* AP_Beacon_Marvelmind::get_or_alloc_beacon(uint8_t address)
 {
     const uint8_t n_used = hedge.positions_beacons.num_beacons;
-    for (uint8_t i = 0; i < n_used; i++) {
+    for (uint_fast8_t i = 0; i < n_used; i++) {
         if (hedge.positions_beacons.beacons[i].address == address) {
             return &hedge.positions_beacons.beacons[i];
         }
@@ -102,7 +102,7 @@ void AP_Beacon_Marvelmind::process_beacons_positions_datagram()
         Debug(1, "beacon pos lo pkt size %d != %d", input_buffer[4], (1 + n * 8));
         return; // incorrect size
     }
-    for (uint8_t i = 0; i < n; i++) {
+    for (uint_fast8_t i = 0; i < n; i++) {
         const uint8_t ofs = 6 + i * 8;
         const uint8_t address = input_buffer[ofs];
         const int16_t x = input_buffer[ofs + 1]
@@ -132,7 +132,7 @@ void AP_Beacon_Marvelmind::process_beacons_positions_highres_datagram()
         Debug(1, "beacon pos hi pkt size %d != %d", input_buffer[4], (1 + n * 14));
         return; // incorrect size
     }
-    for (uint8_t i = 0; i < n; i++) {
+    for (uint_fast8_t i = 0; i < n; i++) {
         const uint8_t ofs = 6 + i * 14;
         const uint8_t address = input_buffer[ofs];
         const int32_t x = input_buffer[ofs + 1]
@@ -167,7 +167,7 @@ void AP_Beacon_Marvelmind::process_beacons_distances_datagram()
         return; // incorrect size
     }
     bool set = false;
-    for (uint8_t i = 0; i < hedge.positions_beacons.num_beacons; i++) {
+    for (uint_fast8_t i = 0; i < hedge.positions_beacons.num_beacons; i++) {
         const uint8_t ofs = 6 + i * 6;
         const uint8_t address = input_buffer[ofs];
         const int8_t instance = find_beacon_instance(address);
@@ -189,7 +189,7 @@ void AP_Beacon_Marvelmind::process_beacons_distances_datagram()
 
 int8_t AP_Beacon_Marvelmind::find_beacon_instance(uint8_t address) const
 {
-    for (uint8_t i = 0; i < hedge.positions_beacons.num_beacons; i++) {
+    for (uint_fast8_t i = 0; i < hedge.positions_beacons.num_beacons; i++) {
         if (hedge.positions_beacons.beacons[i].address == address) {
             return i;
         }
@@ -345,7 +345,7 @@ void AP_Beacon_Marvelmind::set_stationary_beacons_positions()
                   vehicle_position_NED__m[2]);
         }
         hedge._have_new_values = false;
-        for (uint8_t i = 0; i < hedge.positions_beacons.num_beacons; ++i) {
+        for (uint_fast8_t i = 0; i < hedge.positions_beacons.num_beacons; ++i) {
             if (hedge.positions_beacons.updated) {
                 beacon_position_NED__m[i] = Vector3f(hedge.positions_beacons.beacons[i].y__mm * 0.001f,
                                                      hedge.positions_beacons.beacons[i].x__mm * 0.001f,
@@ -377,7 +377,7 @@ void AP_Beacon_Marvelmind::order_stationary_beacons()
         {
             swapped = false;
             StationaryBeaconPosition beacon_to_swap;
-            for (uint8_t i = 1; i < j; i++) {
+            for (uint_fast8_t i = 1; i < j; i++) {
                 if (hedge.positions_beacons.beacons[i-1].address > hedge.positions_beacons.beacons[i].address) {
                     beacon_to_swap = hedge.positions_beacons.beacons[i];
                     hedge.positions_beacons.beacons[i] = hedge.positions_beacons.beacons[i-1];

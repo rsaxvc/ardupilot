@@ -80,7 +80,7 @@ float SlewLimiter::modifier(float sample, float dt)
 
     // Find the oldest event time
     uint32_t oldest_ms = now_ms;
-    for (uint8_t index = 0; index < N_EVENTS; index++) {
+    for (uint_fast8_t index = 0; index < N_EVENTS; index++) {
         if (_pos_event_ms[index] < oldest_ms) {
             oldest_ms = _pos_event_ms[index];
         }

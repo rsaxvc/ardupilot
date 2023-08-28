@@ -224,7 +224,7 @@ void AP_OpticalFlow_Pixart::srom_download(void)
     uint8_t reg = PIXART_REG_SROM_BURST | PIXART_WRITE_FLAG;
     _dev->transfer(&reg, 1, nullptr, 0);
 
-    for (uint16_t i = 0; i < ARRAY_SIZE(srom_data); i++) {
+    for (uint_fast16_t i = 0; i < ARRAY_SIZE(srom_data); i++) {
         hal.scheduler->delay_microseconds(15);
         _dev->transfer(&srom_data[i], 1, nullptr, 0);
     }
@@ -238,9 +238,9 @@ void AP_OpticalFlow_Pixart::srom_download(void)
 
 void AP_OpticalFlow_Pixart::load_configuration(const RegData *init_data, uint16_t n)
 {
-    for (uint16_t i = 0; i < n; i++) {
+    for (uint_fast16_t i = 0; i < n; i++) {
         // writing a config register can fail - retry up to 5 times
-        for (uint8_t tries=0; tries<5; tries++) {
+        for (uint_fast8_t tries=0; tries<5; tries++) {
             reg_write(init_data[i].reg, init_data[i].value);
             uint8_t v = reg_read(init_data[i].reg);
             if (v == init_data[i].value) {
@@ -264,7 +264,7 @@ void AP_OpticalFlow_Pixart::motion_burst(void)
     _dev->transfer(&reg, 1, nullptr, 0);
     hal.scheduler->delay_microseconds(150);
 
-    for (uint8_t i=0; i<sizeof(burst); i++) {
+    for (uint_fast8_t i=0; i<sizeof(burst); i++) {
         _dev->transfer(nullptr, 0, &b[i], 1);
         if (i == 0 && (burst.motion & 0x80) == 0) {
             // no motion, save some bus bandwidth

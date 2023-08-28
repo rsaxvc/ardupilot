@@ -255,7 +255,7 @@ bool AP_InertialSensor_BMI270::read_registers(uint8_t reg, uint8_t *data, uint8_
 */
 bool AP_InertialSensor_BMI270::write_register(uint8_t reg, uint8_t v)
 {
-    for (uint8_t i=0; i<8; i++) {
+    for (uint_fast8_t i=0; i<8; i++) {
         _dev->write_register(reg, v);
         uint8_t v2 = 0;
         if (read_registers(reg, &v2, 1) && v2 == v) {

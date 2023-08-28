@@ -224,7 +224,7 @@ void Scheduler::delay(uint16_t ms)
 void Scheduler::register_timer_process(AP_HAL::MemberProc proc)
 {
     chBSemWait(&_timer_semaphore);
-    for (uint8_t i = 0; i < _num_timer_procs; i++) {
+    for (uint_fast8_t i = 0; i < _num_timer_procs; i++) {
         if (_timer_proc[i] == proc) {
             chBSemSignal(&_timer_semaphore);
             return;
@@ -243,7 +243,7 @@ void Scheduler::register_timer_process(AP_HAL::MemberProc proc)
 void Scheduler::register_io_process(AP_HAL::MemberProc proc)
 {
     chBSemWait(&_io_semaphore);
-    for (uint8_t i = 0; i < _num_io_procs; i++) {
+    for (uint_fast8_t i = 0; i < _num_io_procs; i++) {
         if (_io_proc[i] == proc) {
             chBSemSignal(&_io_semaphore);
             return;
@@ -564,7 +564,7 @@ void Scheduler::check_low_memory_is_zero()
 {
     const uint32_t *lowmem = nullptr;
     // we start at address 0x1 as reading address zero causes a fault
-    for (uint16_t i=1; i<256; i++) {
+    for (uint_fast16_t i=1; i<256; i++) {
         if (lowmem[i] != 0) {
             // re-use memory guard internal error
             AP_memory_guard_error(1023);
@@ -573,7 +573,7 @@ void Scheduler::check_low_memory_is_zero()
     }
     // we can't do address 0, but can check next 3 bytes
     const uint8_t *addr0 = (const uint8_t *)0;
-    for (uint8_t i=1; i<4; i++) {
+    for (uint_fast8_t i=1; i<4; i++) {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Warray-bounds"
         if (addr0[i] != 0) {
@@ -668,7 +668,7 @@ uint8_t Scheduler::calculate_thread_priority(priority_base base, int8_t priority
         { PRIORITY_STORAGE, APM_STORAGE_PRIORITY},
         { PRIORITY_SCRIPTING, APM_SCRIPTING_PRIORITY},
     };
-    for (uint8_t i=0; i<ARRAY_SIZE(priority_map); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(priority_map); i++) {
         if (priority_map[i].base == base) {
             thread_priority = constrain_int16(priority_map[i].p + priority, LOWPRIO, HIGHPRIO);
             break;

@@ -358,7 +358,7 @@ void NavEKF3::Log_Write()
 
     uint64_t time_us = AP::dal().micros64();
 
-    for (uint8_t i=0; i<activeCores(); i++) {
+    for (uint_fast8_t i=0; i<activeCores(); i++) {
         core[i].Log_Write(time_us);
     }
 

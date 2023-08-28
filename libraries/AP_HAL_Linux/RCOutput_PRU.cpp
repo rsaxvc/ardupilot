@@ -103,7 +103,7 @@ void RCOutput_PRU::push(void)
         return;
     }
     corked = false;
-    for (uint8_t i=0; i<ARRAY_SIZE(pending); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(pending); i++) {
         if (pending_mask & (1U << i)) {
             write(i, pending[i]);
         }

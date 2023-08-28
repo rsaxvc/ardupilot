@@ -5,7 +5,7 @@
 
 AP_DAL_InertialSensor::AP_DAL_InertialSensor()
 {
-    for (uint8_t i=0; i<ARRAY_SIZE(_RISI); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(_RISI); i++) {
         _RISI[i].instance = i;
     }
 
@@ -25,7 +25,7 @@ void AP_DAL_InertialSensor::start_frame()
     _RISH.gyro_count = ins.get_gyro_count();
     WRITE_REPLAY_BLOCK_IFCHANGED(RISH, _RISH, old_RISH);
 
-    for (uint8_t i=0; i<ARRAY_SIZE(_RISI); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(_RISI); i++) {
         log_RISI &RISI = _RISI[i];
         const log_RISI old_RISI = RISI;
 

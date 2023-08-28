@@ -239,7 +239,7 @@ void AP_MotorsHeli_RSC::set_throttle_curve()
     float thrcrv[5];
     // Ensure user inputs are within parameter limits
     // Scale throttle curve parameters
-    for (uint8_t i = 0; i < 5; i++) {
+    for (uint_fast8_t i = 0; i < 5; i++) {
         thrcrv[i] = constrain_float(_thrcrv[i] * 0.01f, 0.0f, 1.0f);
     }
     // Calculate the spline polynomials for the throttle curve

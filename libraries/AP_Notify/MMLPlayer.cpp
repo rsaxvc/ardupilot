@@ -68,7 +68,7 @@ void MMLPlayer::start_note(float duration, float frequency, float volume)
     // support CAN buzzers too
     uint8_t can_num_drivers = AP::can().get_num_drivers();
 
-    for (uint8_t i = 0; i < can_num_drivers; i++) {
+    for (uint_fast8_t i = 0; i < can_num_drivers; i++) {
         AP_UAVCAN *uavcan = AP_UAVCAN::get_uavcan(i);
         if (uavcan != nullptr &&
             (AP::notify().get_buzzer_types() & AP_Notify::Notify_Buzz_UAVCAN)) {

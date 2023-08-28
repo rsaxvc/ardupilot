@@ -23,7 +23,7 @@
  */
 void insertion_sort_uint16(uint16_t *data, uint16_t n)
 {
-    for (uint16_t i=1; i<n; i++) {
+    for (uint_fast16_t i=1; i<n; i++) {
         uint16_t temp = data[i];
         int16_t j = i - 1;
 
@@ -42,7 +42,7 @@ void insertion_sort_uint16(uint16_t *data, uint16_t n)
 uint16_t remove_duplicates_uint16(uint16_t *data, uint16_t n)
 {
     uint16_t removed = 0;
-    for (uint16_t i=1; i<n; i++) {
+    for (uint_fast16_t i=1; i<n; i++) {
         if (data[i-(1+removed)] == data[i]) {
             removed++;
         } else if (removed != 0) {
@@ -84,7 +84,7 @@ bool bisect_search_uint16(const uint16_t *data, uint16_t n, uint16_t value)
 uint16_t remove_list_uint16(uint16_t *data, uint16_t n, const uint16_t *rem, uint16_t n2)
 {
     uint16_t removed = 0;
-    for (uint16_t i=0; i<n; i++) {
+    for (uint_fast16_t i=0; i<n; i++) {
         if (bisect_search_uint16(rem, n2, data[i])) {
             removed++;
         } else if (removed != 0) {
@@ -100,7 +100,7 @@ uint16_t remove_list_uint16(uint16_t *data, uint16_t n, const uint16_t *rem, uin
 uint16_t common_list_uint16(uint16_t *data, uint16_t n, const uint16_t *data2, uint16_t n2)
 {
     uint16_t common = 0;
-    for (uint8_t i=0; i<n2; i++) {
+    for (uint_fast8_t i=0; i<n2; i++) {
         if (bisect_search_uint16(data, n, data2[i])) {
             common++;
         }

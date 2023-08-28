@@ -51,7 +51,7 @@ void AP_MotorsMatrix_Scripting_Dynamic::load_factors(const factor_table &new_tab
 
 #if debug_print
     hal.console->printf("Got new factors:\n");
-    for (uint8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
+    for (uint_fast8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
         if (motor_enabled[i]) {
             hal.console->printf("%i - Roll: %0.2f, Pitch %0.2f, Yaw: %0.2f, throttle %0.2f\n",i,_roll_factor[i],_pitch_factor[i],_yaw_factor[i],_throttle_factor[i]);
         }
@@ -71,7 +71,7 @@ bool AP_MotorsMatrix_Scripting_Dynamic::init(uint8_t expected_num_motors)
 
     // Make sure the correct number of motors have been added
     uint8_t num_motors = 0;
-    for (uint8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
+    for (uint_fast8_t i = 0; i < AP_MOTORS_MAX_NUM_MOTORS; i++) {
         if (motor_enabled[i]) {
             num_motors++;
         }

@@ -140,7 +140,7 @@ bool AP_RangeFinder_LightWareI2C::sf20_send_and_expect(const char* send_msg, con
         return false;
     }
 
-    for (uint8_t i=0; i<10; i++) {
+    for (uint_fast8_t i=0; i<10; i++) {
         if (_dev->read(rx_bytes, expected_reply_len)) {
             break;
         }
@@ -174,7 +174,7 @@ void AP_RangeFinder_LightWareI2C::sf20_get_version(const char* send_msg, const c
         return;
     }
 
-    for (uint8_t i=0; i<10; i++) {
+    for (uint_fast8_t i=0; i<10; i++) {
         if (_dev->read(rx_bytes, expected_reply_len)) {
             break;
         }

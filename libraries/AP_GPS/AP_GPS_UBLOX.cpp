@@ -591,7 +591,7 @@ AP_GPS_UBLOX::read(void)
     }
 
     const uint16_t numc = MIN(port->available(), 8192U);
-    for (uint16_t i = 0; i < numc; i++) {        // Process bytes received
+    for (uint_fast16_t i = 0; i < numc; i++) {        // Process bytes received
 
         // read the next byte
         const int16_t rdata = port->read();
@@ -828,7 +828,7 @@ void AP_GPS_UBLOX::log_rxm_raw(const struct ubx_rxm_raw &raw)
     }
 
     uint64_t now = AP_HAL::micros64();
-    for (uint8_t i=0; i<raw.numSV; i++) {
+    for (uint_fast8_t i=0; i<raw.numSV; i++) {
         struct log_GPS_RAW pkt = {
             LOG_PACKET_HEADER_INIT(LOG_GPS_RAW_MSG),
             time_us    : now,
@@ -868,7 +868,7 @@ void AP_GPS_UBLOX::log_rxm_rawx(const struct ubx_rxm_rawx &raw)
     };
     AP::logger().WriteBlock(&header, sizeof(header));
 
-    for (uint8_t i=0; i<raw.numMeas; i++) {
+    for (uint_fast8_t i=0; i<raw.numMeas; i++) {
         struct log_GPS_RAWS pkt = {
             LOG_PACKET_HEADER_INIT(LOG_GPS_RAWS_MSG),
             time_us    : now,
@@ -935,7 +935,7 @@ int8_t AP_GPS_UBLOX::find_active_config_index(ConfigKey key) const
     if (active_config.list == nullptr) {
         return -1;
     }
-    for (uint8_t i=0; i<active_config.count; i++) {
+    for (uint_fast8_t i=0; i<active_config.count; i++) {
         if (key == active_config.list[i].key) {
             return (int8_t)i;
         }
@@ -1828,7 +1828,7 @@ AP_GPS_UBLOX::_configure_config_set(const config_list *list, uint8_t count, uint
     msg.version = 0;
     msg.layers = 0; // ram
     memcpy(buf, &msg, sizeof(msg));
-    for (uint8_t i=0; i<count; i++) {
+    for (uint_fast8_t i=0; i<count; i++) {
         memcpy(&buf[sizeof(msg)+i*sizeof(ConfigKey)], &list[i].key, sizeof(ConfigKey));
     }
     return _send_message(CLASS_CFG, MSG_CFG_VALGET, buf, sizeof(buf));
@@ -1958,7 +1958,7 @@ static_assert((1 << ARRAY_SIZE(reasons)) == CONFIG_LAST, "UBLOX: Missing configu
 
 void
 AP_GPS_UBLOX::broadcast_configuration_failure_reason(void) const {
-    for (uint8_t i = 0; i < ARRAY_SIZE(reasons); i++) {
+    for (uint_fast8_t i = 0; i < ARRAY_SIZE(reasons); i++) {
         if (_unconfigured_messages & (1 << i)) {
             GCS_SEND_TEXT(MAV_SEVERITY_INFO, "GPS %u: u-blox %s configuration 0x%02x",
                 (unsigned int)(state.instance + 1), reasons[i], (unsigned int)_unconfigured_messages);

@@ -94,7 +94,7 @@ void NavEKF3_core::FuseAirspeed()
         }
 
         if (tasDataDelayed.allowFusion && !inhibitDelVelBiasStates && !airDataFusionWindOnly) {
-            for (uint8_t index = 0; index < 3; index++) {
+            for (uint_fast8_t index = 0; index < 3; index++) {
                 const uint8_t stateIndex = index + 13;
                 if (!dvelBiasAxisInhibit[index]) {
                     Kfusion[stateIndex] = SK_TAS[0]*(P[stateIndex][4]*SH_TAS[2] - P[stateIndex][22]*SH_TAS[2] + P[stateIndex][5]*SK_TAS[1] - P[stateIndex][23]*SK_TAS[1] + P[stateIndex][6]*vd*SH_TAS[0]);
@@ -150,7 +150,7 @@ void NavEKF3_core::FuseAirspeed()
             lastTasPassTime_ms = imuSampleTime_ms;
 
             // correct the state vector
-            for (uint8_t j= 0; j<=stateIndexLim; j++) {
+            for (uint_fast8_t j= 0; j<=stateIndexLim; j++) {
                 statesArray[j] = statesArray[j] - Kfusion[j] * innovVtas;
             }
             stateStruct.quat.normalize();
@@ -346,7 +346,7 @@ void NavEKF3_core::FuseSideslip()
         H_BETA[4] = - SH_BETA[5]*(SH_BETA[12] - 2*q1*q2) - SH_BETA[1]*SH_BETA[4]*SH_BETA[7];
         H_BETA[5] = SH_BETA[6] - SH_BETA[1]*SH_BETA[4]*(SH_BETA[12] + 2*q1*q2);
         H_BETA[6] = SH_BETA[5]*(2*q0*q1 + 2*q2*q3) + SH_BETA[1]*SH_BETA[4]*(2*q0*q2 - 2*q1*q3);
-        for (uint8_t i=7; i<=21; i++) {
+        for (uint_fast8_t i=7; i<=21; i++) {
             H_BETA[i] = 0.0f;
         }
         H_BETA[22] = SH_BETA[5]*(SH_BETA[12] - 2*q1*q2) + SH_BETA[1]*SH_BETA[4]*SH_BETA[7];
@@ -398,7 +398,7 @@ void NavEKF3_core::FuseSideslip()
         }
 
         if (!inhibitDelVelBiasStates && !airDataFusionWindOnly) {
-            for (uint8_t index = 0; index < 3; index++) {
+            for (uint_fast8_t index = 0; index < 3; index++) {
                 const uint8_t stateIndex = index + 13;
                 if (!dvelBiasAxisInhibit[index]) {
                     Kfusion[stateIndex] = SK_BETA[0]*(P[stateIndex][0]*SK_BETA[5] + P[stateIndex][1]*SK_BETA[4] - P[stateIndex][4]*SK_BETA[1] + P[stateIndex][5]*SK_BETA[2] + P[stateIndex][2]*SK_BETA[6] + P[stateIndex][6]*SK_BETA[3] - P[stateIndex][3]*SK_BETA[7] + P[stateIndex][22]*SK_BETA[1] - P[stateIndex][23]*SK_BETA[2]);
@@ -436,7 +436,7 @@ void NavEKF3_core::FuseSideslip()
         innovBeta = constrain_ftype(vel_rel_wind.y / vel_rel_wind.x, -0.5f, 0.5f);
 
         // correct the state vector
-        for (uint8_t j= 0; j<=stateIndexLim; j++) {
+        for (uint_fast8_t j= 0; j<=stateIndexLim; j++) {
             statesArray[j] = statesArray[j] - Kfusion[j] * innovBeta;
         }
         stateStruct.quat.normalize();
@@ -525,7 +525,7 @@ void NavEKF3_core::FuseDragForces()
     const Vector3F rel_wind_body = prevTnb * rel_wind_earth;
 
     // perform sequential fusion of XY specific forces
-    for (uint8_t axis_index = 0; axis_index < 2; axis_index++) {
+    for (uint_fast8_t axis_index = 0; axis_index < 2; axis_index++) {
         // correct accel data for bias
         const ftype mea_acc = dragSampleDelayed.accelXY[axis_index]  - stateStruct.accel_bias[axis_index] / dtEkfAvg;
 
@@ -711,7 +711,7 @@ void NavEKF3_core::FuseDragForces()
         }
 
         // correct the state vector
-        for (uint8_t j= 0; j<=stateIndexLim; j++) {
+        for (uint_fast8_t j= 0; j<=stateIndexLim; j++) {
             statesArray[j] = statesArray[j] - Kfusion[j] * innovDrag[axis_index];
         }
         stateStruct.quat.normalize();

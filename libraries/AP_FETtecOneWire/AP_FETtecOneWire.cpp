@@ -516,7 +516,7 @@ void AP_FETtecOneWire::read_data_from_uart()
         // FIXME: we could scribble down the last ESC we sent a
         // message to here and use it rather than doing this linear
         // search:
-        for (uint8_t i=0; i<_esc_count; i++) {
+        for (uint_fast8_t i=0; i<_esc_count; i++) {
             auto &esc = _escs[i];
             if (esc.id != esc_id) {
                 continue;
@@ -561,7 +561,7 @@ void AP_FETtecOneWire::pack_fast_throttle_command(const uint16_t *motor_values, 
     // and all bits from all other throttle values, followed by the CRC byte
     uint8_t mot = 0;
     uint8_t bits_remaining_in_this_pwm = 7;
-    for (uint8_t out_byte_offset = 2; out_byte_offset<length; out_byte_offset++) {
+    for (uint_fast8_t out_byte_offset = 2; out_byte_offset<length; out_byte_offset++) {
         if (bits_remaining_in_this_pwm >= 8) {
             // const uint8_t mask = 0xFF << (11-bits_remaining_in_this_pwm);
             fast_throttle_command[out_byte_offset] = (motor_values[mot] >> (bits_remaining_in_this_pwm-8)) & 0xFF;
@@ -642,7 +642,7 @@ bool AP_FETtecOneWire::pre_arm_check(char *failure_msg, const uint8_t failure_ms
 #endif
 
     uint8_t not_running = 0;
-    for (uint8_t i=0; i<_esc_count; i++) {
+    for (uint_fast8_t i=0; i<_esc_count; i++) {
         auto &esc = _escs[i];
         if (esc.state != ESCState::RUNNING) {
             not_running++;
@@ -681,7 +681,7 @@ void AP_FETtecOneWire::configure_escs()
 
     // note that we return as soon as we've transmitted anything in
     // case we're in one-wire mode
-    for (uint8_t i=0; i<_esc_count; i++) {
+    for (uint_fast8_t i=0; i<_esc_count; i++) {
         auto &esc = _escs[i];
         switch (esc.state) {
         case ESCState::UNINITIALISED:
@@ -777,7 +777,7 @@ void AP_FETtecOneWire::update()
 
         // if we haven't seen an ESC in a while, the user might
         // have power-cycled them.  Try re-initialising.
-        for (uint8_t i=0; i<_esc_count; i++) {
+        for (uint_fast8_t i=0; i<_esc_count; i++) {
             auto &esc = _escs[i];
             if (!esc.telem_requested || now - esc.last_telem_us < 1000000U ) {
                 // telem OK
@@ -818,7 +818,7 @@ void AP_FETtecOneWire::update()
 
     // get ESC set points
     uint16_t motor_pwm[_esc_count];
-    for (uint8_t i = 0; i < _esc_count; i++) {
+    for (uint_fast8_t i = 0; i < _esc_count; i++) {
         const ESC &esc = _escs[i];
         const SRV_Channel* c = SRV_Channels::srv_channel(esc.servo_ofs);
         // check if safety switch has been pushed
@@ -845,7 +845,7 @@ void AP_FETtecOneWire::update()
 */
 void AP_FETtecOneWire::beep(const uint8_t beep_frequency)
 {
-    for (uint8_t i=0; i<_esc_count; i++) {
+    for (uint_fast8_t i=0; i<_esc_count; i++) {
         auto &esc = _escs[i];
         if (esc.state != ESCState::RUNNING) {
             continue;
@@ -864,7 +864,7 @@ void AP_FETtecOneWire::beep(const uint8_t beep_frequency)
 */
 void AP_FETtecOneWire::led_color(const uint8_t r, const uint8_t g, const uint8_t b)
 {
-    for (uint8_t i=0; i<_esc_count; i++) {
+    for (uint_fast8_t i=0; i<_esc_count; i++) {
         auto &esc = _escs[i];
         if (esc.state != ESCState::RUNNING) {
             continue;

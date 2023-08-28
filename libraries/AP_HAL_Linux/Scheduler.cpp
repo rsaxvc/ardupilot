@@ -192,7 +192,7 @@ void Scheduler::delay_microseconds(uint16_t us)
 
 void Scheduler::register_timer_process(AP_HAL::MemberProc proc)
 {
-    for (uint8_t i = 0; i < _num_timer_procs; i++) {
+    for (uint_fast8_t i = 0; i < _num_timer_procs; i++) {
         if (_timer_proc[i] == proc) {
             return;
         }
@@ -209,7 +209,7 @@ void Scheduler::register_timer_process(AP_HAL::MemberProc proc)
 
 void Scheduler::register_io_process(AP_HAL::MemberProc proc)
 {
-    for (uint8_t i = 0; i < _num_io_procs; i++) {
+    for (uint_fast8_t i = 0; i < _num_io_procs; i++) {
         if (_io_proc[i] == proc) {
             return;
         }
@@ -272,7 +272,7 @@ void Scheduler::_run_io(void)
 void Scheduler::_run_uarts()
 {
     // process any pending serial bytes
-    for (uint8_t i=0;i<hal.num_serial; i++) {
+    for (uint_fast8_t i=0;i<hal.num_serial; i++) {
         hal.serial(i)->_timer_tick();
     }
 }
@@ -385,7 +385,7 @@ uint8_t Scheduler::calculate_thread_priority(priority_base base, int8_t priority
         { PRIORITY_STORAGE, APM_LINUX_IO_PRIORITY},
         { PRIORITY_SCRIPTING, APM_LINUX_SCRIPTING_PRIORITY},
     };
-    for (uint8_t i=0; i<ARRAY_SIZE(priority_map); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(priority_map); i++) {
         if (priority_map[i].base == base) {
             thread_priority = constrain_int16(priority_map[i].p + priority, 1, APM_LINUX_MAX_PRIORITY);
             break;

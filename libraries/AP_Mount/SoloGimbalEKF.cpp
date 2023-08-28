@@ -103,9 +103,9 @@ void SoloGimbalEKF::RunEKF(float delta_time, const Vector3f &delta_angles, const
         const float Sigma_velNED = 0.5f; // 1 sigma uncertainty in horizontal velocity components
         const float Sigma_dAngBias = 0.002f*dtIMU; // 1 Sigma uncertainty in delta angle bias (rad)
         const float Sigma_angErr = 0.1f; // 1 Sigma uncertainty in angular misalignment (rad)
-        for (uint8_t i=0; i <= 2; i++) Cov[i][i] = sq(Sigma_angErr);
-        for (uint8_t i=3; i <= 5; i++) Cov[i][i] = sq(Sigma_velNED);
-        for (uint8_t i=6; i <= 8; i++) Cov[i][i] = sq(Sigma_dAngBias);
+        for (uint_fast8_t i=0; i <= 2; i++) Cov[i][i] = sq(Sigma_angErr);
+        for (uint_fast8_t i=3; i <= 5; i++) Cov[i][i] = sq(Sigma_velNED);
+        for (uint_fast8_t i=6; i <= 8; i++) Cov[i][i] = sq(Sigma_dAngBias);
         FiltInit = true;
         DEV_PRINTF("\nSoloGimbalEKF Alignment Started\n");
 
@@ -571,12 +571,12 @@ void SoloGimbalEKF::predictCovariance()
     nextCov[8][8] = Cov[8][8];
 
     // Add the gyro bias state noise
-    for (uint8_t i=6;i<=8;i++) {
+    for (uint_fast8_t i=6;i<=8;i++) {
         nextCov[i][i] = nextCov[i][i] + delAngBiasVariance;
     }
 
     // copy predicted variances whilst constraining to be non-negative
-    for (uint8_t index=0; index<=8; index++) {
+    for (uint_fast8_t index=0; index<=8; index++) {
         if (nextCov[index][index] < 0.0f) {
             Cov[index][index] = 0.0f;
         } else {
@@ -585,8 +585,8 @@ void SoloGimbalEKF::predictCovariance()
     }
 
     // copy elements to covariance matrix whilst enforcing symmetry
-    for (uint8_t rowIndex=1; rowIndex<=8; rowIndex++) {
-        for (uint8_t colIndex=0; colIndex<=rowIndex-1; colIndex++) {
+    for (uint_fast8_t rowIndex=1; rowIndex<=8; rowIndex++) {
+        for (uint_fast8_t colIndex=0; colIndex<=rowIndex-1; colIndex++) {
             Cov[rowIndex][colIndex] = 0.5f*(nextCov[rowIndex][colIndex] + nextCov[colIndex][rowIndex]);
             Cov[colIndex][rowIndex] = Cov[rowIndex][colIndex];
         }
@@ -610,7 +610,7 @@ void SoloGimbalEKF::fuseVelocity()
     uint8_t stateIndex;
     float K[9];
     // Fuse measurements sequentially
-    for (uint8_t obsIndex=0;obsIndex<=2;obsIndex++) {
+    for (uint_fast8_t obsIndex=0;obsIndex<=2;obsIndex++) {
         stateIndex = 3 + obsIndex;
 
         // Calculate the velocity measurement innovation using the SoloGimbalEKF estimate as the observation
@@ -635,7 +635,7 @@ void SoloGimbalEKF::fuseVelocity()
         // Calculate the innovation variance
         varInnov[obsIndex] = Cov[stateIndex][stateIndex] + R_OBS;
         // Calculate the Kalman gain and correct states, taking advantage of direct state observation
-        for (uint8_t rowIndex=0;rowIndex<=8;rowIndex++) {
+        for (uint_fast8_t rowIndex=0;rowIndex<=8;rowIndex++) {
             K[rowIndex] = Cov[rowIndex][stateIndex]/varInnov[obsIndex];
             states[rowIndex] -= K[rowIndex] * innovation[obsIndex];
         }
@@ -651,8 +651,8 @@ void SoloGimbalEKF::fuseVelocity()
         state.quat.normalize();
 
         // Update the covariance
-        for (uint8_t rowIndex=0;rowIndex<=8;rowIndex++) {
-            for (uint8_t colIndex=0;colIndex<=8;colIndex++) {
+        for (uint_fast8_t rowIndex=0;rowIndex<=8;rowIndex++) {
+            for (uint_fast8_t colIndex=0;colIndex<=8;colIndex++) {
                 Cov[rowIndex][colIndex] = Cov[rowIndex][colIndex] - K[rowIndex]*Cov[stateIndex][colIndex];
             }
         }
@@ -775,18 +775,18 @@ void SoloGimbalEKF::fuseCompass()
     // Calculate innovation variance and Kalman gains, taking advantage of the fact that only the first 3 elements in H are non zero
     float PH[3];
     float varInnov = R_MAG;
-    for (uint8_t rowIndex=0;rowIndex<=2;rowIndex++) {
+    for (uint_fast8_t rowIndex=0;rowIndex<=2;rowIndex++) {
         PH[rowIndex] = 0.0f;
-        for (uint8_t colIndex=0;colIndex<=2;colIndex++) {
+        for (uint_fast8_t colIndex=0;colIndex<=2;colIndex++) {
             PH[rowIndex] += Cov[rowIndex][colIndex]*H_MAG[colIndex];
         }
         varInnov += H_MAG[rowIndex]*PH[rowIndex];
     }
     float K_MAG[9];
     float varInnovInv = 1.0f / varInnov;
-    for (uint8_t rowIndex=0;rowIndex<=8;rowIndex++) {
+    for (uint_fast8_t rowIndex=0;rowIndex<=8;rowIndex++) {
         K_MAG[rowIndex] = 0.0f;
-        for (uint8_t colIndex=0;colIndex<=2;colIndex++) {
+        for (uint_fast8_t colIndex=0;colIndex<=2;colIndex++) {
             K_MAG[rowIndex] += Cov[rowIndex][colIndex]*H_MAG[colIndex];
         }
         K_MAG[rowIndex] *= varInnovInv;
@@ -804,7 +804,7 @@ void SoloGimbalEKF::fuseCompass()
 
     // correct the state vector
     state.angErr.zero();
-    for (uint8_t i=0;i<=8;i++) {
+    for (uint_fast8_t i=0;i<=8;i++) {
         states[i] -= K_MAG[i] * innovation;
     }
 
@@ -817,14 +817,14 @@ void SoloGimbalEKF::fuseCompass()
 
     // correct the covariance using P = P - K*H*P taking advantage of the fact that only the first 3 elements in H are non zero
     float HP[9];
-    for (uint8_t colIndex=0;colIndex<=8;colIndex++) {
+    for (uint_fast8_t colIndex=0;colIndex<=8;colIndex++) {
         HP[colIndex] = 0.0f;
-        for (uint8_t rowIndex=0;rowIndex<=2;rowIndex++) {
+        for (uint_fast8_t rowIndex=0;rowIndex<=2;rowIndex++) {
             HP[colIndex] += H_MAG[rowIndex]*Cov[rowIndex][colIndex];
         }
     }
-    for (uint8_t rowIndex=0;rowIndex<=8;rowIndex++) {
-        for (uint8_t colIndex=0;colIndex<=8;colIndex++) {
+    for (uint_fast8_t rowIndex=0;rowIndex<=8;rowIndex++) {
+        for (uint_fast8_t colIndex=0;colIndex<=8;colIndex++) {
             Cov[rowIndex][colIndex] -= K_MAG[rowIndex] * HP[colIndex];
         }
     }
@@ -915,15 +915,15 @@ float SoloGimbalEKF::calcMagHeadingInnov()
 void SoloGimbalEKF::fixCovariance()
 {
     // force symmetry
-    for (uint8_t rowIndex=1; rowIndex<=8; rowIndex++) {
-        for (uint8_t colIndex=0; colIndex<=rowIndex-1; colIndex++) {
+    for (uint_fast8_t rowIndex=1; rowIndex<=8; rowIndex++) {
+        for (uint_fast8_t colIndex=0; colIndex<=rowIndex-1; colIndex++) {
             Cov[rowIndex][colIndex] = 0.5f*(Cov[rowIndex][colIndex] + Cov[colIndex][rowIndex]);
             Cov[colIndex][rowIndex] = Cov[rowIndex][colIndex];
         }
     }
 
     // constrain diagonals to be non-negative
-    for (uint8_t index=1; index<=8; index++) {
+    for (uint_fast8_t index=1; index<=8; index++) {
         if (Cov[index][index] < 0.0f) {
             Cov[index][index] = 0.0f;
         }

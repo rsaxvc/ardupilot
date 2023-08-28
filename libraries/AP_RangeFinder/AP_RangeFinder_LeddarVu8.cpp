@@ -187,7 +187,7 @@ bool AP_RangeFinder_LeddarVu8::parse_byte(uint8_t b, bool &valid_reading, uint16
             // calculate and return shortest distance
             reading_cm = 0;
             valid_reading = false;
-            for (uint8_t i=0; i<8; i++) {
+            for (uint_fast8_t i=0; i<8; i++) {
                 uint8_t ix2 = i*2;
                 const uint16_t dist_cm = (uint16_t)parsed_msg.payload[ix2] << 8 | (uint16_t)parsed_msg.payload[ix2+1];
                 if ((dist_cm > 0) && (!valid_reading || (dist_cm < reading_cm))) {

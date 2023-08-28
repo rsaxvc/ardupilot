@@ -285,7 +285,7 @@ void AP_RCProtocol_CRSF::update(void)
         }
         uint32_t n = _uart->available();
         n = MIN(n, 255U);
-        for (uint8_t i = 0; i < n; i++) {
+        for (uint_fast8_t i = 0; i < n; i++) {
             int16_t b = _uart->read();
             if (b >= 0) {
                 process_byte(AP_HAL::micros(), uint8_t(b));
@@ -315,7 +315,7 @@ void AP_RCProtocol_CRSF::write_frame(Frame* frame)
     }
     // calculate crc
     uint8_t crc = crc8_dvb_s2(0, frame->type);
-    for (uint8_t i = 0; i < frame->length - 2; i++) {
+    for (uint_fast8_t i = 0; i < frame->length - 2; i++) {
         crc = crc8_dvb_s2(crc, frame->payload[i]);
     }
     frame->payload[frame->length - 2] = crc;
@@ -325,7 +325,7 @@ void AP_RCProtocol_CRSF::write_frame(Frame* frame)
 
 #ifdef CRSF_DEBUG
     hal.console->printf("CRSF: writing %s:", get_frame_type(frame->type, frame->payload[0]));
-    for (uint8_t i = 0; i < frame->length + 2; i++) {
+    for (uint_fast8_t i = 0; i < frame->length + 2; i++) {
         uint8_t val = ((uint8_t*)frame)[i];
 #ifdef CRSF_DEBUG_CHARS
         if (val >= 32 && val <= 126) {
@@ -346,7 +346,7 @@ bool AP_RCProtocol_CRSF::decode_crsf_packet()
 #ifdef CRSF_DEBUG
     hal.console->printf("CRSF: received %s:", get_frame_type(_frame.type));
     uint8_t* fptr = (uint8_t*)&_frame;
-    for (uint8_t i = 0; i < _frame.length + 2; i++) {
+    for (uint_fast8_t i = 0; i < _frame.length + 2; i++) {
 #ifdef CRSF_DEBUG_CHARS
         if (fptr[i] >= 32 && fptr[i] <= 126) {
             hal.console->printf(" 0x%x '%c'", fptr[i], (char)fptr[i]);
@@ -456,7 +456,7 @@ void AP_RCProtocol_CRSF::decode_variable_bit_channels(const uint8_t* payload, ui
     uint32_t readValue = 0;
     uint8_t readByteIndex = 1;
 
-    for (uint8_t n = 0; n < numOfChannels; n++) {
+    for (uint_fast8_t n = 0; n < numOfChannels; n++) {
         while (bitsMerged < channelBits) {
             // check for corrupt frame
             if (readByteIndex >= CRSF_FRAME_PAYLOAD_MAX) {

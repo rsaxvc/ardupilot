@@ -607,7 +607,7 @@ bool AP_IOMCU::write_registers(uint8_t page, uint8_t offset, uint8_t count, cons
 
     uint8_t *b = (uint8_t *)&pkt;
     uint8_t n = uart.available();
-    for (uint8_t i=0; i<n; i++) {
+    for (uint_fast8_t i=0; i<n; i++) {
         if (i < sizeof(pkt)) {
             b[i] = uart.read();
         }
@@ -720,7 +720,7 @@ void AP_IOMCU::push(void)
 void AP_IOMCU::set_freq(uint16_t chmask, uint16_t freq)
 {
     // ensure mask is legal for the timer layout
-    for (uint8_t i=0; i<ARRAY_SIZE(ch_masks); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(ch_masks); i++) {
         if (chmask & ch_masks[i]) {
             chmask |= ch_masks[i];
         }
@@ -892,7 +892,7 @@ bool AP_IOMCU::check_crc(void)
 void AP_IOMCU::set_failsafe_pwm(uint16_t chmask, uint16_t period_us)
 {
     bool changed = false;
-    for (uint8_t i=0; i<IOMCU_MAX_CHANNELS; i++) {
+    for (uint_fast8_t i=0; i<IOMCU_MAX_CHANNELS; i++) {
         if (chmask & (1U<<i)) {
             if (pwm_out.failsafe_pwm[i] != period_us) {
                 pwm_out.failsafe_pwm[i] = period_us;
@@ -961,7 +961,7 @@ bool AP_IOMCU::setup_mixing(RCMapper *rcmap, int8_t override_chan,
 #define MIX_UPDATE(a,b) do { if ((a) != (b)) { a = b; changed = true; }} while (0)
 
     // update mixing structure, checking for changes
-    for (uint8_t i=0; i<IOMCU_MAX_CHANNELS; i++) {
+    for (uint_fast8_t i=0; i<IOMCU_MAX_CHANNELS; i++) {
         const SRV_Channel *c = SRV_Channels::srv_channel(i);
         if (!c) {
             continue;
@@ -977,7 +977,7 @@ bool AP_IOMCU::setup_mixing(RCMapper *rcmap, int8_t override_chan,
     MIX_UPDATE(mixing.rc_channel[1], rcmap->pitch());
     MIX_UPDATE(mixing.rc_channel[2], rcmap->throttle());
     MIX_UPDATE(mixing.rc_channel[3], rcmap->yaw());
-    for (uint8_t i=0; i<4; i++) {
+    for (uint_fast8_t i=0; i<4; i++) {
         const RC_Channel *c = RC_Channels::rc_channel(mixing.rc_channel[i]-1);
         if (!c) {
             continue;

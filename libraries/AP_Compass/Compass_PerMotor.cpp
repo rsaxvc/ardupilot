@@ -134,7 +134,7 @@ float Compass_PerMotor::scaled_output(uint8_t motor)
 // per-motor calibration update
 void Compass_PerMotor::calibration_start(void)
 {
-    for (uint8_t i=0; i<4; i++) {
+    for (uint_fast8_t i=0; i<4; i++) {
         field_sum[i].zero();
         output_sum[i] = 0;
         count[i] = 0;
@@ -144,7 +144,7 @@ void Compass_PerMotor::calibration_start(void)
     // we need to ensure we get current data by throwing away several
     // samples. The offsets may have just changed from an offset
     // calibration
-    for (uint8_t i=0; i<4; i++) {
+    for (uint_fast8_t i=0; i<4; i++) {
         compass.read();
         hal.scheduler->delay(50);
     }
@@ -159,7 +159,7 @@ void Compass_PerMotor::calibration_update(void)
     uint32_t now = AP_HAL::millis();
     
     // accumulate per-motor sums
-    for (uint8_t i=0; i<4; i++) {
+    for (uint_fast8_t i=0; i<4; i++) {
         float output = scaled_output(i);
 
         if (output <= 0) {
@@ -185,7 +185,7 @@ void Compass_PerMotor::calibration_update(void)
 // calculate per-motor calibration values
 void Compass_PerMotor::calibration_end(void)
 {
-    for (uint8_t i=0; i<4; i++) {
+    for (uint_fast8_t i=0; i<4; i++) {
         if (count[i] == 0) {
             continue;
         }
@@ -221,7 +221,7 @@ void Compass_PerMotor::compensate(Vector3f &offset)
         return;
     }
 
-    for (uint8_t i=0; i<4; i++) {
+    for (uint_fast8_t i=0; i<4; i++) {
         float output = scaled_output(i);
 
         const Vector3f &c = compensation[i].get();

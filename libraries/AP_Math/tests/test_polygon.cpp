@@ -87,7 +87,7 @@ TEST(Polygon, circle_outside_triangle)
     memcpy(triangle_closed, triangle, sizeof(triangle));
     triangle_closed[3] = triangle_closed[0];
     const float radius = 0.8f;
-    for (uint16_t i=0; i<360; i++) {
+    for (uint_fast16_t i=0; i<360; i++) {
         const float x = radius * sin(radians(i)) + 0.5f;
         const float y = radius * cos(radians(i)) + 0.5f;
         EXPECT_EQ(true, Polygon_outside(Vector2f{x,y}, triangle_closed, 4));
@@ -103,7 +103,7 @@ TEST(Polygon, circle_inside_triangle)
     memcpy(triangle_closed, triangle, sizeof(triangle));
     triangle_closed[3] = triangle_closed[0];
     const float radius = 0.2f;
-    for (uint16_t i=0; i<360; i++) {
+    for (uint_fast16_t i=0; i<360; i++) {
         const float x = radius * sin(radians(i)) + 0.2f;
         const float y = radius * cos(radians(i)) + 0.2f;
         EXPECT_EQ(false, Polygon_outside(Vector2f{x,y}, triangle_closed, 4));
@@ -168,7 +168,7 @@ TEST(Polygon, circle_outside_square)
     memcpy(square_closed, square, sizeof(square));
     square_closed[4] = square_closed[0];
     const float radius = 8.0f;
-    for (uint16_t i=0; i<360; i++) {
+    for (uint_fast16_t i=0; i<360; i++) {
         const float x = radius * sin(radians(i)) + 5.0f;
         const float y = radius * cos(radians(i)) + 5.0f;
         EXPECT_EQ(true, Polygon_outside(Vector2f{x,y}, square_closed, 4));

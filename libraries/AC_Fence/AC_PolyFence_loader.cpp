@@ -47,7 +47,7 @@ bool AC_PolyFence_loader::find_index_for_seq(const uint16_t seq, const FenceInde
     }
 
     i = 0;
-    for (uint16_t j=0; j<_num_fences; j++) {
+    for (uint_fast16_t j=0; j<_num_fences; j++) {
         entry = &_index[j];
         if (seq < i + entry->count) {
             return true;
@@ -227,7 +227,7 @@ bool AC_PolyFence_loader::breached(const Location& loc) const
     pos.y = loc.lng;
 
     // check we are inside each inclusion zone:
-    for (uint8_t i=0; i<_num_loaded_inclusion_boundaries; i++) {
+    for (uint_fast8_t i=0; i<_num_loaded_inclusion_boundaries; i++) {
         const InclusionBoundary &boundary = _loaded_inclusion_boundary[i];
         if (Polygon_outside(pos, boundary.points_lla, boundary.count)) {
             return true;
@@ -235,14 +235,14 @@ bool AC_PolyFence_loader::breached(const Location& loc) const
     }
 
     // check we are outside each exclusion zone:
-    for (uint8_t i=0; i<_num_loaded_exclusion_boundaries; i++) {
+    for (uint_fast8_t i=0; i<_num_loaded_exclusion_boundaries; i++) {
         const ExclusionBoundary &boundary = _loaded_exclusion_boundary[i];
         if (!Polygon_outside(pos, boundary.points_lla, boundary.count)) {
             return true;
         }
     }
 
-    for (uint8_t i=0; i<_num_loaded_circle_exclusion_boundaries; i++) {
+    for (uint_fast8_t i=0; i<_num_loaded_circle_exclusion_boundaries; i++) {
         const ExclusionCircle &circle = _loaded_circle_exclusion_boundary[i];
         Location circle_center;
         circle_center.lat = circle.point.x;
@@ -253,7 +253,7 @@ bool AC_PolyFence_loader::breached(const Location& loc) const
         }
     }
 
-    for (uint8_t i=0; i<_num_loaded_circle_inclusion_boundaries; i++) {
+    for (uint_fast8_t i=0; i<_num_loaded_circle_inclusion_boundaries; i++) {
         const InclusionCircle &circle = _loaded_circle_inclusion_boundary[i];
         Location circle_center;
         circle_center.lat = circle.point.x;
@@ -315,7 +315,7 @@ bool AC_PolyFence_loader::convert_to_new_storage()
 
     // load each point from eeprom
     bool ret = false;
-    for (uint16_t index=0; index<_total; index++) {
+    for (uint_fast16_t index=0; index<_total; index++) {
         // load boundary point as lat/lon point
         if (!load_point_from_eeprom(index, _tmp_boundary[index])) {
             goto out;
@@ -340,7 +340,7 @@ bool AC_PolyFence_loader::convert_to_new_storage()
         offset++;
         fence_storage.write_uint8(offset, (uint8_t)_total-2);
         offset++;
-        for (uint8_t i=1; i<_total-1; i++) {
+        for (uint_fast8_t i=1; i<_total-1; i++) {
             if (!write_latlon_to_storage(offset, _tmp_boundary[i])) {
                 goto out;
             }
@@ -369,7 +369,7 @@ bool AC_PolyFence_loader::scale_latlon_from_origin(const Location &origin, const
 
 bool AC_PolyFence_loader::read_polygon_from_storage(const Location &origin, uint16_t &read_offset, const uint8_t vertex_count, Vector2f *&next_storage_point, Vector2l *&next_storage_point_lla)
 {
-    for (uint8_t i=0; i<vertex_count; i++) {
+    for (uint_fast8_t i=0; i<vertex_count; i++) {
         // read from storage to lat/lon
         if (!read_latlon_from_storage(read_offset, *next_storage_point_lla)) {
             return false;
@@ -603,7 +603,7 @@ void AC_PolyFence_loader::unload()
 uint16_t AC_PolyFence_loader::index_fence_count(const AC_PolyFenceType type)
 {
     uint16_t ret = 0;
-    for (uint8_t i=0; i<_eeprom_fence_count; i++) {
+    for (uint_fast8_t i=0; i<_eeprom_fence_count; i++) {
         const FenceIndex &index = _index[i];
         if (index.type == type) {
             ret++;
@@ -615,7 +615,7 @@ uint16_t AC_PolyFence_loader::index_fence_count(const AC_PolyFenceType type)
 uint16_t AC_PolyFence_loader::sum_of_polygon_point_counts_and_returnpoint()
 {
     uint16_t ret = 0;
-    for (uint8_t i=0; i<_eeprom_fence_count; i++) {
+    for (uint_fast8_t i=0; i<_eeprom_fence_count; i++) {
         const FenceIndex &index = _index[i];
         switch (index.type) {
         case AC_PolyFenceType::CIRCLE_INCLUSION_INT:
@@ -739,7 +739,7 @@ bool AC_PolyFence_loader::load_from_eeprom()
 
     // use index to load fences from eeprom
     bool storage_valid = true;
-    for (uint8_t i=0; i<_eeprom_fence_count; i++) {
+    for (uint_fast8_t i=0; i<_eeprom_fence_count; i++) {
         if (!storage_valid) {
             break;
         }
@@ -943,7 +943,7 @@ bool AC_PolyFence_loader::get_inclusion_circle(uint8_t index, Vector2f &center_p
 bool AC_PolyFence_loader::check_inclusion_circle_margin(float margin) const
 {
     // check circular includes
-    for (uint8_t i=0; i<_num_loaded_circle_inclusion_boundaries; i++) {
+    for (uint_fast8_t i=0; i<_num_loaded_circle_inclusion_boundaries; i++) {
         const InclusionCircle &circle = _loaded_circle_inclusion_boundary[i];
         if (circle.radius < margin) {
             // circle radius should never be less than margin
@@ -961,7 +961,7 @@ bool AC_PolyFence_loader::validate_fence(const AC_PolyFenceItem *new_items, uint
     uint16_t orig_expected_type_count = 0;
     bool seen_return_point = false;
 
-    for (uint16_t i=0; i<count; i++) {
+    for (uint_fast16_t i=0; i<count; i++) {
         bool validate_latlon = false;
 
         switch (new_items[i].type) {
@@ -1098,7 +1098,7 @@ bool AC_PolyFence_loader::write_fence(const AC_PolyFenceItem *new_items, uint16_
     uint8_t total_vertex_count = 0;
     uint16_t offset = 4; // skipping magic
     uint8_t vertex_count = 0;
-    for (uint16_t i=0; i<count; i++) {
+    for (uint_fast16_t i=0; i<count; i++) {
         const AC_PolyFenceItem new_item = new_items[i];
         switch (new_item.type) {
         case AC_PolyFenceType::POLYGON_INCLUSION:
@@ -1247,7 +1247,7 @@ bool AC_PolyFence_loader::get_return_point(Vector2l &ret)
         return false;
     }
     Vector2l max_loc = min_loc;
-    for (uint8_t i=1; i<count; i++) {
+    for (uint_fast8_t i=1; i<count; i++) {
         Vector2l new_loc;
         if (!read_latlon_from_storage(offset, new_loc)) {
             return false;
@@ -1284,7 +1284,7 @@ AC_PolyFence_loader::FenceIndex *AC_PolyFence_loader::find_first_fence(const AC_
     if (_index == nullptr) {
         return nullptr;
     }
-    for (uint8_t i=0; i<_num_fences; i++) {
+    for (uint_fast8_t i=0; i<_num_fences; i++) {
         if (_index[i].type == type) {
             return &_index[i];
         }
@@ -1388,7 +1388,7 @@ AC_PolyFence_loader::FenceIndex *AC_PolyFence_loader::get_or_create_return_point
     if (inclusion_fence != nullptr) {
         offset = inclusion_fence->storage_offset;
         // the "9"s below represent the size of a return point in storage
-        for (uint8_t i=0; i<inclusion_fence->count; i++) {
+        for (uint_fast8_t i=0; i<inclusion_fence->count; i++) {
             // we are shifting the last fence point first - so 'i=0'
             // means the last point stored.
             const uint16_t point_storage_offset = offset + 2 + (inclusion_fence->count-1-i) * 8;
@@ -1600,7 +1600,7 @@ bool AC_PolyFence_loader::contains_compatible_fence() const
     }
     bool seen_return_point = false;
     bool seen_poly_inclusion = false;
-    for (uint16_t i=0; i<_num_fences; i++) {
+    for (uint_fast16_t i=0; i<_num_fences; i++) {
         switch (_index[i].type) {
         case AC_PolyFenceType::END_OF_STORAGE:
 #if CONFIG_HAL_BOARD == HAL_BOARD_SITL

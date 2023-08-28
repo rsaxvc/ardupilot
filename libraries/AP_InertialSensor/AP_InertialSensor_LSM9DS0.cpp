@@ -791,7 +791,7 @@ void AP_InertialSensor_LSM9DS0::_dump_registers(void)
     hal.console->printf("Gyroscope registers:\n");
     const uint8_t first = OUT_TEMP_L_XM;
     const uint8_t last = ACT_DUR;
-    for (uint8_t reg=first; reg<=last; reg++) {
+    for (uint_fast8_t reg=first; reg<=last; reg++) {
         uint8_t v = _register_read_g(reg);
         hal.console->printf("%02x:%02x ", (unsigned)reg, (unsigned)v);
         if ((reg - (first-1)) % 16 == 0) {
@@ -801,7 +801,7 @@ void AP_InertialSensor_LSM9DS0::_dump_registers(void)
     hal.console->printf("\n");
 
     hal.console->printf("Accelerometer and Magnetometers registers:\n");
-    for (uint8_t reg=first; reg<=last; reg++) {
+    for (uint_fast8_t reg=first; reg<=last; reg++) {
         uint8_t v = _register_read_xm(reg);
         hal.console->printf("%02x:%02x ", (unsigned)reg, (unsigned)v);
         if ((reg - (first-1)) % 16 == 0) {

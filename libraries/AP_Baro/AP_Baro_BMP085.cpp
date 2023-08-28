@@ -162,7 +162,7 @@ uint16_t AP_Baro_BMP085::_read_prom_word(uint8_t word)
 bool AP_Baro_BMP085::_read_prom(uint16_t *prom)
 {
     bool all_zero = true;
-    for (uint8_t i = 0; i < 11; i++) {
+    for (uint_fast8_t i = 0; i < 11; i++) {
         prom[i] = _read_prom_word(i);
         if (prom[i] != 0) {
             all_zero = false;

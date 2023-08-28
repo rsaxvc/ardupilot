@@ -490,7 +490,7 @@ void CompassCalibrator::thin_samples()
     _samples_thinned = 0;
     // shuffle the samples http://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
     // this is so that adjacent samples don't get sequentially eliminated
-    for (uint16_t i=_samples_collected-1; i>=1; i--) {
+    for (uint_fast16_t i=_samples_collected-1; i>=1; i--) {
         uint16_t j = get_random16() % (i+1);
         CompassSample temp = _sample_buffer[i];
         _sample_buffer[i] = _sample_buffer[j];
@@ -498,7 +498,7 @@ void CompassCalibrator::thin_samples()
     }
 
     // remove any samples that are close together
-    for (uint16_t i=0; i < _samples_collected; i++) {
+    for (uint_fast16_t i=0; i < _samples_collected; i++) {
         if (!accept_sample(_sample_buffer[i], i)) {
             _sample_buffer[i] = _sample_buffer[_samples_collected-1];
             _samples_collected--;
@@ -537,7 +537,7 @@ bool CompassCalibrator::accept_sample(const Vector3f& sample, uint16_t skip_inde
 
     float min_distance = _params.radius * 2*sinf(theta/2);
 
-    for (uint16_t i = 0; i<_samples_collected; i++) {
+    for (uint_fast16_t i = 0; i<_samples_collected; i++) {
         if (i != skip_index) {
             float distance = (sample - _sample_buffer[i].get()).length();
             if (distance < min_distance) {
@@ -570,7 +570,7 @@ float CompassCalibrator::calc_mean_squared_residuals(const param_t& params) cons
         return 1.0e30f;
     }
     float sum = 0.0f;
-    for (uint16_t i=0; i < _samples_collected; i++) {
+    for (uint_fast16_t i=0; i < _samples_collected; i++) {
         Vector3f sample = _sample_buffer[i].get();
         float resid = calc_residual(sample, params);
         sum += sq(resid);
@@ -584,7 +584,7 @@ void CompassCalibrator::calc_initial_offset()
 {
     // Set initial offset to the average value of the samples
     _params.offset.zero();
-    for (uint16_t k = 0; k < _samples_collected; k++) {
+    for (uint_fast16_t k = 0; k < _samples_collected; k++) {
         _params.offset -= _sample_buffer[k].get();
     }
     _params.offset /= _samples_collected;
@@ -634,16 +634,16 @@ void CompassCalibrator::run_sphere_fit()
     float JTFI[COMPASS_CAL_NUM_SPHERE_PARAMS] = { };
 
     // Gauss Newton Part common for all kind of extensions including LM
-    for (uint16_t k = 0; k<_samples_collected; k++) {
+    for (uint_fast16_t k = 0; k<_samples_collected; k++) {
         Vector3f sample = _sample_buffer[k].get();
 
         float sphere_jacob[COMPASS_CAL_NUM_SPHERE_PARAMS];
 
         calc_sphere_jacob(sample, fit1_params, sphere_jacob);
 
-        for (uint8_t i = 0;i < COMPASS_CAL_NUM_SPHERE_PARAMS; i++) {
+        for (uint_fast8_t i = 0;i < COMPASS_CAL_NUM_SPHERE_PARAMS; i++) {
             // compute JTJ
-            for (uint8_t j = 0; j < COMPASS_CAL_NUM_SPHERE_PARAMS; j++) {
+            for (uint_fast8_t j = 0; j < COMPASS_CAL_NUM_SPHERE_PARAMS; j++) {
                 JTJ[i*COMPASS_CAL_NUM_SPHERE_PARAMS+j] += sphere_jacob[i] * sphere_jacob[j];
                 JTJ2[i*COMPASS_CAL_NUM_SPHERE_PARAMS+j] += sphere_jacob[i] * sphere_jacob[j];   //a backup JTJ for LM
             }
@@ -654,7 +654,7 @@ void CompassCalibrator::run_sphere_fit()
 
     //------------------------Levenberg-Marquardt-part-starts-here---------------------------------//
     // refer: http://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm#Choice_of_damping_parameter
-    for (uint8_t i = 0; i < COMPASS_CAL_NUM_SPHERE_PARAMS; i++) {
+    for (uint_fast8_t i = 0; i < COMPASS_CAL_NUM_SPHERE_PARAMS; i++) {
         JTJ[i*COMPASS_CAL_NUM_SPHERE_PARAMS+i] += _sphere_lambda;
         JTJ2[i*COMPASS_CAL_NUM_SPHERE_PARAMS+i] += _sphere_lambda/lma_damping;
     }
@@ -668,8 +668,8 @@ void CompassCalibrator::run_sphere_fit()
     }
 
     // extract radius, offset, diagonals and offdiagonal parameters
-    for (uint8_t row=0; row < COMPASS_CAL_NUM_SPHERE_PARAMS; row++) {
-        for (uint8_t col=0; col < COMPASS_CAL_NUM_SPHERE_PARAMS; col++) {
+    for (uint_fast8_t row=0; row < COMPASS_CAL_NUM_SPHERE_PARAMS; row++) {
+        for (uint_fast8_t col=0; col < COMPASS_CAL_NUM_SPHERE_PARAMS; col++) {
             fit1_params.get_sphere_params()[row] -= JTFI[col] * JTJ[row*COMPASS_CAL_NUM_SPHERE_PARAMS+col];
             fit2_params.get_sphere_params()[row] -= JTFI[col] * JTJ2[row*COMPASS_CAL_NUM_SPHERE_PARAMS+col];
         }
@@ -750,16 +750,16 @@ void CompassCalibrator::run_ellipsoid_fit()
     float JTFI[COMPASS_CAL_NUM_ELLIPSOID_PARAMS] = { };
 
     // Gauss Newton Part common for all kind of extensions including LM
-    for (uint16_t k = 0; k<_samples_collected; k++) {
+    for (uint_fast16_t k = 0; k<_samples_collected; k++) {
         Vector3f sample = _sample_buffer[k].get();
 
         float ellipsoid_jacob[COMPASS_CAL_NUM_ELLIPSOID_PARAMS];
 
         calc_ellipsoid_jacob(sample, fit1_params, ellipsoid_jacob);
 
-        for (uint8_t i = 0;i < COMPASS_CAL_NUM_ELLIPSOID_PARAMS; i++) {
+        for (uint_fast8_t i = 0;i < COMPASS_CAL_NUM_ELLIPSOID_PARAMS; i++) {
             // compute JTJ
-            for (uint8_t j = 0; j < COMPASS_CAL_NUM_ELLIPSOID_PARAMS; j++) {
+            for (uint_fast8_t j = 0; j < COMPASS_CAL_NUM_ELLIPSOID_PARAMS; j++) {
                 JTJ [i*COMPASS_CAL_NUM_ELLIPSOID_PARAMS+j] += ellipsoid_jacob[i] * ellipsoid_jacob[j];
                 JTJ2[i*COMPASS_CAL_NUM_ELLIPSOID_PARAMS+j] += ellipsoid_jacob[i] * ellipsoid_jacob[j];
             }
@@ -770,7 +770,7 @@ void CompassCalibrator::run_ellipsoid_fit()
 
     //------------------------Levenberg-Marquardt-part-starts-here---------------------------------//
     //refer: http://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm#Choice_of_damping_parameter
-    for (uint8_t i = 0; i < COMPASS_CAL_NUM_ELLIPSOID_PARAMS; i++) {
+    for (uint_fast8_t i = 0; i < COMPASS_CAL_NUM_ELLIPSOID_PARAMS; i++) {
         JTJ[i*COMPASS_CAL_NUM_ELLIPSOID_PARAMS+i] += _ellipsoid_lambda;
         JTJ2[i*COMPASS_CAL_NUM_ELLIPSOID_PARAMS+i] += _ellipsoid_lambda/lma_damping;
     }
@@ -784,8 +784,8 @@ void CompassCalibrator::run_ellipsoid_fit()
     }
 
     // extract radius, offset, diagonals and offdiagonal parameters
-    for (uint8_t row=0; row < COMPASS_CAL_NUM_ELLIPSOID_PARAMS; row++) {
-        for (uint8_t col=0; col < COMPASS_CAL_NUM_ELLIPSOID_PARAMS; col++) {
+    for (uint_fast8_t row=0; row < COMPASS_CAL_NUM_ELLIPSOID_PARAMS; row++) {
+        for (uint_fast8_t col=0; col < COMPASS_CAL_NUM_ELLIPSOID_PARAMS; col++) {
             fit1_params.get_ellipsoid_params()[row] -= JTFI[col] * JTJ[row*COMPASS_CAL_NUM_ELLIPSOID_PARAMS+col];
             fit2_params.get_ellipsoid_params()[row] -= JTFI[col] * JTJ2[row*COMPASS_CAL_NUM_ELLIPSOID_PARAMS+col];
         }
@@ -918,7 +918,7 @@ bool CompassCalibrator::calculate_orientation(void)
 
     _orientation_solution = _orientation;
     
-    for (uint8_t n=0; n < ARRAY_SIZE(variance); n++) {
+    for (uint_fast8_t n=0; n < ARRAY_SIZE(variance); n++) {
         Rotation r = auto_rotation_index(n);
 
         // calculate the average implied earth field across all samples
@@ -943,7 +943,7 @@ bool CompassCalibrator::calculate_orientation(void)
     float bestv = variance[0];
     enum Rotation besti_90 = ROTATION_NONE;
     float bestv_90 = variance[0];
-    for (uint8_t n=0; n < ARRAY_SIZE(variance); n++) {
+    for (uint_fast8_t n=0; n < ARRAY_SIZE(variance); n++) {
         Rotation r = auto_rotation_index(n);
         if (variance[n] < bestv) {
             bestv = variance[n];
@@ -960,7 +960,7 @@ bool CompassCalibrator::calculate_orientation(void)
     enum Rotation besti2 = besti==ROTATION_NONE?ROTATION_YAW_45:ROTATION_NONE;
     float second_best_90 = besti_90==ROTATION_NONE?variance[2]:variance[0];
     enum Rotation besti2_90 = besti_90==ROTATION_NONE?ROTATION_YAW_90:ROTATION_NONE;
-    for (uint8_t n=0; n < ARRAY_SIZE(variance); n++) {
+    for (uint_fast8_t n=0; n < ARRAY_SIZE(variance); n++) {
         Rotation r = auto_rotation_index(n);
         if (besti != r) {
             if (variance[n] < second_best) {

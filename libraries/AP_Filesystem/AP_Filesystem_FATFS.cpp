@@ -255,7 +255,7 @@ static bool remount_file_system(void)
         return false;
     }
     remount_needed = false;
-    for (uint16_t i=0; i<MAX_FILES; i++) {
+    for (uint_fast16_t i=0; i<MAX_FILES; i++) {
         FAT_FILE *f = file_table[i];
         if (!f) {
             continue;

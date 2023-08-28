@@ -332,7 +332,7 @@ void AP_PiccoloCAN::update()
     uint64_t timestamp = AP_HAL::micros64();
 
     /* Read out the servo commands from the channel mixer */
-    for (uint8_t ii = 0; ii < PICCOLO_CAN_MAX_NUM_SERVO; ii++) {
+    for (uint_fast8_t ii = 0; ii < PICCOLO_CAN_MAX_NUM_SERVO; ii++) {
 
         if (is_servo_channel_active(ii)) {
 
@@ -348,7 +348,7 @@ void AP_PiccoloCAN::update()
     }
 
     /* Read out the ESC commands from the channel mixer */
-    for (uint8_t ii = 0; ii < PICCOLO_CAN_MAX_NUM_ESC; ii++) {
+    for (uint_fast8_t ii = 0; ii < PICCOLO_CAN_MAX_NUM_ESC; ii++) {
 
         if (is_esc_channel_active(ii)) {
 
@@ -378,7 +378,7 @@ void AP_PiccoloCAN::update()
 
         WITH_SEMAPHORE(_telem_sem);
 
-        for (uint8_t ii = 0; ii < PICCOLO_CAN_MAX_NUM_SERVO; ii++) {
+        for (uint_fast8_t ii = 0; ii < PICCOLO_CAN_MAX_NUM_SERVO; ii++) {
             CBSServo_Info_t &servo = _servo_info[ii];
 
             if (servo.newTelemetry) {
@@ -415,7 +415,7 @@ void AP_PiccoloCAN::send_esc_telemetry_mavlink(uint8_t mav_chan)
 
     WITH_SEMAPHORE(_telem_sem);
 
-    for (uint8_t ii = 0; ii < PICCOLO_CAN_MAX_NUM_ESC; ii++) {
+    for (uint_fast8_t ii = 0; ii < PICCOLO_CAN_MAX_NUM_ESC; ii++) {
 
         // Calculate index within storage array
         idx = (ii % 4);
@@ -488,11 +488,11 @@ void AP_PiccoloCAN::send_servo_messages(void)
     uint8_t idx;
 
     // Transmit bulk command packets to 4x servos simultaneously
-    for (uint8_t ii = 0; ii < PICCOLO_CAN_MAX_GROUP_SERVO; ii++) {
+    for (uint_fast8_t ii = 0; ii < PICCOLO_CAN_MAX_GROUP_SERVO; ii++) {
 
         send_cmd = false;
 
-        for (uint8_t jj = 0; jj < 4; jj++) {
+        for (uint_fast8_t jj = 0; jj < 4; jj++) {
             
             idx = (ii * 4) + jj;
 
@@ -560,11 +560,11 @@ void AP_PiccoloCAN::send_esc_messages(void)
         uint8_t idx;
 
         // Transmit bulk command packets to 4x ESC simultaneously
-        for (uint8_t ii = 0; ii < PICCOLO_CAN_MAX_GROUP_ESC; ii++) {
+        for (uint_fast8_t ii = 0; ii < PICCOLO_CAN_MAX_GROUP_ESC; ii++) {
 
             send_cmd = false;
 
-            for (uint8_t jj = 0; jj < 4; jj++) {
+            for (uint_fast8_t jj = 0; jj < 4; jj++) {
 
                 idx = (ii * 4) + jj;
 
@@ -971,7 +971,7 @@ bool AP_PiccoloCAN::is_esc_enabled(uint8_t chan)
 bool AP_PiccoloCAN::pre_arm_check(char* reason, uint8_t reason_len)
 {
     // Check that each required servo is present on the bus
-    for (uint8_t ii = 0; ii < PICCOLO_CAN_MAX_NUM_SERVO; ii++) {
+    for (uint_fast8_t ii = 0; ii < PICCOLO_CAN_MAX_NUM_SERVO; ii++) {
 
         if (is_servo_channel_active(ii)) {
 
@@ -983,7 +983,7 @@ bool AP_PiccoloCAN::pre_arm_check(char* reason, uint8_t reason_len)
     }
 
     // Check that each required ESC is present on the bus
-    for (uint8_t ii = 0; ii < PICCOLO_CAN_MAX_NUM_ESC; ii++) {
+    for (uint_fast8_t ii = 0; ii < PICCOLO_CAN_MAX_NUM_ESC; ii++) {
 
         // Skip any ESC channels where the motor channel is not enabled
         if (is_esc_channel_active(ii)) {

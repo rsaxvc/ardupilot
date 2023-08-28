@@ -51,7 +51,7 @@ void AP_Module::module_scan(const char *path)
         return;
     }
     uint8_t found_hooks = 0;
-    for (uint16_t i=0; i<NUM_HOOKS; i++) {
+    for (uint_fast16_t i=0; i<NUM_HOOKS; i++) {
         void *s = dlsym(m, hook_names[i]);
         if (s != nullptr) {
             // found a hook in this module, add it to the list

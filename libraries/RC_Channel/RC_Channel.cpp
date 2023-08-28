@@ -1531,7 +1531,7 @@ RC_Channel::AuxSwitchPos RC_Channels::get_channel_pos(const uint8_t rcmapchan) c
 
 RC_Channel *RC_Channels::find_channel_for_option(const RC_Channel::aux_func_t option)
 {
-    for (uint8_t i=0; i<NUM_RC_CHANNELS; i++) {
+    for (uint_fast8_t i=0; i<NUM_RC_CHANNELS; i++) {
         RC_Channel *c = channel(i);
         if (c == nullptr) {
             // odd?
@@ -1548,7 +1548,7 @@ RC_Channel *RC_Channels::find_channel_for_option(const RC_Channel::aux_func_t op
 bool RC_Channels::duplicate_options_exist()
 {
     uint8_t auxsw_option_counts[256] = {};
-    for (uint8_t i=0; i<NUM_RC_CHANNELS; i++) {
+    for (uint_fast8_t i=0; i<NUM_RC_CHANNELS; i++) {
         const RC_Channel *c = channel(i);
         if (c == nullptr) {
             // odd?
@@ -1561,7 +1561,7 @@ bool RC_Channels::duplicate_options_exist()
         auxsw_option_counts[option]++;
     }
 
-    for (uint16_t i=0; i<sizeof(auxsw_option_counts); i++) {
+    for (uint_fast16_t i=0; i<sizeof(auxsw_option_counts); i++) {
         if (i == 0) { // MAGIC VALUE! This is AUXSW_DO_NOTHING
             continue;
         }
@@ -1575,7 +1575,7 @@ bool RC_Channels::duplicate_options_exist()
 // convert option parameter from old to new
 void RC_Channels::convert_options(const RC_Channel::aux_func_t old_option, const RC_Channel::aux_func_t new_option)
 {
-    for (uint8_t i=0; i<NUM_RC_CHANNELS; i++) {
+    for (uint_fast8_t i=0; i<NUM_RC_CHANNELS; i++) {
         RC_Channel *c = channel(i);
         if (c == nullptr) {
             // odd?

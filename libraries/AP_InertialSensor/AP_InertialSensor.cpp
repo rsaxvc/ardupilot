@@ -679,11 +679,11 @@ AP_InertialSensor::AP_InertialSensor() :
     _singleton = this;
     AP_Param::setup_object_defaults(this, var_info);
 
-    for (uint8_t i=0; i<INS_MAX_INSTANCES; i++) {
+    for (uint_fast8_t i=0; i<INS_MAX_INSTANCES; i++) {
         _gyro_cal_ok[i] = true;
         _accel_max_abs_offsets[i] = 3.5f;
     }
-    for (uint8_t i=0; i<INS_VIBRATION_CHECK_INSTANCES; i++) {
+    for (uint_fast8_t i=0; i<INS_VIBRATION_CHECK_INSTANCES; i++) {
         _accel_vibe_floor_filter[i].set_cutoff_frequency(AP_INERTIAL_SENSOR_ACCEL_VIBE_FLOOR_FILT_HZ);
         _accel_vibe_filter[i].set_cutoff_frequency(AP_INERTIAL_SENSOR_ACCEL_VIBE_FILT_HZ);
     }
@@ -787,7 +787,7 @@ void AP_InertialSensor::_start_backends()
 {
     detect_backends();
 
-    for (uint8_t i = 0; i < _backend_count; i++) {
+    for (uint_fast8_t i = 0; i < _backend_count; i++) {
         _backends[i]->start();
     }
 
@@ -796,10 +796,10 @@ void AP_InertialSensor::_start_backends()
     }
 
     // clear IDs for unused sensor instances
-    for (uint8_t i=get_accel_count(); i<INS_MAX_INSTANCES; i++) {
+    for (uint_fast8_t i=get_accel_count(); i<INS_MAX_INSTANCES; i++) {
         _accel_id[i].set(0);
     }
-    for (uint8_t i=get_gyro_count(); i<INS_MAX_INSTANCES; i++) {
+    for (uint_fast8_t i=get_gyro_count(); i<INS_MAX_INSTANCES; i++) {
         _gyro_id[i].set(0);
     }
 }
@@ -809,7 +809,7 @@ AP_InertialSensor_Backend *AP_InertialSensor::_find_backend(int16_t backend_id, 
 {
     uint8_t found = 0;
 
-    for (uint8_t i = 0; i < _backend_count; i++) {
+    for (uint_fast8_t i = 0; i < _backend_count; i++) {
         int16_t id = _backends[i]->get_id();
 
         if (id < 0 || id != backend_id) {
@@ -831,13 +831,13 @@ bool AP_InertialSensor::set_gyro_window_size(uint16_t size) {
     _gyro_window_size = size;
 
     // allocate FFT gyro window
-    for (uint8_t i = 0; i < INS_MAX_INSTANCES; i++) {
-        for (uint8_t j = 0; j < XYZ_AXIS_COUNT; j++) {
+    for (uint_fast8_t i = 0; i < INS_MAX_INSTANCES; i++) {
+        for (uint_fast8_t j = 0; j < XYZ_AXIS_COUNT; j++) {
             if (!_gyro_window[i][j].set_size(size)) {
                 GCS_SEND_TEXT(MAV_SEVERITY_WARNING, "Failed to allocate window for INS");
                 // clean up whatever we have currently allocated
-                for (uint8_t ii = 0; ii <= i; ii++) {
-                    for (uint8_t jj = 0; jj < j; jj++) {
+                for (uint_fast8_t ii = 0; ii <= i; ii++) {
+                    for (uint_fast8_t jj = 0; jj < j; jj++) {
                         _gyro_window[ii][jj].set_size(0);
                         _gyro_window_size = 0;
                     }
@@ -959,7 +959,7 @@ AP_InertialSensor::init(uint16_t loop_rate)
     }
     // count number of used sensors
     uint8_t sensors_used = 0;
-    for (uint8_t i = 0; i < INS_MAX_INSTANCES; i++) {
+    for (uint_fast8_t i = 0; i < INS_MAX_INSTANCES; i++) {
         sensors_used += _use[i];
     }
 
@@ -981,7 +981,7 @@ AP_InertialSensor::init(uint16_t loop_rate)
     }
 
     // allocate notches
-    for (uint8_t i=0; i<get_gyro_count(); i++) {
+    for (uint_fast8_t i=0; i<get_gyro_count(); i++) {
         // only allocate notches for IMUs in use
         if (_use[i]) {
             for (auto &notch : harmonic_notches) {
@@ -1079,7 +1079,7 @@ AP_InertialSensor::detect_backends(void)
 #endif
 
 #if AP_SIM_INS_ENABLED
-    for (uint8_t i=0; i<AP::sitl()->imu_count; i++) {
+    for (uint_fast8_t i=0; i<AP::sitl()->imu_count; i++) {
         ADD_BACKEND(AP_InertialSensor_SITL::detect(*this, i==1?INS_SITL_SENSOR_B:INS_SITL_SENSOR_A));
     }
     return;
@@ -1334,7 +1334,7 @@ uint32_t AP_InertialSensor::get_accel_clip_count(uint8_t instance) const
 // get_gyro_health_all - return true if all gyros are healthy
 bool AP_InertialSensor::get_gyro_health_all(void) const
 {
-    for (uint8_t i=0; i<get_gyro_count(); i++) {
+    for (uint_fast8_t i=0; i<get_gyro_count(); i++) {
         if (!get_gyro_health(i)) {
             return false;
         }
@@ -1346,12 +1346,12 @@ bool AP_InertialSensor::get_gyro_health_all(void) const
 // gyro_calibration_ok_all - returns true if all gyros were calibrated successfully
 bool AP_InertialSensor::gyro_calibrated_ok_all() const
 {
-    for (uint8_t i=0; i<get_gyro_count(); i++) {
+    for (uint_fast8_t i=0; i<get_gyro_count(); i++) {
         if (!gyro_calibrated_ok(i)) {
             return false;
         }
     }
-    for (uint8_t i=get_gyro_count(); i<INS_MAX_INSTANCES; i++) {
+    for (uint_fast8_t i=get_gyro_count(); i<INS_MAX_INSTANCES; i++) {
         if (_gyro_id[i] != 0) {
             // missing gyro
             return false;
@@ -1373,7 +1373,7 @@ bool AP_InertialSensor::use_gyro(uint8_t instance) const
 // get_accel_health_all - return true if all accels are healthy
 bool AP_InertialSensor::get_accel_health_all(void) const
 {
-    for (uint8_t i=0; i<get_accel_count(); i++) {
+    for (uint_fast8_t i=0; i<get_accel_count(); i++) {
         if (!get_accel_health(i)) {
             return false;
         }
@@ -1399,7 +1399,7 @@ bool AP_InertialSensor::calibrate_trim(Vector3f &trim_rad)
     const uint8_t update_dt_milliseconds = (uint8_t)(1000.0f/get_loop_rate_hz()+0.5f);
 
     // wait 100ms for ins filter to rise
-    for (uint8_t k=0; k<100/update_dt_milliseconds; k++) {
+    for (uint_fast8_t k=0; k<100/update_dt_milliseconds; k++) {
         wait_for_sample();
         update();
         hal.scheduler->delay(update_dt_milliseconds);
@@ -1435,7 +1435,7 @@ bool AP_InertialSensor::calibrate_trim(Vector3f &trim_rad)
 bool AP_InertialSensor::accel_calibrated_ok_all() const
 {
     // check each accelerometer has offsets saved
-    for (uint8_t i=0; i<get_accel_count(); i++) {
+    for (uint_fast8_t i=0; i<get_accel_count(); i++) {
         if (!_accel_id_ok[i]) {
             return false;
         }
@@ -1448,7 +1448,7 @@ bool AP_InertialSensor::accel_calibrated_ok_all() const
             return false;
         }
     }
-    for (uint8_t i=get_accel_count(); i<INS_MAX_INSTANCES; i++) {
+    for (uint_fast8_t i=get_accel_count(); i<INS_MAX_INSTANCES; i++) {
         if (_accel_id[i] != 0) {
             // missing accel
             return false;
@@ -1457,7 +1457,7 @@ bool AP_InertialSensor::accel_calibrated_ok_all() const
     
     // check calibrated accels matches number of accels (no unused accels should have offsets or scaling)
     if (get_accel_count() < INS_MAX_INSTANCES) {
-        for (uint8_t i=get_accel_count(); i<INS_MAX_INSTANCES; i++) {
+        for (uint_fast8_t i=get_accel_count(); i<INS_MAX_INSTANCES; i++) {
             const Vector3f &scaling = _accel_scale[i].get();
             bool have_scaling = (!is_zero(scaling.x) && !is_equal(scaling.x,1.0f)) || (!is_zero(scaling.y) && !is_equal(scaling.y,1.0f)) || (!is_zero(scaling.z) && !is_equal(scaling.z,1.0f));
             bool have_offsets = !_accel_offset[i].get().is_zero();
@@ -1515,7 +1515,7 @@ AP_InertialSensor::_init_gyro()
     _board_orientation = ROTATION_NONE;
 
     // remove existing gyro offsets
-    for (uint8_t k=0; k<num_gyros; k++) {
+    for (uint_fast8_t k=0; k<num_gyros; k++) {
         _gyro_offset[k].set(Vector3f());
         new_gyro_offset[k].zero();
         best_diff[k] = -1.f;
@@ -1533,7 +1533,7 @@ AP_InertialSensor::_init_gyro()
     // has just been powered on, so the temperature may be changing
     // rapidly. We use the average between start and end temperature
     // as the calibration temperature to minimise errors
-    for (uint8_t k=0; k<num_gyros; k++) {
+    for (uint_fast8_t k=0; k<num_gyros; k++) {
         start_temperature[k] = get_temperature(k);
     }
 #endif
@@ -1558,13 +1558,13 @@ AP_InertialSensor::_init_gyro()
 
         DEV_PRINTF("*");
 
-        for (uint8_t k=0; k<num_gyros; k++) {
+        for (uint_fast8_t k=0; k<num_gyros; k++) {
             gyro_sum[k].zero();
         }
         accel_start = get_accel(0);
         for (i=0; i<50; i++) {
             update();
-            for (uint8_t k=0; k<num_gyros; k++) {
+            for (uint_fast8_t k=0; k<num_gyros; k++) {
                 gyro_sum[k] += get_gyro(k);
             }
             hal.scheduler->delay(5);
@@ -1579,13 +1579,13 @@ AP_InertialSensor::_init_gyro()
             continue;
         }
 
-        for (uint8_t k=0; k<num_gyros; k++) {
+        for (uint_fast8_t k=0; k<num_gyros; k++) {
             gyro_avg[k] = gyro_sum[k] / i;
             gyro_diff[k] = last_average[k] - gyro_avg[k];
             diff_norm[k] = gyro_diff[k].length();
         }
 
-        for (uint8_t k=0; k<num_gyros; k++) {
+        for (uint_fast8_t k=0; k<num_gyros; k++) {
             if (best_diff[k] < 0) {
                 best_diff[k] = diff_norm[k];
                 best_avg[k] = gyro_avg[k];
@@ -1610,7 +1610,7 @@ AP_InertialSensor::_init_gyro()
     // we've kept the user waiting long enough - use the best pair we
     // found so far
     DEV_PRINTF("\n");
-    for (uint8_t k=0; k<num_gyros; k++) {
+    for (uint_fast8_t k=0; k<num_gyros; k++) {
         if (!converged[k]) {
             DEV_PRINTF("gyro[%u] did not converge: diff=%f dps (expected < %f)\n",
                                 (unsigned)k,
@@ -1641,14 +1641,14 @@ AP_InertialSensor::_init_gyro()
 // save parameters to eeprom
 void AP_InertialSensor::_save_gyro_calibration()
 {
-    for (uint8_t i=0; i<_gyro_count; i++) {
+    for (uint_fast8_t i=0; i<_gyro_count; i++) {
         _gyro_offset[i].save();
         _gyro_id[i].save();
 #if HAL_INS_TEMPERATURE_CAL_ENABLE
         caltemp_gyro[i].save();
 #endif
     }
-    for (uint8_t i=_gyro_count; i<INS_MAX_INSTANCES; i++) {
+    for (uint_fast8_t i=_gyro_count; i<INS_MAX_INSTANCES; i++) {
         _gyro_offset[i].set_and_save(Vector3f());
         _gyro_id[i].set_and_save(0);
 #if HAL_INS_TEMPERATURE_CAL_ENABLE
@@ -1693,7 +1693,7 @@ void AP_InertialSensor::update(void)
     // wait_for_sample(), and a wait is implied
     wait_for_sample();
 
-        for (uint8_t i=0; i<INS_MAX_INSTANCES; i++) {
+        for (uint_fast8_t i=0; i<INS_MAX_INSTANCES; i++) {
             // mark sensors unhealthy and let update() in each backend
             // mark them healthy via _publish_gyro() and
             // _publish_accel()
@@ -1702,12 +1702,12 @@ void AP_InertialSensor::update(void)
             _delta_velocity_valid[i] = false;
             _delta_angle_valid[i] = false;
         }
-        for (uint8_t i=0; i<_backend_count; i++) {
+        for (uint_fast8_t i=0; i<_backend_count; i++) {
             _backends[i]->update();
         }
 
         if (!_startup_error_counts_set) {
-            for (uint8_t i=0; i<INS_MAX_INSTANCES; i++) {
+            for (uint_fast8_t i=0; i<INS_MAX_INSTANCES; i++) {
                 _accel_startup_error_count[i] = _accel_error_count[i];
                 _gyro_startup_error_count[i] = _gyro_error_count[i];
             }
@@ -1719,7 +1719,7 @@ void AP_InertialSensor::update(void)
             }
         }
 
-        for (uint8_t i=0; i<INS_MAX_INSTANCES; i++) {
+        for (uint_fast8_t i=0; i<INS_MAX_INSTANCES; i++) {
             if (_accel_error_count[i] < _accel_startup_error_count[i]) {
                 _accel_startup_error_count[i] = _accel_error_count[i];
             }
@@ -1732,7 +1732,7 @@ void AP_InertialSensor::update(void)
         // but another sensor doesn't.
         bool have_zero_accel_error_count = false;
         bool have_zero_gyro_error_count = false;
-        for (uint8_t i=0; i<INS_MAX_INSTANCES; i++) {
+        for (uint_fast8_t i=0; i<INS_MAX_INSTANCES; i++) {
             if (_accel_healthy[i] && _accel_error_count[i] <= _accel_startup_error_count[i]) {
                 have_zero_accel_error_count = true;
             }
@@ -1741,7 +1741,7 @@ void AP_InertialSensor::update(void)
             }
         }
 
-        for (uint8_t i=0; i<INS_MAX_INSTANCES; i++) {
+        for (uint_fast8_t i=0; i<INS_MAX_INSTANCES; i++) {
             if (_gyro_healthy[i] && _gyro_error_count[i] > _gyro_startup_error_count[i] && have_zero_gyro_error_count) {
                 // we prefer not to use a gyro that has had errors
                 _gyro_healthy[i] = false;
@@ -1753,13 +1753,13 @@ void AP_InertialSensor::update(void)
         }
 
         // set primary to first healthy accel and gyro
-        for (uint8_t i=0; i<INS_MAX_INSTANCES; i++) {
+        for (uint_fast8_t i=0; i<INS_MAX_INSTANCES; i++) {
             if (_gyro_healthy[i] && _use[i]) {
                 _primary_gyro = i;
                 break;
             }
         }
-        for (uint8_t i=0; i<INS_MAX_INSTANCES; i++) {
+        for (uint_fast8_t i=0; i<INS_MAX_INSTANCES; i++) {
             if (_accel_healthy[i] && _use[i]) {
                 _primary_accel = i;
                 break;
@@ -1848,13 +1848,13 @@ check_sample:
         const uint8_t wait_counter_limit = uint32_t(_loop_delta_t * 1.0e6) / (3*wait_per_loop);
 
         while (true) {
-            for (uint8_t i=0; i<_backend_count; i++) {
+            for (uint_fast8_t i=0; i<_backend_count; i++) {
                 // this is normally a nop, but can be used by backends
                 // that don't accumulate samples on a timer
                 _backends[i]->accumulate();
             }
 
-            for (uint8_t i=0; i<_gyro_count; i++) {
+            for (uint_fast8_t i=0; i<_gyro_count; i++) {
                 if (_new_gyro_data[i]) {
                     const uint8_t imask = (1U<<i);
                     gyro_available_mask |= imask;
@@ -1865,7 +1865,7 @@ check_sample:
                     }
                 }
             }
-            for (uint8_t i=0; i<_accel_count; i++) {
+            for (uint_fast8_t i=0; i<_accel_count; i++) {
                 if (_new_accel_data[i]) {
                     const uint8_t imask = (1U<<i);
                     accel_available_mask |= imask;
@@ -2073,7 +2073,7 @@ bool AP_InertialSensor::calibrating() const
 bool AP_InertialSensor::temperature_cal_running() const
 {
 #if HAL_INS_TEMPERATURE_CAL_ENABLE
-    for (uint8_t i=0; i<INS_MAX_INSTANCES; i++) {
+    for (uint_fast8_t i=0; i<INS_MAX_INSTANCES; i++) {
         if (tcal[i].enable == TCal::Enable::LearnCalibration) {
             return true;
         }
@@ -2125,7 +2125,7 @@ void AP_InertialSensor::HarmonicNotch::update_freq_hz(float scaled_freq)
 // Update the harmonic notch frequency
 void AP_InertialSensor::HarmonicNotch::update_frequencies_hz(uint8_t num_freqs, const float scaled_freq[]) {
     // protect against zero as the scaled frequency
-    for (uint8_t i = 0; i < num_freqs; i++) {
+    for (uint_fast8_t i = 0; i < num_freqs; i++) {
         if (is_positive(scaled_freq[i])) {
             calculated_notch_freq_hz[i] = scaled_freq[i];
         }
@@ -2161,7 +2161,7 @@ bool AP_InertialSensor::setup_throttle_gyro_harmonic_notch(float center_freq_hz,
 void AP_InertialSensor::_acal_save_calibrations()
 {
     Vector3f bias, gain;
-    for (uint8_t i=0; i<_accel_count; i++) {
+    for (uint_fast8_t i=0; i<_accel_count; i++) {
         if (_accel_calibrator[i].get_status() == ACCEL_CAL_SUCCESS) {
             _accel_calibrator[i].get_calibration(bias, gain);
             _accel_offset[i].set_and_save(bias);
@@ -2181,7 +2181,7 @@ void AP_InertialSensor::_acal_save_calibrations()
     }
 
     // clear any unused accels
-    for (uint8_t i=_accel_count; i<INS_MAX_INSTANCES; i++) {
+    for (uint_fast8_t i=_accel_count; i<INS_MAX_INSTANCES; i++) {
         _accel_id[i].set_and_save(0);
         _accel_offset[i].set_and_save(Vector3f());
         _accel_scale[i].set_and_save(Vector3f());
@@ -2235,7 +2235,7 @@ void AP_InertialSensor::_acal_save_calibrations()
 
 void AP_InertialSensor::_acal_event_failure()
 {
-    for (uint8_t i=0; i<_accel_count; i++) {
+    for (uint_fast8_t i=0; i<_accel_count; i++) {
         _accel_offset[i].set_and_notify(Vector3f(0,0,0));
         _accel_scale[i].set_and_notify(Vector3f(1,1,1));
     }
@@ -2274,7 +2274,7 @@ bool AP_InertialSensor::get_primary_accel_cal_sample_avg(uint8_t sample_num, Vec
 {
     uint8_t count = 0;
     Vector3f avg = Vector3f(0,0,0);
-    for (uint8_t i=0; i<MIN(_accel_count,2); i++) {
+    for (uint_fast8_t i=0; i<MIN(_accel_count,2); i++) {
         if (_accel_calibrator[i].get_status() != ACCEL_CAL_SUCCESS || sample_num>=_accel_calibrator[i].get_num_samples_collected()) {
             continue;
         }
@@ -2330,13 +2330,13 @@ MAV_RESULT AP_InertialSensor::simple_accel_cal()
     rotated_gravity.rotate_inverse(saved_orientation);
     
     // save existing accel offsets
-    for (uint8_t k=0; k<num_accels; k++) {
+    for (uint_fast8_t k=0; k<num_accels; k++) {
         saved_offsets[k] = _accel_offset[k];
         saved_scaling[k] = _accel_scale[k];
     }
     
     // remove existing accel offsets and scaling
-    for (uint8_t k=0; k<num_accels; k++) {
+    for (uint_fast8_t k=0; k<num_accels; k++) {
         _accel_offset[k].set(Vector3f());
         _accel_scale[k].set(Vector3f(1,1,1));
         new_accel_offset[k].zero();
@@ -2344,7 +2344,7 @@ MAV_RESULT AP_InertialSensor::simple_accel_cal()
         converged[k] = false;
     }
 
-    for (uint8_t c = 0; c < 5; c++) {
+    for (uint_fast8_t c = 0; c < 5; c++) {
         hal.scheduler->delay(5);
         update();
     }
@@ -2366,24 +2366,24 @@ MAV_RESULT AP_InertialSensor::simple_accel_cal()
 
         DEV_PRINTF("*");
 
-        for (uint8_t k=0; k<num_accels; k++) {
+        for (uint_fast8_t k=0; k<num_accels; k++) {
             accel_sum[k].zero();
         }
         for (i=0; i<50; i++) {
             update();
-            for (uint8_t k=0; k<num_accels; k++) {
+            for (uint_fast8_t k=0; k<num_accels; k++) {
                 accel_sum[k] += get_accel(k);
             }
             hal.scheduler->delay(5);
         }
 
-        for (uint8_t k=0; k<num_accels; k++) {
+        for (uint_fast8_t k=0; k<num_accels; k++) {
             accel_avg[k] = accel_sum[k] / i;
             accel_diff[k] = last_average[k] - accel_avg[k];
             diff_norm[k] = accel_diff[k].length();
         }
 
-        for (uint8_t k=0; k<num_accels; k++) {
+        for (uint_fast8_t k=0; k<num_accels; k++) {
             if (j > 0 && diff_norm[k] < accel_convergence_limit) {
                 last_average[k] = (accel_avg[k] * 0.5f) + (last_average[k] * 0.5f);
                 if (!converged[k] || last_average[k].length() < new_accel_offset[k].length()) {
@@ -2402,7 +2402,7 @@ MAV_RESULT AP_InertialSensor::simple_accel_cal()
     MAV_RESULT result = MAV_RESULT_ACCEPTED;
 
     // see if we've passed
-    for (uint8_t k=0; k<num_accels; k++) {
+    for (uint_fast8_t k=0; k<num_accels; k++) {
         if (!converged[k]) {
             result = MAV_RESULT_FAILED;
         }
@@ -2413,7 +2413,7 @@ MAV_RESULT AP_InertialSensor::simple_accel_cal()
 
     if (result == MAV_RESULT_ACCEPTED) {
         DEV_PRINTF("\nPASSED\n");
-        for (uint8_t k=0; k<num_accels; k++) {
+        for (uint_fast8_t k=0; k<num_accels; k++) {
             // remove rotated gravity
             new_accel_offset[k] -= rotated_gravity;
             _accel_offset[k].set_and_save(new_accel_offset[k]);
@@ -2430,7 +2430,7 @@ MAV_RESULT AP_InertialSensor::simple_accel_cal()
     } else {
         DEV_PRINTF("\nFAILED\n");
         // restore old values
-        for (uint8_t k=0; k<num_accels; k++) {
+        for (uint_fast8_t k=0; k<num_accels; k++) {
             _accel_offset[k].set(saved_offsets[k]);
             _accel_scale[k].set(saved_scaling[k]);
         }
@@ -2478,7 +2478,7 @@ void AP_InertialSensor::kill_imu(uint8_t imu_idx, bool kill_it)
         uint8_t new_kill_mask = imu_kill_mask | (1U<<imu_idx);
         // don't allow the last IMU to be killed
         bool all_dead = true;
-        for (uint8_t i=0; i<MIN(_gyro_count, _accel_count); i++) {
+        for (uint_fast8_t i=0; i<MIN(_gyro_count, _accel_count); i++) {
             if (use_gyro(i) && use_accel(i) && !(new_kill_mask & (1U<<i))) {
                 // we have at least one healthy IMU left
                 all_dead = false;
@@ -2497,7 +2497,7 @@ void AP_InertialSensor::kill_imu(uint8_t imu_idx, bool kill_it)
 #if HAL_EXTERNAL_AHRS_ENABLED
 void AP_InertialSensor::handle_external(const AP_ExternalAHRS::ins_data_message_t &pkt)
 {
-    for (uint8_t i = 0; i < _backend_count; i++) {
+    for (uint_fast8_t i = 0; i < _backend_count; i++) {
         _backends[i]->handle_external(pkt);
     }
 }
@@ -2506,7 +2506,7 @@ void AP_InertialSensor::handle_external(const AP_ExternalAHRS::ins_data_message_
 // force save of current calibration as valid
 void AP_InertialSensor::force_save_calibration(void)
 {
-    for (uint8_t i=0; i<_accel_count; i++) {
+    for (uint_fast8_t i=0; i<_accel_count; i++) {
         if (_accel_id[i] != 0) {
             _accel_id[i].save();
             // we also save the scale as the default of 1.0 may be

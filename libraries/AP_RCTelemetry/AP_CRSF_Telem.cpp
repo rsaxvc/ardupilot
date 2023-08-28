@@ -837,7 +837,7 @@ void AP_CRSF_Telem::update_vtx_params()
 #endif
         uint8_t* crcptr = &_telem.ext.command.destination;
         uint8_t crc = crc8_dvb(0, AP_RCProtocol_CRSF::CRSF_FRAMETYPE_COMMAND, 0xBA);
-        for (uint8_t i = 0; i < len; i++) {
+        for (uint_fast8_t i = 0; i < len; i++) {
             crc = crc8_dvb(crc, crcptr[i], 0xBA);
         }
         crcptr[len] = crc;
@@ -1016,7 +1016,7 @@ void AP_CRSF_Telem::calc_command_response() {
     uint8_t len = 6;
     uint8_t* crcptr = &_telem.ext.command.destination;
     uint8_t crc = crc8_dvb(0, AP_RCProtocol_CRSF::CRSF_FRAMETYPE_COMMAND, 0xBA);
-    for (uint8_t i = 0; i < len; i++) {
+    for (uint_fast8_t i = 0; i < len; i++) {
         crc = crc8_dvb(crc, crcptr[i], 0xBA);
     }
     crcptr[len] = crc;
@@ -1049,7 +1049,7 @@ void AP_CRSF_Telem::calc_parameter() {
         _telem.ext.param_entry.payload[idx++] = 0; // null terminator
 
         // write out all of the ids we are going to send
-        for (uint8_t i = 0; i < AP_OSD_ParamScreen::NUM_PARAMS * AP_OSD_NUM_PARAM_SCREENS; i++) {
+        for (uint_fast8_t i = 0; i < AP_OSD_ParamScreen::NUM_PARAMS * AP_OSD_NUM_PARAM_SCREENS; i++) {
             _telem.ext.param_entry.payload[idx++] = i + 1;
         }
         _telem.ext.param_entry.payload[idx] = 0xFF; // terminator
@@ -1262,7 +1262,7 @@ void AP_CRSF_Telem::calc_text_selection(AP_OSD_ParamSetting* param, uint8_t chun
     chunker.put_string(name, strnlen(name, 16)); // parameter name
     chunker.put_byte(0);  // trailing null
 
-    for (uint8_t i = 0; i < metadata->values_max; i++) {
+    for (uint_fast8_t i = 0; i < metadata->values_max; i++) {
         uint8_t len = strnlen(metadata->values[i], 16);
         if (len == 0) {
             chunker.put_string("---", 3);
@@ -1453,7 +1453,7 @@ void AP_CRSF_Telem::get_multi_packet_passthrough_telem_data(uint8_t size)
         return;
     }
     _telem.bcast.custom_telem.multi_packet_passthrough.sub_type = AP_RCProtocol_CRSF::CustomTelemSubTypeID::CRSF_AP_CUSTOM_TELEM_MULTI_PACKET_PASSTHROUGH;
-    for (uint8_t idx=0; idx<count; idx++) {
+    for (uint_fast8_t idx=0; idx<count; idx++) {
         _telem.bcast.custom_telem.multi_packet_passthrough.packets[idx].appid = buffer[idx].appid;
         _telem.bcast.custom_telem.multi_packet_passthrough.packets[idx].data = buffer[idx].data;
     }

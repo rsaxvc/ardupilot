@@ -676,13 +676,13 @@ bool NavEKF2::InitialiseFilter(void)
         }
 
         //Call Constructors on all cores
-        for (uint8_t i = 0; i < num_cores; i++) {
+        for (uint_fast8_t i = 0; i < num_cores; i++) {
             new (&core[i]) NavEKF2_core(this);
         }
 
         // set the IMU index for the cores
         num_cores = 0;
-        for (uint8_t i=0; i<7; i++) {
+        for (uint_fast8_t i=0; i<7; i++) {
             if (_imuMask & (1U<<i)) {
                 if(!core[num_cores].setup_core(i, num_cores)) {
                     // if any core setup fails, free memory, zero the core pointer and abort
@@ -706,7 +706,7 @@ bool NavEKF2::InitialiseFilter(void)
     // initialise the cores. We return success only if all cores
     // initialise successfully
     bool ret = true;
-    for (uint8_t i=0; i<num_cores; i++) {
+    for (uint_fast8_t i=0; i<num_cores; i++) {
         ret &= core[i].InitialiseFilterBootstrap();
     }
 
@@ -756,7 +756,7 @@ void NavEKF2::UpdateFilter(void)
     imuSampleTime_us = AP::dal().micros64();
     
     bool statePredictEnabled[num_cores];
-    for (uint8_t i=0; i<num_cores; i++) {
+    for (uint_fast8_t i=0; i<num_cores; i++) {
         // if we have not overrun by more than 3 IMU frames, and we
         // have already used more than 1/3 of the CPU budget for this
         // loop then suppress the prediction step. This allows
@@ -784,7 +784,7 @@ void NavEKF2::UpdateFilter(void)
     if ((primaryErrorScore > 1.0f || !core[primary].healthy()) && runCoreSelection) {
         float lowestErrorScore = 0.67f * primaryErrorScore;
         uint8_t newPrimaryIndex = primary; // index for new primary
-        for (uint8_t coreIndex=0; coreIndex<num_cores; coreIndex++) {
+        for (uint_fast8_t coreIndex=0; coreIndex<num_cores; coreIndex++) {
 
             if (coreIndex != primary) {
                 // an alternative core is available for selection only if healthy and if states have been updated on this time step
@@ -838,7 +838,7 @@ void NavEKF2::checkLaneSwitch(void)
         return;
     }
     uint8_t newPrimaryIndex = primary;
-    for (uint8_t coreIndex=0; coreIndex<num_cores; coreIndex++) {
+    for (uint_fast8_t coreIndex=0; coreIndex<num_cores; coreIndex++) {
         if (coreIndex != primary) {
             const NavEKF2_core &newCore = core[coreIndex];
             // an alternative core is available for selection only if healthy and if states have been updated on this time step
@@ -876,7 +876,7 @@ bool NavEKF2::pre_arm_check(char *failure_msg, uint8_t failure_msg_len) const
         AP::dal().snprintf(failure_msg, failure_msg_len, "no EKF2 cores");
         return false;
     }
-    for (uint8_t i = 0; i < num_cores; i++) {
+    for (uint_fast8_t i = 0; i < num_cores; i++) {
         if (!core[i].healthy()) {
             const char *failure = core[i].prearm_failure_reason();
             if (failure != nullptr) {
@@ -975,7 +975,7 @@ void NavEKF2::resetGyroBias(void)
     AP::dal().log_event2(AP_DAL::Event::resetGyroBias);
 
     if (core) {
-        for (uint8_t i=0; i<num_cores; i++) {
+        for (uint_fast8_t i=0; i<num_cores; i++) {
             core[i].resetGyroBias();
         }
     }
@@ -992,7 +992,7 @@ bool NavEKF2::resetHeightDatum(void)
 
     bool status = true;
     if (core) {
-        for (uint8_t i=0; i<num_cores; i++) {
+        for (uint_fast8_t i=0; i<num_cores; i++) {
             if (!core[i].resetHeightDatum()) {
                 status = false;
             }
@@ -1058,7 +1058,7 @@ bool NavEKF2::getMagOffsets(uint8_t mag_idx, Vector3f &magOffsets) const
     if (core[primary].getMagOffsets(mag_idx, magOffsets)) {
         return true;
     }
-    for (uint8_t i=0; i<num_cores; i++) {
+    for (uint_fast8_t i=0; i<num_cores; i++) {
         if(core[i].getMagOffsets(mag_idx, magOffsets)) {
             return true;
         }
@@ -1110,7 +1110,7 @@ bool NavEKF2::setOriginLLH(const Location &loc)
         return false;
     }
     bool ret = false;
-    for (uint8_t i=0; i<num_cores; i++) {
+    for (uint_fast8_t i=0; i<num_cores; i++) {
         ret |= core[i].setOriginLLH(loc);
     }
     // return true if any core accepts the new origin
@@ -1205,7 +1205,7 @@ void NavEKF2::writeOptFlowMeas(const uint8_t rawFlowQuality, const Vector2f &raw
     AP::dal().writeOptFlowMeas(rawFlowQuality, rawFlowRates, rawGyroRates, msecFlowMeas, posOffset, heightOverride);
 
     if (core) {
-        for (uint8_t i=0; i<num_cores; i++) {
+        for (uint_fast8_t i=0; i<num_cores; i++) {
             core[i].writeOptFlowMeas(rawFlowQuality, rawFlowRates, rawGyroRates, msecFlowMeas, posOffset, heightOverride);
         }
     }
@@ -1223,7 +1223,7 @@ void NavEKF2::setTerrainHgtStable(bool val)
         AP::dal().log_event2(AP_DAL::Event::unsetTerrainHgtStable);
     }
     if (core) {
-        for (uint8_t i=0; i<num_cores; i++) {
+        for (uint_fast8_t i=0; i<num_cores; i++) {
             core[i].setTerrainHgtStable(val);
         }
     }
@@ -1514,7 +1514,7 @@ void NavEKF2::writeExtNavData(const Vector3f &pos, const Quaternion &quat, float
     AP::dal().writeExtNavData(pos, quat, posErr, angErr, timeStamp_ms, delay_ms, resetTime_ms);
 
     if (core) {
-        for (uint8_t i=0; i<num_cores; i++) {
+        for (uint_fast8_t i=0; i<num_cores; i++) {
             core[i].writeExtNavData(pos, quat, posErr, angErr, timeStamp_ms, delay_ms, resetTime_ms);
         }
     }
@@ -1540,7 +1540,7 @@ void NavEKF2::requestYawReset(void)
 {
     AP::dal().log_event2(AP_DAL::Event::requestYawReset);
 
-    for (uint8_t i = 0; i < num_cores; i++) {
+    for (uint_fast8_t i = 0; i < num_cores; i++) {
         core[i].EKFGSF_requestYawReset();
     }
 }
@@ -1551,7 +1551,7 @@ void NavEKF2::writeDefaultAirSpeed(float airspeed)
     AP::dal().log_writeDefaultAirSpeed2(airspeed,0.0f);
 
     if (core) {
-        for (uint8_t i=0; i<num_cores; i++) {
+        for (uint_fast8_t i=0; i<num_cores; i++) {
             core[i].writeDefaultAirSpeed(airspeed);
         }
     }
@@ -1568,7 +1568,7 @@ void NavEKF2::writeExtNavVelData(const Vector3f &vel, float err, uint32_t timeSt
     AP::dal().writeExtNavVelData(vel, err, timeStamp_ms, delay_ms);
 
     if (core) {
-        for (uint8_t i=0; i<num_cores; i++) {
+        for (uint_fast8_t i=0; i<num_cores; i++) {
             core[i].writeExtNavVelData(vel, err, timeStamp_ms, delay_ms);
         }
     }

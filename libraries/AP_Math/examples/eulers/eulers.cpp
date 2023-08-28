@@ -96,9 +96,9 @@ void test_matrix_eulers(void)
 
     hal.console->printf("rotation matrix unit tests\n\n");
 
-    for (uint8_t i = 0; i < N; i++)
-        for (uint8_t j = 0; j < N; j++)
-            for (uint8_t k = 0; k < N; k++)
+    for (uint_fast8_t i = 0; i < N; i++)
+        for (uint_fast8_t j = 0; j < N; j++)
+            for (uint_fast8_t k = 0; k < N; k++)
                 test_euler(angles[i], angles[j], angles[k]);
 
     hal.console->printf("tests done\n\n");
@@ -152,9 +152,9 @@ void test_quaternion_eulers(void)
     test_quaternion(0, ToRad(91), 0.1f);
     test_quaternion(0.1f, 0, ToRad(91));
 
-    for (uint8_t i = 0; i < N; i++)
-        for (uint8_t j = 0; j < N; j++)
-            for (uint8_t k = 0; k < N; k++)
+    for (uint_fast8_t i = 0; i < N; i++)
+        for (uint_fast8_t j = 0; j < N; j++)
+            for (uint_fast8_t k = 0; k < N; k++)
                 test_quaternion(angles[i], angles[j], angles[k]);
 
     hal.console->printf("tests done\n\n");
@@ -201,9 +201,9 @@ void test_conversions(void)
     test_conversion(-1, 1.1f, -1.2f);
     test_conversion(-1, 1.1f, 1.2f);
 
-    for (uint8_t i = 0; i < N; i++)
-        for (uint8_t j = 0; j < N; j++)
-            for (uint8_t k = 0; k < N; k++)
+    for (uint_fast8_t i = 0; i < N; i++)
+        for (uint_fast8_t j = 0; j < N; j++)
+            for (uint_fast8_t k = 0; k < N; k++)
                 test_conversion(angles[i], angles[j], angles[k]);
 
     hal.console->printf("tests done\n\n");
@@ -257,7 +257,7 @@ void test_matrix_rotate(void)
     r.y = rand_num();
     r.z = rand_num();
 
-    for (uint16_t i = 0; i < 1000; i++) {
+    for (uint_fast16_t i = 0; i < 1000; i++) {
         // old method
         Matrix3f temp_matrix;
         temp_matrix.a.x = 0;

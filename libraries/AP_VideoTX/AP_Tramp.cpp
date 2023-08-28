@@ -185,7 +185,7 @@ char AP_Tramp::receive_response()
         return 0;
     }
 
-    for (uint16_t i = 0; i < bytesNeeded; i++) {
+    for (uint_fast16_t i = 0; i < bytesNeeded; i++) {
         const int16_t b = port->read();
         if (b < 0) {
             // uart claimed bytes available, but there were none

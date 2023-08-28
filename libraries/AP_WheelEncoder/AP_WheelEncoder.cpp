@@ -163,7 +163,7 @@ void AP_WheelEncoder::init(void)
         // init called a 2nd time?
         return;
     }
-    for (uint8_t i=0; i<WHEELENCODER_MAX_INSTANCES; i++) {
+    for (uint_fast8_t i=0; i<WHEELENCODER_MAX_INSTANCES; i++) {
         switch ((WheelEncoder_Type)_type[i].get()) {
 
         case WheelEncoder_TYPE_QUADRATURE:
@@ -194,7 +194,7 @@ void AP_WheelEncoder::init(void)
 // update WheelEncoder state for all instances. This should be called by main loop
 void AP_WheelEncoder::update(void)
 {
-    for (uint8_t i=0; i<num_instances; i++) {
+    for (uint_fast8_t i=0; i<num_instances; i++) {
         if (drivers[i] != nullptr && _type[i] != WheelEncoder_TYPE_NONE) {
             drivers[i]->update();
         }

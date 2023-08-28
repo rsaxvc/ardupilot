@@ -309,7 +309,7 @@ void AP_InertialSensor_Invensensev2::_poll_data()
 
 bool AP_InertialSensor_Invensensev2::_accumulate(uint8_t *samples, uint8_t n_samples)
 {
-    for (uint8_t i = 0; i < n_samples; i++) {
+    for (uint_fast8_t i = 0; i < n_samples; i++) {
         const uint8_t *data = samples + INV2_SAMPLE_SIZE * i;
         Vector3f accel, gyro;
         bool fsync_set = false;
@@ -364,7 +364,7 @@ bool AP_InertialSensor_Invensensev2::_accumulate_sensor_rate_sampling(uint8_t *s
     bool clipped = false;
     bool ret = true;
 
-    for (uint8_t i = 0; i < n_samples; i++) {
+    for (uint_fast8_t i = 0; i < n_samples; i++) {
         const uint8_t *data = samples + INV2_SAMPLE_SIZE * i;
 
         // use temperature to detect FIFO corruption

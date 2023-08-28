@@ -41,7 +41,7 @@ void RCOutput_Disco::init()
 
 void RCOutput_Disco::set_freq(uint32_t chmask, uint16_t freq_hz)
 {
-    for (uint8_t i = 0; i < ARRAY_SIZE(output_table); i++) {
+    for (uint_fast8_t i = 0; i < ARRAY_SIZE(output_table); i++) {
         if (chmask & (1U << i)) {
             output_table[i].output.set_freq(1U<<output_table[i].channel, freq_hz);
         }

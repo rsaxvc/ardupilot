@@ -149,7 +149,7 @@ void AP_OpenDroneID::dronecan_send(AP_UAVCAN *uavcan)
 }
 
 #define ODID_COPY(name) msg.name = pkt.name
-#define ODID_COPY_STR(name) do { for (uint8_t i = 0; i<sizeof(pkt.name) && pkt.name[i]; i++) msg.name.push_back(pkt.name[i]); } while(0)
+#define ODID_COPY_STR(name) do { for (uint_fast8_t i = 0; i<sizeof(pkt.name) && pkt.name[i]; i++) msg.name.push_back(pkt.name[i]); } while(0)
 
 
 void AP_OpenDroneID::dronecan_send_location(AP_UAVCAN *uavcan)

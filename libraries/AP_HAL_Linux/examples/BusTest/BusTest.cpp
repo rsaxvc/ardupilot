@@ -37,7 +37,7 @@ get_device(const char *name)
 
     /* We get possible registered device count on the target board */
     uint8_t spicount = hal.spi->get_count();
-    for (uint8_t ref = 0; ref < spicount; ref++) {
+    for (uint_fast8_t ref = 0; ref < spicount; ref++) {
         /*
          * We get the name from the index and we compare
          * with our possible devices list.
@@ -65,7 +65,7 @@ void loop(void)
 
     hal.console->printf("Scanning SPI and I2C bus devices\n");
 
-    for (uint8_t i = 0; i < ARRAY_SIZE(whoami_list); i++) {
+    for (uint_fast8_t i = 0; i < ARRAY_SIZE(whoami_list); i++) {
         dev = get_device(whoami_list[i].name);
         if (!dev) {
             continue;

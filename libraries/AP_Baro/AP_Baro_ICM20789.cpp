@@ -237,7 +237,7 @@ bool AP_Baro_ICM20789::read_calibration_data(void)
         debug("ICM20789: read cal1 failed\n");
         return false;
     }
-    for (uint8_t i=0; i<4; i++) {
+    for (uint_fast8_t i=0; i<4; i++) {
         if (!send_cmd16(0xC7F7)) {
             debug("ICM20789: read cal2[%u] failed\n", i);
             return false;

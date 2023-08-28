@@ -328,7 +328,7 @@ bool AP_SmartAudio::read_response(uint8_t *response_buffer)
     }
 
     // read the rest of the packet
-    for (uint8_t i= 0; i < incoming_bytes_count && _inline_buffer_length < _packet_size + response_header_size; i++) {
+    for (uint_fast8_t i= 0; i < incoming_bytes_count && _inline_buffer_length < _packet_size + response_header_size; i++) {
         uint8_t response_in_bytes = _port->read();
 
         // check for overflow
@@ -485,7 +485,7 @@ void AP_SmartAudio::unpack_settings(Settings *settings, const SettingsExtendedRe
 void AP_SmartAudio::print_bytes_to_hex_string(const char* msg, const uint8_t buf[], uint8_t len)
 {
     hal.console->printf("SA: %s ", msg);
-    for (uint8_t i = 0; i < len; i++) {
+    for (uint_fast8_t i = 0; i < len; i++) {
         hal.console->printf("0x%02X ", buf[i]);
     }
     hal.console->printf("\n");

@@ -207,7 +207,7 @@ void HarmonicNotchFilter<T>::update(float center_freq_hz)
 
     _num_enabled_filters = 0;
     // update all of the filters using the new center frequency and existing A & Q
-    for (uint8_t i = 0; i < HNF_MAX_HARMONICS && _num_enabled_filters < _num_filters; i++) {
+    for (uint_fast8_t i = 0; i < HNF_MAX_HARMONICS && _num_enabled_filters < _num_filters; i++) {
         if ((1U<<i) & _harmonics) {
             const float notch_center = center_freq_hz * (i+1);
             if (_composite_notches != 2) {
@@ -255,7 +255,7 @@ void HarmonicNotchFilter<T>::update(uint8_t num_centers, const float center_freq
     _num_enabled_filters = 0;
 
     // update all of the filters using the new center frequencies and existing A & Q
-    for (uint8_t i = 0; i < num_centers * HNF_MAX_HARMONICS && _num_enabled_filters < _num_filters; i++) {
+    for (uint_fast8_t i = 0; i < num_centers * HNF_MAX_HARMONICS && _num_enabled_filters < _num_filters; i++) {
         const uint8_t harmonic_n = i / num_centers;
         const uint8_t center_n = i % num_centers;
         // the filters are ordered by center and then harmonic so
@@ -298,7 +298,7 @@ T HarmonicNotchFilter<T>::apply(const T &sample)
     }
 
     T output = sample;
-    for (uint8_t i = 0; i < _num_enabled_filters; i++) {
+    for (uint_fast8_t i = 0; i < _num_enabled_filters; i++) {
         output = _filters[i].apply(output);
     }
     return output;
@@ -314,7 +314,7 @@ void HarmonicNotchFilter<T>::reset()
         return;
     }
 
-    for (uint8_t i = 0; i < _num_filters; i++) {
+    for (uint_fast8_t i = 0; i < _num_filters; i++) {
         _filters[i].reset();
     }
 }

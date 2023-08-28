@@ -53,7 +53,7 @@ void AP_LTM_Telem::send_LTM(uint8_t lt_packet[], uint8_t lt_packet_size)
     }
     // calculate checksum
     uint8_t lt_crc = 0x00;
-    for (uint8_t i = 3; i < lt_packet_size - 1; i++) {
+    for (uint_fast8_t i = 3; i < lt_packet_size - 1; i++) {
         lt_crc ^= lt_packet[i];
     }
     lt_packet[lt_packet_size - 1] = lt_crc;

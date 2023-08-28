@@ -237,11 +237,11 @@ uint8_t AP_BattMonitor_SMBus::get_PEC(const uint8_t i2c_addr, uint8_t cmd, bool 
     bool do_invert;
 
     // for each byte in the stream
-    for (uint8_t i=0; i<sizeof(tmp_buff); i++) {
+    for (uint_fast8_t i=0; i<sizeof(tmp_buff); i++) {
         // load next data byte into the shift register
         shift_reg = tmp_buff[i];
         // for each bit in the current byte
-        for (uint8_t j=0; j<8; j++) {
+        for (uint_fast8_t j=0; j<8; j++) {
             do_invert = (crc ^ shift_reg) & 0x80;
             crc <<= 1;
             shift_reg <<= 1;

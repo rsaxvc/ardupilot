@@ -140,7 +140,7 @@ bool Polygon_intersects(const Vector2f *V, unsigned N, const Vector2f &p1, const
     }
 
     float intersect_dist_sq = FLT_MAX;
-    for (uint8_t i=0; i<N; i++) {
+    for (uint_fast8_t i=0; i<N; i++) {
         uint8_t j = i+1;
         if (j >= N) {
             j = 0;
@@ -184,7 +184,7 @@ float Polygon_closest_distance_line(const Vector2f *V, unsigned N, const Vector2
         return -sqrtf(sq(intersection.x - p2.x) + sq(intersection.y - p2.y));
     }
     float closest_sq = FLT_MAX;
-    for (uint8_t i=0; i<N-1; i++) {
+    for (uint_fast8_t i=0; i<N-1; i++) {
         const Vector2f &v1 = V[i];
         const Vector2f &v2 = V[i+1];
 
@@ -203,7 +203,7 @@ float Polygon_closest_distance_line(const Vector2f *V, unsigned N, const Vector2
 float Polygon_closest_distance_point(const Vector2f *V, unsigned N, const Vector2f &p)
 {
     float closest_sq = FLT_MAX;
-    for (uint8_t i=0; i<N-1; i++) {
+    for (uint_fast8_t i=0; i<N-1; i++) {
         const Vector2f &v1 = V[i];
         const Vector2f &v2 = V[i+1];
 

@@ -105,7 +105,7 @@ AP_BattMonitor_UAVCAN* AP_BattMonitor_UAVCAN::get_uavcan_backend(AP_UAVCAN* ap_u
     if (ap_uavcan == nullptr) {
         return nullptr;
     }
-    for (uint8_t i = 0; i < AP::battery()._num_instances; i++) {
+    for (uint_fast8_t i = 0; i < AP::battery()._num_instances; i++) {
         if (AP::battery().drivers[i] == nullptr ||
             AP::battery().get_type(i) != AP_BattMonitor::Type::UAVCAN_BatteryInfo) {
             continue;
@@ -116,7 +116,7 @@ AP_BattMonitor_UAVCAN* AP_BattMonitor_UAVCAN::get_uavcan_backend(AP_UAVCAN* ap_u
         }
     }
     // find empty uavcan driver
-    for (uint8_t i = 0; i < AP::battery()._num_instances; i++) {
+    for (uint_fast8_t i = 0; i < AP::battery()._num_instances; i++) {
         if (AP::battery().drivers[i] != nullptr &&
             AP::battery().get_type(i) == AP_BattMonitor::Type::UAVCAN_BatteryInfo &&
             match_battery_id(i, battery_id)) {
@@ -186,7 +186,7 @@ void AP_BattMonitor_UAVCAN::handle_battery_info_aux(const BattInfoAuxCb &cb)
     float full_charge_capacity_ah = _full_charge_capacity_wh / cb.msg->nominal_voltage;
 
     _cycle_count = cb.msg->cycle_count;
-    for (uint8_t i = 0; i < cell_count; i++) {
+    for (uint_fast8_t i = 0; i < cell_count; i++) {
         _interim_state.cell_voltages.cells[i] = cb.msg->voltage_cell[i] * 1000;
     }
     _interim_state.is_powering_off = cb.msg->is_powering_off;
@@ -374,7 +374,7 @@ void AP_BattMonitor_UAVCAN::mppt_set_powered_state(bool power_on)
 void trampoline_handleOutputEnable(const uavcan::ServiceCallResult<mppt::OutputEnable>& resp)
 {
     uint8_t can_num_drivers = AP::can().get_num_drivers();
-    for (uint8_t i = 0; i < can_num_drivers; i++) {
+    for (uint_fast8_t i = 0; i < can_num_drivers; i++) {
         AP_UAVCAN *uavcan = AP_UAVCAN::get_uavcan(i);
         if (uavcan == nullptr) {
             continue;
@@ -419,7 +419,7 @@ void AP_BattMonitor_UAVCAN::mppt_report_faults(const uint8_t instance, const uin
     }
 
     // send battery faults via text messages
-    for (uint8_t fault_bit=0x01; fault_bit <= 0x08; fault_bit <<= 1) {
+    for (uint_fast8_t fault_bit=0x01; fault_bit <= 0x08; fault_bit <<= 1) {
         // this loop is to generate multiple messages if there are multiple concurrent faults, but also run once if there are no faults
         if ((fault_bit & fault_flags) != 0) {
             const MPPT_FaultFlags err = (MPPT_FaultFlags)fault_bit;

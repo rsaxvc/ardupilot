@@ -187,7 +187,7 @@ void Storage::_mark_dirty(uint16_t loc, uint16_t length)
         return;
     }
     uint16_t end = loc + length - 1;
-    for (uint8_t line=loc>>LINUX_STORAGE_LINE_SHIFT;
+    for (uint_fast8_t line=loc>>LINUX_STORAGE_LINE_SHIFT;
          line <= end>>LINUX_STORAGE_LINE_SHIFT;
          line++) {
         _dirty_mask |= 1U << line;

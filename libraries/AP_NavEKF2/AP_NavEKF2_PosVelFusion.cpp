@@ -50,7 +50,7 @@ void NavEKF2_core::ResetVelocity(void)
         velTimeout = false;
         lastVelPassTime_ms = imuSampleTime_ms;
     }
-    for (uint8_t i=0; i<imu_buffer_length; i++) {
+    for (uint_fast8_t i=0; i<imu_buffer_length; i++) {
         storedOutput[i].velocity.x = stateStruct.velocity.x;
         storedOutput[i].velocity.y = stateStruct.velocity.y;
     }
@@ -122,7 +122,7 @@ void NavEKF2_core::ResetPosition(void)
             P[7][7] = P[6][6] = sq(extNavCorrected.posErr);
         }
     }
-    for (uint8_t i=0; i<imu_buffer_length; i++) {
+    for (uint_fast8_t i=0; i<imu_buffer_length; i++) {
         storedOutput[i].position.x = stateStruct.position.x;
         storedOutput[i].position.y = stateStruct.position.y;
     }
@@ -158,7 +158,7 @@ void NavEKF2_core::ResetPositionNE(ftype posN, ftype posE)
     posResetNE.y = stateStruct.position.y - posOrig.y;
 
     // Add the offset to the output observer states
-    for (uint8_t i=0; i<imu_buffer_length; i++) {
+    for (uint_fast8_t i=0; i<imu_buffer_length; i++) {
         storedOutput[i].position.x += posResetNE.x;
         storedOutput[i].position.y += posResetNE.y;
     }
@@ -190,7 +190,7 @@ void NavEKF2_core::ResetHeight(void)
         // can make no assumption other than vehicle is not below ground level
         terrainState = MAX(stateStruct.position.z + rngOnGnd , terrainState);
     }
-    for (uint8_t i=0; i<imu_buffer_length; i++) {
+    for (uint_fast8_t i=0; i<imu_buffer_length; i++) {
         storedOutput[i].position.z = stateStruct.position.z;
     }
     vertCompFiltState.pos = stateStruct.position.z;
@@ -222,7 +222,7 @@ void NavEKF2_core::ResetHeight(void)
     } else if (onGround) {
         stateStruct.velocity.z = 0.0f;
     }
-    for (uint8_t i=0; i<imu_buffer_length; i++) {
+    for (uint_fast8_t i=0; i<imu_buffer_length; i++) {
         storedOutput[i].velocity.z = stateStruct.velocity.z;
     }
     outputDataNew.velocity.z = stateStruct.velocity.z;
@@ -260,7 +260,7 @@ void NavEKF2_core::ResetPositionD(ftype posD)
     outputDataNew.position.z += posResetD;
     vertCompFiltState.pos = outputDataNew.position.z;
     outputDataDelayed.position.z += posResetD;
-    for (uint8_t i=0; i<imu_buffer_length; i++) {
+    for (uint_fast8_t i=0; i<imu_buffer_length; i++) {
         storedOutput[i].position.z += posResetD;
     }
 
@@ -492,7 +492,7 @@ void NavEKF2_core::SelectVelPosFusion()
         posResetNE.y = stateStruct.position.y - posResetNE.y;
 
         // Add the offset to the output observer states
-        for (uint8_t i=0; i<imu_buffer_length; i++) {
+        for (uint_fast8_t i=0; i<imu_buffer_length; i++) {
             storedOutput[i].position.x += posResetNE.x;
             storedOutput[i].position.y += posResetNE.y;
         }
@@ -519,7 +519,7 @@ void NavEKF2_core::SelectVelPosFusion()
             outputDataNew.position.z += posResetD;
             vertCompFiltState.pos = outputDataNew.position.z;
             outputDataDelayed.position.z += posResetD;
-            for (uint8_t i=0; i<imu_buffer_length; i++) {
+            for (uint_fast8_t i=0; i<imu_buffer_length; i++) {
                 storedOutput[i].position.z += posResetD;
             }
 
@@ -602,7 +602,7 @@ void NavEKF2_core::FuseVelPosNED()
             R_OBS[2] = R_OBS[0];
             R_OBS[3] = R_OBS[0];
             R_OBS[4] = R_OBS[0];
-            for (uint8_t i=0; i<=2; i++) R_OBS_DATA_CHECKS[i] = R_OBS[i];
+            for (uint_fast8_t i=0; i<=2; i++) R_OBS_DATA_CHECKS[i] = R_OBS[i];
         } else {
             if (gpsSpdAccuracy > 0.0f) {
                 // use GPS receivers reported speed accuracy if available and floor at value set by GPS velocity noise parameter
@@ -637,7 +637,7 @@ void NavEKF2_core::FuseVelPosNED()
             R_OBS_DATA_CHECKS[0] = R_OBS_DATA_CHECKS[1] = R_OBS_DATA_CHECKS[2] = obs_data_chk;
         }
         R_OBS[5] = posDownObsNoise;
-        for (uint8_t i=3; i<=5; i++) R_OBS_DATA_CHECKS[i] = R_OBS[i];
+        for (uint_fast8_t i=3; i<=5; i++) R_OBS_DATA_CHECKS[i] = R_OBS[i];
 
         // if vertical GPS velocity data and an independent height source is being used, check to see if the GPS vertical velocity and altimeter
         // innovations have the same sign and are outside limits. If so, then it is likely aliasing is affecting
@@ -705,7 +705,7 @@ void NavEKF2_core::FuseVelPosNED()
             }
             ftype innovVelSumSq = 0; // sum of squares of velocity innovations
             ftype varVelSum = 0; // sum of velocity innovation variances
-            for (uint8_t i = 0; i<=imax; i++) {
+            for (uint_fast8_t i = 0; i<=imax; i++) {
                 // velocity states start at index 3
                 stateIndex   = i + 3;
                 // calculate innovations using blended and single IMU predicted states
@@ -831,17 +831,17 @@ void NavEKF2_core::FuseVelPosNED()
                 // calculate the Kalman gain and calculate innovation variances
                 varInnovVelPos[obsIndex] = P[stateIndex][stateIndex] + R_OBS[obsIndex];
                 SK = 1.0f/varInnovVelPos[obsIndex];
-                for (uint8_t i= 0; i<=15; i++) {
+                for (uint_fast8_t i= 0; i<=15; i++) {
                     Kfusion[i] = P[i][stateIndex]*SK;
                 }
 
                 // inhibit magnetic field state estimation by setting Kalman gains to zero
                 if (!inhibitMagStates) {
-                    for (uint8_t i = 16; i<=21; i++) {
+                    for (uint_fast8_t i = 16; i<=21; i++) {
                         Kfusion[i] = P[i][stateIndex]*SK;
                     }
                 } else {
-                    for (uint8_t i = 16; i<=21; i++) {
+                    for (uint_fast8_t i = 16; i<=21; i++) {
                         Kfusion[i] = 0.0f;
                     }
                 }
@@ -857,23 +857,23 @@ void NavEKF2_core::FuseVelPosNED()
 
                 // update the covariance - take advantage of direct observation of a single state at index = stateIndex to reduce computations
                 // this is a numerically optimised implementation of standard equation P = (I - K*H)*P;
-                for (uint8_t i= 0; i<=stateIndexLim; i++) {
-                    for (uint8_t j= 0; j<=stateIndexLim; j++)
+                for (uint_fast8_t i= 0; i<=stateIndexLim; i++) {
+                    for (uint_fast8_t j= 0; j<=stateIndexLim; j++)
                     {
                         KHP[i][j] = Kfusion[i] * P[stateIndex][j];
                     }
                 }
                 // Check that we are not going to drive any variances negative and skip the update if so
                 bool healthyFusion = true;
-                for (uint8_t i= 0; i<=stateIndexLim; i++) {
+                for (uint_fast8_t i= 0; i<=stateIndexLim; i++) {
                     if (KHP[i][i] > P[i][i]) {
                         healthyFusion = false;
                     }
                 }
                 if (healthyFusion) {
                     // update the covariance matrix
-                    for (uint8_t i= 0; i<=stateIndexLim; i++) {
-                        for (uint8_t j= 0; j<=stateIndexLim; j++) {
+                    for (uint_fast8_t i= 0; i<=stateIndexLim; i++) {
+                        for (uint_fast8_t j= 0; j<=stateIndexLim; j++) {
                             P[i][j] = P[i][j] - KHP[i][j];
                         }
                     }
@@ -887,7 +887,7 @@ void NavEKF2_core::FuseVelPosNED()
                     stateStruct.angErr.zero();
 
                     // calculate state corrections and re-normalise the quaternions for states predicted using the blended IMU data
-                    for (uint8_t i = 0; i<=stateIndexLim; i++) {
+                    for (uint_fast8_t i = 0; i<=stateIndexLim; i++) {
                         statesArray[i] = statesArray[i] - Kfusion[i] * innovVelPos[obsIndex];
                     }
 

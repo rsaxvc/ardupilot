@@ -229,7 +229,7 @@ AP_UAVCAN::AP_UAVCAN()
 {
     AP_Param::setup_object_defaults(this, var_info);
 
-    for (uint8_t i = 0; i < UAVCAN_SRV_NUMBER; i++) {
+    for (uint_fast8_t i = 0; i < UAVCAN_SRV_NUMBER; i++) {
         _SRV_conf[i].esc_pending = false;
         _SRV_conf[i].servo_pending = false;
     }
@@ -525,7 +525,7 @@ void AP_UAVCAN::loop(void)
                     _SRV_last_send_us = now;
                     SRV_send_actuator();
                     sent_servos = true;
-                    for (uint8_t i = 0; i < UAVCAN_SRV_NUMBER; i++) {
+                    for (uint_fast8_t i = 0; i < UAVCAN_SRV_NUMBER; i++) {
                         _SRV_conf[i].servo_pending = false;
                     }
                 }
@@ -536,7 +536,7 @@ void AP_UAVCAN::loop(void)
                 SRV_send_esc();
             }
 
-            for (uint8_t i = 0; i < UAVCAN_SRV_NUMBER; i++) {
+            for (uint_fast8_t i = 0; i < UAVCAN_SRV_NUMBER; i++) {
                 _SRV_conf[i].esc_pending = false;
             }
         }
@@ -638,7 +638,7 @@ void AP_UAVCAN::SRV_send_esc(void)
     const uint8_t esc_offset = constrain_int16(_esc_offset.get(), 0, UAVCAN_SRV_NUMBER);
 
     // find out how many esc we have enabled and if they are active at all
-    for (uint8_t i = esc_offset; i < UAVCAN_SRV_NUMBER; i++) {
+    for (uint_fast8_t i = esc_offset; i < UAVCAN_SRV_NUMBER; i++) {
         if ((((uint32_t) 1) << i) & _esc_bm) {
             max_esc_num = i + 1;
             if (_SRV_conf[i].esc_pending) {
@@ -651,7 +651,7 @@ void AP_UAVCAN::SRV_send_esc(void)
     if (active_esc_num > 0) {
         k = 0;
 
-        for (uint8_t i = esc_offset; i < max_esc_num && k < 20; i++) {
+        for (uint_fast8_t i = esc_offset; i < max_esc_num && k < 20; i++) {
             if ((((uint32_t) 1) << i) & _esc_bm) {
                 // TODO: ESC negative scaling for reverse thrust and reverse rotation
                 float scaled = cmd_max * (hal.rcout->scale_esc_to_unity(_SRV_conf[i].pulse) + 1.0) / 2.0;
@@ -678,7 +678,7 @@ void AP_UAVCAN::SRV_push_servos()
 {
     WITH_SEMAPHORE(SRV_sem);
 
-    for (uint8_t i = 0; i < UAVCAN_SRV_NUMBER; i++) {
+    for (uint_fast8_t i = 0; i < UAVCAN_SRV_NUMBER; i++) {
         // Check if this channels has any function assigned
         if (SRV_Channels::channel_function(i) >= SRV_Channel::k_none) {
             _SRV_conf[i].pulse = SRV_Channels::srv_channel(i)->get_output_pwm();
@@ -711,7 +711,7 @@ void AP_UAVCAN::led_out_send()
 
         uavcan::equipment::indication::SingleLightCommand cmd;
 
-        for (uint8_t i = 0; i < _led_conf.devices_count; i++) {
+        for (uint_fast8_t i = 0; i < _led_conf.devices_count; i++) {
             cmd.light_id =_led_conf.devices[i].led_index;
             cmd.color.red = _led_conf.devices[i].red >> 3;
             cmd.color.green = _led_conf.devices[i].green >> 2;
@@ -863,7 +863,7 @@ void AP_UAVCAN::notify_state_send()
     msg.aux_data_type = ardupilot::indication::NotifyState::VEHICLE_YAW_EARTH_CENTIDEGREES;
     uint16_t yaw_cd = (uint16_t)(360.0f - degrees(AP::ahrs().get_yaw()))*100.0f;
     const uint8_t *data = (uint8_t *)&yaw_cd;
-    for (uint8_t i=0; i<2; i++) {
+    for (uint_fast8_t i=0; i<2; i++) {
         msg.aux_data.push_back(data[i]);
     }
     notify_state[_driver_index]->broadcast(msg);
@@ -900,7 +900,7 @@ void AP_UAVCAN::gnss_send_fix()
     pkt.latitude_deg_1e8 = uint64_t(loc.lat) * 10ULL;
     pkt.height_ellipsoid_mm = loc.alt * 10;
     pkt.height_msl_mm = loc.alt * 10;
-    for (uint8_t i=0; i<3; i++) {
+    for (uint_fast8_t i=0; i<3; i++) {
         pkt.ned_velocity[i] = vel[i];
     }
     pkt.sats_used = gps.num_sats();
@@ -1040,7 +1040,7 @@ void AP_UAVCAN::rtcm_stream_send()
         len = 128;
     }
     msg.protocol_id = uavcan::equipment::gnss::RTCMStream::PROTOCOL_ID_RTCM3;
-    for (uint8_t i=0; i<len; i++) {
+    for (uint_fast8_t i=0; i<len; i++) {
         uint8_t b;
         if (!_rtcm_stream.buf->read_byte(&b)) {
             return;
@@ -1147,7 +1147,7 @@ void AP_UAVCAN::handle_traffic_report(AP_UAVCAN* ap_uavcan, uint8_t node_id, con
     pkt.hor_velocity = norm(msg.velocity[0], msg.velocity[1]) * 100;
     pkt.ver_velocity = -msg.velocity[2] * 100;
     pkt.squawk = msg.squawk;
-    for (uint8_t i=0; i<9; i++) {
+    for (uint_fast8_t i=0; i<9; i++) {
         pkt.callsign[i] = msg.callsign[i];
     }
     pkt.emitter_type = msg.traffic_type;

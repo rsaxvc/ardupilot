@@ -240,14 +240,14 @@ void AP_Scripting::thread(void) {
         lua = nullptr;
 
         // clear allocated i2c devices
-        for (uint8_t i=0; i<SCRIPTING_MAX_NUM_I2C_DEVICE; i++) {
+        for (uint_fast8_t i=0; i<SCRIPTING_MAX_NUM_I2C_DEVICE; i++) {
             delete _i2c_dev[i];
             _i2c_dev[i] = nullptr;
         }
         num_i2c_devices = 0;
 
         // clear allocated PWM sources
-        for (uint8_t i=0; i<SCRIPTING_MAX_NUM_PWM_SOURCE; i++) {
+        for (uint_fast8_t i=0; i<SCRIPTING_MAX_NUM_PWM_SOURCE; i++) {
             if (_pwm_source[i] != nullptr) {
                 delete _pwm_source[i];
                 _pwm_source[i] = nullptr;

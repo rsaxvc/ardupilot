@@ -137,7 +137,7 @@ bool AC_InputManager_Heli::parameter_check(char* fail_msg, uint8_t fail_msg_len)
     };
 
     // check values are within valid range
-    for (uint8_t i=0; i<ARRAY_SIZE(stab_checks); i++) {
+    for (uint_fast8_t i=0; i<ARRAY_SIZE(stab_checks); i++) {
         const StabCheck check = stab_checks[i];
         if ((check.value < 0) || (check.value > 100)){
             hal.util->snprintf(fail_msg, fail_msg_len, "%s out of range", check.name);
@@ -145,7 +145,7 @@ bool AC_InputManager_Heli::parameter_check(char* fail_msg, uint8_t fail_msg_len)
         }
     }
     // check values are in correct order
-    for (uint8_t i=1; i<ARRAY_SIZE(stab_checks); i++) {
+    for (uint_fast8_t i=1; i<ARRAY_SIZE(stab_checks); i++) {
         if ((stab_checks[i-1].value >= stab_checks[i].value)){
             hal.util->snprintf(fail_msg, fail_msg_len, "%s must be < %s", stab_checks[i-1].name, stab_checks[i].name);
             return false;

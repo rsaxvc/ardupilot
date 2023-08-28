@@ -42,7 +42,7 @@ int RAMTRON::rdwr(uint8_t count, SPI::spi_ioc_transfer *&tfrs)
     static const uint8_t RAMTRON_WREN  = 0x06;
     static const uint8_t RAMTRON_WRITE = 0x02;
 
-    for (uint8_t i=0; i<count; i++) {
+    for (uint_fast8_t i=0; i<count; i++) {
         SPI::spi_ioc_transfer &tfr = tfrs[i];
         uint8_t *tx_buf = (uint8_t*)(tfr.tx_buf);
         uint8_t *rx_buf = (uint8_t*)(tfr.rx_buf);

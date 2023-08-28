@@ -168,7 +168,7 @@ MAV_MISSION_RESULT MissionItemProtocol_Fence::complete(const GCS_MAVLINK &_link)
 {
     if (_updated_mask != nullptr) {
         // get any points that weren't filled in
-        for (uint16_t i=0; i<_new_items_count; i++) {
+        for (uint_fast16_t i=0; i<_new_items_count; i++) {
             if (!(_updated_mask[i/8] & (1U<<(i%8)))) {
                 if (!_fence.polyfence().get_item(i, _new_items[i])) {
                     _link.send_text(MAV_SEVERITY_INFO, "Error replacing item (%u)", i);

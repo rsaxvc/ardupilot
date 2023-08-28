@@ -67,7 +67,7 @@ void AP_RPM::init(void)
 
     convert_params();
 
-    for (uint8_t i=0; i<RPM_MAX_INSTANCES; i++) {
+    for (uint_fast8_t i=0; i<RPM_MAX_INSTANCES; i++) {
         switch (_params[i].type) {
 #if AP_RPM_PIN_ENABLED
         case RPM_TYPE_PWM:
@@ -168,7 +168,7 @@ void AP_RPM::convert_params(void)
         return; // no conversion is supported on this platform
     }
 
-    for (uint8_t i = 0; i < ARRAY_SIZE(conversionTable); i++) {
+    for (uint_fast8_t i = 0; i < ARRAY_SIZE(conversionTable); i++) {
         uint8_t param_instance = conversionTable[i].instance + 1;
         uint8_t destination_index = conversionTable[i].new_index;
         info.old_group_element = conversionTable[i].old_element;
@@ -190,7 +190,7 @@ void AP_RPM::convert_params(void)
  */
 void AP_RPM::update(void)
 {
-    for (uint8_t i=0; i<num_instances; i++) {
+    for (uint_fast8_t i=0; i<num_instances; i++) {
         if (drivers[i] != nullptr) {
             if (_params[i].type == RPM_TYPE_NONE) {
                 // allow user to disable an RPM sensor at runtime and force it to re-learn the quality if re-enabled.
@@ -256,7 +256,7 @@ bool AP_RPM::get_rpm(uint8_t instance, float &rpm_value) const
 // check settings are valid
 bool AP_RPM::arming_checks(size_t buflen, char *buffer) const
 {
-    for (uint8_t i=0; i<RPM_MAX_INSTANCES; i++) {
+    for (uint_fast8_t i=0; i<RPM_MAX_INSTANCES; i++) {
         switch (_params[i].type) {
 #if AP_RPM_PIN_ENABLED
         case RPM_TYPE_PWM:

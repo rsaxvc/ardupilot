@@ -82,7 +82,7 @@ void RCOutput::init()
         MCPWM_OPR_B
     };
 
-    for (uint8_t i = 0; i < MAX_CHANNELS; ++i) {
+    for (uint_fast8_t i = 0; i < MAX_CHANNELS; ++i) {
         auto unit = units[i/6];
         auto signal = signals[i % 6];
         auto timer = timers[i/2];
@@ -120,7 +120,7 @@ void RCOutput::set_freq(uint32_t chmask, uint16_t freq_hz)
         return;
     }
 
-    for (uint8_t i = 0; i < MAX_CHANNELS; i++) {
+    for (uint_fast8_t i = 0; i < MAX_CHANNELS; i++) {
         if (chmask & 1 << i) {
             pwm_out &out = pwm_group_list[i];
             mcpwm_set_frequency(out.unit_num, out.timer_num, freq_hz);
@@ -214,7 +214,7 @@ void RCOutput::push()
 
     bool safety_on = hal.util->safety_switch_state() == AP_HAL::Util::SAFETY_DISARMED;
 
-    for (uint8_t i = 0; i < MAX_CHANNELS; i++) {
+    for (uint_fast8_t i = 0; i < MAX_CHANNELS; i++) {
         if ((1U<<i) & _pending_mask) {
             uint32_t period_us = _pending[i];
 
@@ -285,7 +285,7 @@ void RCOutput::force_safety_off(void)
 */
 void RCOutput::set_safety_pwm(uint32_t chmask, uint16_t period_us)
 {
-    for (uint8_t i=0; i<16; i++) {
+    for (uint_fast8_t i=0; i<16; i++) {
         if (chmask & (1U<<i)) {
             safe_pwm[i] = period_us;
         }

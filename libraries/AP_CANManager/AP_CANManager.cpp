@@ -140,7 +140,7 @@ void AP_CANManager::init()
     Driver_Type drv_type[HAL_MAX_CAN_PROTOCOL_DRIVERS] = {};
     // loop through interfaces and allocate and initialise Iface,
     // Also allocate Driver objects, and add interfaces to them
-    for (uint8_t i = 0; i < HAL_NUM_CAN_IFACES; i++) {
+    for (uint_fast8_t i = 0; i < HAL_NUM_CAN_IFACES; i++) {
         // Get associated Driver to the interface
         uint8_t drv_num = _interfaces[i]._driver_number;
         if (drv_num == 0 || drv_num > HAL_MAX_CAN_PROTOCOL_DRIVERS) {
@@ -248,13 +248,13 @@ void AP_CANManager::init()
 
     }
 
-    for (uint8_t drv_num = 0; drv_num < HAL_MAX_CAN_PROTOCOL_DRIVERS; drv_num++) {
+    for (uint_fast8_t drv_num = 0; drv_num < HAL_MAX_CAN_PROTOCOL_DRIVERS; drv_num++) {
         //initialise all the Drivers
         if (_drivers[drv_num] == nullptr) {
             continue;
         }
         bool enable_filter = false;
-        for (uint8_t i = 0; i < HAL_NUM_CAN_IFACES; i++) {
+        for (uint_fast8_t i = 0; i < HAL_NUM_CAN_IFACES; i++) {
             if (_interfaces[i]._driver_number == (drv_num+1) &&
                 hal.can[i] != nullptr &&
                 hal.can[i]->get_operating_mode() == AP_HAL::CANIface::FilteredMode) {
@@ -279,7 +279,7 @@ bool AP_CANManager::register_driver(Driver_Type dtype, AP_CANDriver *driver)
 {
     WITH_SEMAPHORE(_sem);
 
-    for (uint8_t i = 0; i < HAL_NUM_CAN_IFACES; i++) {
+    for (uint_fast8_t i = 0; i < HAL_NUM_CAN_IFACES; i++) {
         uint8_t drv_num = _interfaces[i]._driver_number;
         if (drv_num == 0 || drv_num > HAL_MAX_CAN_PROTOCOL_DRIVERS) {
             continue;
@@ -405,7 +405,7 @@ bool AP_CANManager::handle_can_forward(mavlink_channel_t chan, const mavlink_com
     can_forward.component_id = msg.compid;
 
     // remove registration on other buses, allowing for bus change in the GUI tool
-    for (uint8_t i=0; i<HAL_NUM_CAN_IFACES; i++) {
+    for (uint_fast8_t i=0; i<HAL_NUM_CAN_IFACES; i++) {
         if (i != bus && hal.can[i] != nullptr) {
             hal.can[i]->register_frame_callback(nullptr);
         }

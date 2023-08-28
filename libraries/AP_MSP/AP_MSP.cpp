@@ -97,7 +97,7 @@ void AP_MSP::init()
     };
 
     for (const auto msp_protocol: msp_protocols) {
-        for (uint8_t protocol_instance=0; protocol_instance<MSP_MAX_INSTANCES-_msp_status.backend_count; protocol_instance++) {
+        for (uint_fast8_t protocol_instance=0; protocol_instance<MSP_MAX_INSTANCES-_msp_status.backend_count; protocol_instance++) {
             uart = serial_manager.find_serial(msp_protocol, protocol_instance);
             if (uart != nullptr) {
                 if (!init_backend(_msp_status.backend_count, uart, msp_protocol)) {
@@ -163,7 +163,7 @@ void AP_MSP::update_osd_item_settings()
 
 void AP_MSP::loop(void)
 {
-    for (uint8_t i=0; i<_msp_status.backend_count; i++) {
+    for (uint_fast8_t i=0; i<_msp_status.backend_count; i++) {
         // one time uart init
         // note: we do not access a uart for a backend handled by another thread
         if (_backends[i] != nullptr && _backends[i]->use_msp_thread())  {
@@ -205,7 +205,7 @@ void AP_MSP::loop(void)
         }
 #endif  // OSD_ENABLED
 
-        for (uint8_t i=0; i< _msp_status.backend_count; i++) {
+        for (uint_fast8_t i=0; i< _msp_status.backend_count; i++) {
             // note: we do not access a uart for a backend handled by another thread
             if (_backends[i] != nullptr && _backends[i]->use_msp_thread()) {
                 // dynamically hide/unhide
@@ -220,7 +220,7 @@ void AP_MSP::loop(void)
 }
 
 AP_MSP_Telem_Backend* AP_MSP::find_protocol(const AP_SerialManager::SerialProtocol protocol) const {
-    for (uint8_t i=0; i< _msp_status.backend_count; i++) {
+    for (uint_fast8_t i=0; i< _msp_status.backend_count; i++) {
         if (_backends[i] != nullptr && _backends[i]->get_serial_protocol() == protocol) {
             return _backends[i];
         }

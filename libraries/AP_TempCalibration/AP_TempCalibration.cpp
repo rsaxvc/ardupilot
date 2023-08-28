@@ -109,7 +109,7 @@ float AP_TempCalibration::calculate_p_range(float baro_factor) const
 {
     float sum = 0;
     float P0 = learn_values[0] + calculate_correction(learn_temp_start, baro_factor);
-    for (uint16_t i=0; i<learn_i; i++) {
+    for (uint_fast16_t i=0; i<learn_i; i++) {
         if (is_zero(learn_values[i])) {
             // gap in the data
             continue;

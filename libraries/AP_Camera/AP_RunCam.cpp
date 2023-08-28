@@ -935,7 +935,7 @@ void AP_RunCam::send_packet(Command command, uint8_t param)
     }
 
     uint8_t crc = 0;
-    for (uint8_t i = 0; i < buffer_len - 1; i++) {
+    for (uint_fast8_t i = 0; i < buffer_len - 1; i++) {
         crc = crc8_dvb_s2(crc, buffer[i]);
     }
 
@@ -1049,7 +1049,7 @@ uint8_t AP_RunCam::Request::get_crc() const
 // get the length of a response
 uint8_t AP_RunCam::Request::get_expected_response_length(const Command command) const
 {
-    for (uint16_t i = 0; i < RUNCAM_NUM_EXPECTED_RESPONSES; i++) {
+    for (uint_fast16_t i = 0; i < RUNCAM_NUM_EXPECTED_RESPONSES; i++) {
         if (_expected_responses_length[i].command == command) {
             return _expected_responses_length[i].reponse_length;
         }

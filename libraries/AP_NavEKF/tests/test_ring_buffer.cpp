@@ -56,12 +56,12 @@ TEST(EKF_Buffer, EKF_Buffer)
     EXPECT_FALSE(buf.recall(d2, 103));
 
     // test overflow of buffer
-    for (uint8_t i=0; i<16; i++) {
+    for (uint_fast8_t i=0; i<16; i++) {
         d.time_ms = 100+i;
         d.data = 1000+i;
         buf.push(d);
     }
-    for (uint8_t i=0; i<16; i++) {
+    for (uint_fast8_t i=0; i<16; i++) {
         if (i < 8) {
             EXPECT_TRUE(buf.recall(d2, 108+i));
         } else {

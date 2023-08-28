@@ -128,7 +128,7 @@ void AP_Relay::init()
     if (_default != 0 && _default != 1) {
         return;
     }
-    for (uint8_t i=0; i<AP_RELAY_NUM_RELAYS; i++) {
+    for (uint_fast8_t i=0; i<AP_RELAY_NUM_RELAYS; i++) {
         set(i, _default);
     }
 }
@@ -168,7 +168,7 @@ void AP_Relay::toggle(uint8_t instance)
 // check settings are valid
 bool AP_Relay::arming_checks(size_t buflen, char *buffer) const
 {
-    for (uint8_t i=0; i<AP_RELAY_NUM_RELAYS; i++) {
+    for (uint_fast8_t i=0; i<AP_RELAY_NUM_RELAYS; i++) {
         int8_t pin = _pin[i].get();
         if (pin != -1 && !hal.gpio->valid_pin(pin)) {
             char param_name_buf[11] = "RELAY_PIN";

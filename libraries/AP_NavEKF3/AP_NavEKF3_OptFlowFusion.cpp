@@ -312,7 +312,7 @@ void NavEKF3_core::FuseOptFlow(const of_elements &ofDataDelayed, bool really_fus
 #endif
 
     // Fuse X and Y axis measurements sequentially assuming observation errors are uncorrelated
-    for (uint8_t obsIndex=0; obsIndex<=1; obsIndex++) { // fuse X axis data first
+    for (uint_fast8_t obsIndex=0; obsIndex<=1; obsIndex++) { // fuse X axis data first
 
         // calculate relative velocity in sensor frame including the relative motion due to rotation
         const Vector3F relVelSensor = (prevTnb * stateStruct.velocity) + (ofDataDelayed.bodyRadXYZ % posOffsetBody);
@@ -466,7 +466,7 @@ void NavEKF3_core::FuseOptFlow(const of_elements &ofDataDelayed, bool really_fus
             }
 
             if (!inhibitDelVelBiasStates && !badIMUdata) {
-                for (uint8_t index = 0; index < 3; index++) {
+                for (uint_fast8_t index = 0; index < 3; index++) {
                     const uint8_t stateIndex = index + 13;
                     if (!dvelBiasAxisInhibit[index]) {
                         Kfusion[stateIndex] = t78*(P[stateIndex][0]*t2*t5-P[stateIndex][4]*t2*t7+P[stateIndex][1]*t2*t15+P[stateIndex][6]*t2*t10+P[stateIndex][2]*t2*t19-P[stateIndex][3]*t2*t22+P[stateIndex][5]*t2*t27);
@@ -643,7 +643,7 @@ void NavEKF3_core::FuseOptFlow(const of_elements &ofDataDelayed, bool really_fus
             }
 
             if (!inhibitDelVelBiasStates && !badIMUdata) {
-                for (uint8_t index = 0; index < 3; index++) {
+                for (uint_fast8_t index = 0; index < 3; index++) {
                     const uint8_t stateIndex = index + 13;
                     if (!dvelBiasAxisInhibit[index]) {
                         Kfusion[stateIndex] = -t78*(P[stateIndex][0]*t2*t5+P[stateIndex][5]*t2*t8-P[stateIndex][6]*t2*t10+P[stateIndex][1]*t2*t16-P[stateIndex][2]*t2*t19+P[stateIndex][3]*t2*t22+P[stateIndex][4]*t2*t27);
@@ -692,16 +692,16 @@ void NavEKF3_core::FuseOptFlow(const of_elements &ofDataDelayed, bool really_fus
             // correct the covariance P = (I - K*H)*P
             // take advantage of the empty columns in KH to reduce the
             // number of operations
-            for (uint8_t i = 0; i<=stateIndexLim; i++) {
-                for (uint8_t j = 0; j<=6; j++) {
+            for (uint_fast8_t i = 0; i<=stateIndexLim; i++) {
+                for (uint_fast8_t j = 0; j<=6; j++) {
                     KH[i][j] = Kfusion[i] * H_LOS[j];
                 }
-                for (uint8_t j = 7; j<=stateIndexLim; j++) {
+                for (uint_fast8_t j = 7; j<=stateIndexLim; j++) {
                     KH[i][j] = 0.0f;
                 }
             }
-            for (uint8_t j = 0; j<=stateIndexLim; j++) {
-                for (uint8_t i = 0; i<=stateIndexLim; i++) {
+            for (uint_fast8_t j = 0; j<=stateIndexLim; j++) {
+                for (uint_fast8_t i = 0; i<=stateIndexLim; i++) {
                     ftype res = 0;
                     res += KH[i][0] * P[0][j];
                     res += KH[i][1] * P[1][j];
@@ -716,7 +716,7 @@ void NavEKF3_core::FuseOptFlow(const of_elements &ofDataDelayed, bool really_fus
 
             // Check that we are not going to drive any variances negative and skip the update if so
             bool healthyFusion = true;
-            for (uint8_t i= 0; i<=stateIndexLim; i++) {
+            for (uint_fast8_t i= 0; i<=stateIndexLim; i++) {
                 if (KHP[i][i] > P[i][i]) {
                     healthyFusion = false;
                 }
@@ -724,8 +724,8 @@ void NavEKF3_core::FuseOptFlow(const of_elements &ofDataDelayed, bool really_fus
 
             if (healthyFusion) {
                 // update the covariance matrix
-                for (uint8_t i= 0; i<=stateIndexLim; i++) {
-                    for (uint8_t j= 0; j<=stateIndexLim; j++) {
+                for (uint_fast8_t i= 0; i<=stateIndexLim; i++) {
+                    for (uint_fast8_t j= 0; j<=stateIndexLim; j++) {
                         P[i][j] = P[i][j] - KHP[i][j];
                     }
                 }
@@ -735,7 +735,7 @@ void NavEKF3_core::FuseOptFlow(const of_elements &ofDataDelayed, bool really_fus
                 ConstrainVariances();
 
                 // correct the state vector
-                for (uint8_t j= 0; j<=stateIndexLim; j++) {
+                for (uint_fast8_t j= 0; j<=stateIndexLim; j++) {
                     statesArray[j] = statesArray[j] - Kfusion[j] * flowInnov[obsIndex];
                 }
                 stateStruct.quat.normalize();

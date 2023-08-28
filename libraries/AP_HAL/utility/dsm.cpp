@@ -393,7 +393,7 @@ dsm_parse(uint64_t now, uint8_t *frame, unsigned len, uint16_t *values,
 
 #if 1
                                 printf("%u %u: ", ((unsigned)(now/1000)) % 1000000, len);
-                                for (uint8_t i=0; i<DSM_FRAME_SIZE; i++) {
+                                for (uint_fast8_t i=0; i<DSM_FRAME_SIZE; i++) {
                                     printf("%02x ", (unsigned)dsm_frame[i]);
                                 }
                                 printf("\n");
@@ -408,7 +408,7 @@ dsm_parse(uint64_t now, uint8_t *frame, unsigned len, uint16_t *values,
 					dsm_decode_state = DSM_DECODE_STATE_DESYNC;
 					dsm_frame_drops++;
 					printf("drop ");
-					for (uint8_t i=0; i<DSM_FRAME_SIZE; i++) {
+					for (uint_fast8_t i=0; i<DSM_FRAME_SIZE; i++) {
 						printf("%02x ", (unsigned)dsm_frame[i]);
 					}
 					printf("\n");
@@ -521,7 +521,7 @@ int main(int argc, const char *argv[])
         if (dsm_parse(micros64(), b, nread, values, &num_values, &dsm_11_bit, &frame_drops, 18)) {
 #if 1
             printf("%u: ", num_values);
-            for (uint8_t i=0; i<num_values; i++) {
+            for (uint_fast8_t i=0; i<num_values; i++) {
                 printf("%u:%4u ", i+1, values[i]);
             }
             printf("\n");
@@ -540,7 +540,7 @@ int main(int argc, const char *argv[])
     uint8_t b[16];
     uint64_t t = 0;
 
-    for (uint8_t i=1; i<argc; i++) {
+    for (uint_fast8_t i=1; i<argc; i++) {
         unsigned v;
         if (sscanf(argv[i], "%02x", &v) != 1 || v > 255) {
             printf("Bad hex value at %u : %s\n", (unsigned)i, argv[i]);
@@ -561,7 +561,7 @@ int main(int argc, const char *argv[])
         if (dsm_parse(t, b, sizeof(b), values, &num_values, &dsm_11_bit, &frame_drops, 18)) {
 #if 1
             printf("%u: ", num_values);
-            for (uint8_t i=0; i<num_values; i++) {
+            for (uint_fast8_t i=0; i<num_values; i++) {
                 printf("%u:%4u ", i+1, values[i]);
             }
             printf("\n");

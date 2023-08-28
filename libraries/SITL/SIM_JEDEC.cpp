@@ -31,7 +31,7 @@ void JEDEC::open_storage_fd()
 
 void JEDEC::sector4k_erase (uint32_t addr)
 {
-    for (uint8_t i=0; i<get_page_per_sector(); i++) {
+    for (uint_fast8_t i=0; i<get_page_per_sector(); i++) {
         page_erase(addr + i*get_page_size());
     }
 }
@@ -39,7 +39,7 @@ void JEDEC::sector4k_erase (uint32_t addr)
 void JEDEC::block64k_erase (uint32_t addr)
 {
     // we have 16 sectors in a block
-    for (uint16_t i=0; i<16; i++) {
+    for (uint_fast16_t i=0; i<16; i++) {
         sector4k_erase(addr + i*get_page_per_sector()*get_page_size());
     }
 }
@@ -60,7 +60,7 @@ void JEDEC::page_erase (uint32_t addr)
 
 void JEDEC::bulk_erase()
 {
-    for (uint16_t i=0; i<get_num_blocks(); i++) {
+    for (uint_fast16_t i=0; i<get_num_blocks(); i++) {
         block64k_erase(i*get_page_per_block()*get_page_size());
     }
 }
@@ -98,7 +98,7 @@ int JEDEC::rdwr(uint8_t count, SPI::spi_ioc_transfer *&tfrs)
     static const uint8_t JEDEC_BULK_ERASE       = 0xC7;
     static const uint8_t JEDEC_BLOCK64_ERASE    = 0xD8;
 
-    for (uint8_t i=0; i<count; i++) {
+    for (uint_fast8_t i=0; i<count; i++) {
         SPI::spi_ioc_transfer &tfr = tfrs[i];
         uint8_t *tx_buf = (uint8_t*)(tfr.tx_buf);
         uint8_t *rx_buf = (uint8_t*)(tfr.rx_buf);

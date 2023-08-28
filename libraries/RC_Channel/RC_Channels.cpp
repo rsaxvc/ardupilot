@@ -46,7 +46,7 @@ RC_Channels::RC_Channels(void)
 void RC_Channels::init(void)
 {
     // setup ch_in on channels
-    for (uint8_t i=0; i<NUM_RC_CHANNELS; i++) {
+    for (uint_fast8_t i=0; i<NUM_RC_CHANNELS; i++) {
         channel(i)->ch_in = i;
     }
 
@@ -58,7 +58,7 @@ uint8_t RC_Channels::get_radio_in(uint16_t *chans, const uint8_t num_channels)
     memset(chans, 0, num_channels*sizeof(*chans));
 
     const uint8_t read_channels = MIN(num_channels, NUM_RC_CHANNELS);
-    for (uint8_t i = 0; i < read_channels; i++) {
+    for (uint_fast8_t i = 0; i < read_channels; i++) {
         chans[i] = channel(i)->get_radio_in();
     }
 
@@ -79,7 +79,7 @@ bool RC_Channels::read_input(void)
     last_update_ms = AP_HAL::millis();
 
     bool success = false;
-    for (uint8_t i=0; i<NUM_RC_CHANNELS; i++) {
+    for (uint_fast8_t i=0; i<NUM_RC_CHANNELS; i++) {
         success |= channel(i)->update();
     }
 
@@ -102,7 +102,7 @@ int16_t RC_Channels::get_receiver_link_quality(void)
 void RC_Channels::clear_overrides(void)
 {
     RC_Channels &_rc = rc();
-    for (uint8_t i = 0; i < NUM_RC_CHANNELS; i++) {
+    for (uint_fast8_t i = 0; i < NUM_RC_CHANNELS; i++) {
         _rc.channel(i)->clear_override();
     }
     // we really should set has_new_overrides to true, and rerun read_input from
@@ -114,7 +114,7 @@ uint16_t RC_Channels::get_override_mask(void)
 {
     uint16_t ret = 0;
     RC_Channels &_rc = rc();
-    for (uint8_t i = 0; i < NUM_RC_CHANNELS; i++) {
+    for (uint_fast8_t i = 0; i < NUM_RC_CHANNELS; i++) {
         if (_rc.channel(i)->has_override()) {
             ret |= (1U << i);
         }
@@ -133,7 +133,7 @@ void RC_Channels::set_override(const uint8_t chan, const int16_t value, const ui
 bool RC_Channels::has_active_overrides()
 {
     RC_Channels &_rc = rc();
-    for (uint8_t i = 0; i < NUM_RC_CHANNELS; i++) {
+    for (uint_fast8_t i = 0; i < NUM_RC_CHANNELS; i++) {
         if (_rc.channel(i)->has_override()) {
             return true;
         }
@@ -158,7 +158,7 @@ void RC_Channels::read_aux_all()
     }
     bool need_log = false;
 
-    for (uint8_t i=0; i<NUM_RC_CHANNELS; i++) {
+    for (uint_fast8_t i=0; i<NUM_RC_CHANNELS; i++) {
         RC_Channel *c = channel(i);
         if (c == nullptr) {
             continue;
@@ -173,7 +173,7 @@ void RC_Channels::read_aux_all()
 
 void RC_Channels::init_aux_all()
 {
-    for (uint8_t i=0; i<NUM_RC_CHANNELS; i++) {
+    for (uint_fast8_t i=0; i<NUM_RC_CHANNELS; i++) {
         RC_Channel *c = channel(i);
         if (c == nullptr) {
             continue;

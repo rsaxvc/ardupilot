@@ -308,7 +308,7 @@ void AP_InertialSensor_L3G4200D::_accumulate_gyro (void)
         int16_t buffer[num_samples_available][3];
         if (_dev_gyro->read_registers(L3G4200D_REG_XL | L3G4200D_REG_AUTO_INCREMENT,
                                   (uint8_t *)&buffer, sizeof(buffer))) {
-            for (uint8_t i=0; i < num_samples_available; i++) {
+            for (uint_fast8_t i=0; i < num_samples_available; i++) {
                 Vector3f gyro = Vector3f(buffer[i][0], -buffer[i][1], -buffer[i][2]);
                 // Adjust for chip scaling to get radians/sec
                 //hal.console->printf("gyro %f \r\n",gyro.x); 
@@ -333,7 +333,7 @@ void AP_InertialSensor_L3G4200D::_accumulate_accel (void)
     // read the samples and apply the filter
     if (num_samples_available > 0) {
         int16_t buffer[num_samples_available][3];
-        for (uint8_t i=0; i<num_samples_available; i++) 
+        for (uint_fast8_t i=0; i<num_samples_available; i++) 
         {
             if (_dev_accel->read_registers(ADXL345_ACCELEROMETER_ADXLREG_DATAX0,
                                            (uint8_t *)buffer[i], sizeof(buffer[0])))

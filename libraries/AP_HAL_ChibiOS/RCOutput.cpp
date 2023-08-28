@@ -88,7 +88,7 @@ void RCOutput::init()
         group.current_mode = MODE_PWM_NORMAL;
         group.dshot_event_mask = EVENT_MASK(i);
 
-        for (uint8_t j = 0; j < 4; j++ ) {
+        for (uint_fast8_t j = 0; j < 4; j++ ) {
 #if !APM_BUILD_TYPE(APM_BUILD_iofirmware)
             uint8_t chan = group.chan[j];
             if (SRV_Channels::is_GPIO(chan+chan_offset)) {
@@ -98,7 +98,7 @@ void RCOutput::init()
                 // alarm takes the whole timer
                 group.ch_mask = 0;
                 group.current_mode = MODE_PWM_NONE;
-                for (uint8_t k = 0; k < 4; k++) {
+                for (uint_fast8_t k = 0; k < 4; k++) {
                     group.chan[k] = CHAN_DISABLED;
                     group.pwm_cfg.channels[k].mode = PWM_OUTPUT_DISABLED;
                 }
@@ -326,7 +326,7 @@ void RCOutput::set_freq_group(pwm_group &group)
     }
 
     bool force_reconfig = false;
-    for (uint8_t j=0; j<4; j++) {
+    for (uint_fast8_t j=0; j<4; j++) {
         if (group.pwm_cfg.channels[j].mode == PWM_OUTPUT_ACTIVE_LOW) {
             group.pwm_cfg.channels[j].mode = PWM_OUTPUT_ACTIVE_HIGH;
             force_reconfig = true;
@@ -363,7 +363,7 @@ void RCOutput::set_freq(uint32_t chmask, uint16_t freq_hz)
         uint16_t io_chmask = chmask & 0xFF;
         if (io_chmask) {
             // disallow changing frequency of this group if it is greater than the default
-            for (uint8_t i=0; i<ARRAY_SIZE(iomcu.ch_masks); i++) {
+            for (uint_fast8_t i=0; i<ARRAY_SIZE(iomcu.ch_masks); i++) {
                 const uint16_t mask = io_chmask & iomcu.ch_masks[i];
                 if (mask != 0) {
                     if (freq_hz > 50) {
@@ -507,7 +507,7 @@ RCOutput::pwm_group *RCOutput::find_chan(uint8_t chan, uint8_t &group_idx)
     chan -= chan_offset;
 
     for (auto &group : pwm_group_list) {
-        for (uint8_t j = 0; j < 4; j++) {
+        for (uint_fast8_t j = 0; j < 4; j++) {
             if (group.chan[j] == chan) {
                 group_idx = j;
                 return &group;
@@ -526,13 +526,13 @@ uint32_t RCOutput::get_disabled_channels(uint32_t digital_mask)
     uint32_t disabled_chan_mask = 0;
     for (auto &group : pwm_group_list) {
         bool digital_group = false;
-        for (uint8_t j = 0; j < 4; j++) {
+        for (uint_fast8_t j = 0; j < 4; j++) {
             if ((1U << group.chan[j]) & dmask) {
                 digital_group = true;
             }
         }
         if (digital_group) {
-            for (uint8_t j = 0; j < 4; j++) {
+            for (uint_fast8_t j = 0; j < 4; j++) {
                 if (!((1U << group.chan[j]) & dmask)) {
                     disabled_chan_mask |= (1U << group.chan[j]);
                 }
@@ -651,7 +651,7 @@ void RCOutput::push_local(void)
         if (!group.pwm_started) {
             continue;
         }
-        for (uint8_t j = 0; j < 4; j++) {
+        for (uint_fast8_t j = 0; j < 4; j++) {
             uint8_t chan = group.chan[j];
             if (!group.is_chan_enabled(j)) {
                 continue;
@@ -744,7 +744,7 @@ void RCOutput::read(uint16_t* period_us, uint8_t len)
         len = max_channels;
     }
 #if HAL_WITH_IO_MCU
-    for (uint8_t i=0; i<MIN(len, chan_offset); i++) {
+    for (uint_fast8_t i=0; i<MIN(len, chan_offset); i++) {
         period_us[i] = iomcu.read_channel(i);
         if ((iomcu_mode == MODE_PWM_ONESHOT125) && ((1U<<i) & io_fast_channel_mask)) {
             // convert back to 1000 - 2000 range
@@ -774,7 +774,7 @@ void RCOutput::read_last_sent(uint16_t* period_us, uint8_t len)
     if (len > max_channels) {
         len = max_channels;
     }
-    for (uint8_t i=0; i<len; i++) {
+    for (uint_fast8_t i=0; i<len; i++) {
         period_us[i] = read_last_sent(i);
     }
 }
@@ -796,7 +796,7 @@ void RCOutput::print_group_setup_error(pwm_group &group, const char* error_strin
 #ifndef HAL_NO_UARTDRIVER
     uint8_t min_chan = UINT8_MAX;
     uint8_t max_chan = 0;
-    for (uint8_t j = 0; j < 4; j++) {
+    for (uint_fast8_t j = 0; j < 4; j++) {
         uint8_t chan = group.chan[j];
         if (chan == CHAN_DISABLED) {
             continue;
@@ -887,7 +887,7 @@ bool RCOutput::setup_group_DMA(pwm_group &group, uint32_t bitrate, uint32_t bit_
     //hal.console->printf("CLOCK=%u BW=%u FREQ=%u BR=%u MUL=%u PRE=%u\n", unsigned(group.pwm_drv->clock), unsigned(bit_width), unsigned(group.pwm_cfg.frequency),
     //    unsigned(bitrate), unsigned(group.bit_width_mul), unsigned(prescaler));
 
-    for (uint8_t j=0; j<4; j++) {
+    for (uint_fast8_t j=0; j<4; j++) {
         pwmmode_t mode = group.pwm_cfg.channels[j].mode;
         if (mode != PWM_OUTPUT_DISABLED) {
             if(mode == PWM_COMPLEMENTARY_OUTPUT_ACTIVE_LOW || mode == PWM_COMPLEMENTARY_OUTPUT_ACTIVE_HIGH) {
@@ -901,7 +901,7 @@ bool RCOutput::setup_group_DMA(pwm_group &group, uint32_t bitrate, uint32_t bit_
     pwmStart(group.pwm_drv, &group.pwm_cfg);
     group.pwm_started = true;
 
-    for (uint8_t j=0; j<4; j++) {
+    for (uint_fast8_t j=0; j<4; j++) {
         if (group.is_chan_enabled(j)) {
             pwmEnableChannel(group.pwm_drv, j, 0);
         }
@@ -930,7 +930,7 @@ void RCOutput::set_group_mode(pwm_group &group)
     switch (group.current_mode) {
     case MODE_PWM_BRUSHED:
         // force zero output initially
-        for (uint8_t i=0; i<4; i++) {
+        for (uint_fast8_t i=0; i<4; i++) {
             if (group.chan[i] == CHAN_DISABLED) {
                 continue;
             }
@@ -1010,7 +1010,7 @@ void RCOutput::set_group_mode(pwm_group &group)
         !group.pwm_started) {
         pwmStart(group.pwm_drv, &group.pwm_cfg);
         group.pwm_started = true;
-        for (uint8_t j=0; j<4; j++) {
+        for (uint_fast8_t j=0; j<4; j++) {
             if (group.is_chan_enabled(j)) {
                 pwmEnableChannel(group.pwm_drv, j, 0);
             }
@@ -1082,7 +1082,7 @@ bool RCOutput::get_output_mode_banner(char banner_msg[], uint8_t banner_msg_len)
 #if HAL_WITH_IO_MCU
     // fill in ch_mode array for IOMCU channels
     if (AP_BoardConfig::io_enabled()) {
-        for (uint8_t i = 0; i < chan_offset; i++ ) {
+        for (uint_fast8_t i = 0; i < chan_offset; i++ ) {
             ch_mode[i] = iomcu_mode;
         }
         have_nonzero_modes = (chan_offset > 0) && (iomcu_mode != MODE_PWM_NONE);
@@ -1092,7 +1092,7 @@ bool RCOutput::get_output_mode_banner(char banner_msg[], uint8_t banner_msg_len)
     // fill in ch_mode array for FMU channels
     for (auto &group : pwm_group_list) {
         if (group.current_mode != MODE_PWM_NONE) {
-            for (uint8_t j = 0; j < ARRAY_SIZE(group.chan); j++) {
+            for (uint_fast8_t j = 0; j < ARRAY_SIZE(group.chan); j++) {
                 if (group.chan[j] != CHAN_DISABLED) {
                     const uint8_t chan_num = group.chan[j] + chan_offset;
                     if (chan_num < ARRAY_SIZE(ch_mode)) {
@@ -1113,7 +1113,7 @@ bool RCOutput::get_output_mode_banner(char banner_msg[], uint8_t banner_msg_len)
     // write banner to banner_msg
     hal.util->snprintf(banner_msg, banner_msg_len, "RCOut:");
     uint8_t curr_mode_lowest_ch = 0;
-    for (uint8_t k = 1; k < ARRAY_SIZE(ch_mode); k++) {
+    for (uint_fast8_t k = 1; k < ARRAY_SIZE(ch_mode); k++) {
         if (ch_mode[k-1] != ch_mode[k]) {
             if (ch_mode[k-1] != MODE_PWM_NONE) {
                 append_to_banner(banner_msg, banner_msg_len, ch_mode[k-1], curr_mode_lowest_ch + 1, k);
@@ -1339,7 +1339,7 @@ uint16_t RCOutput::create_dshot_packet(const uint16_t value, bool telem_request,
     // compute checksum
     uint16_t csum = 0;
     uint16_t csum_data = packet;
-    for (uint8_t i = 0; i < 3; i++) {
+    for (uint_fast8_t i = 0; i < 3; i++) {
         csum ^= csum_data;
         csum_data >>= 4;
     }
@@ -1452,7 +1452,7 @@ void RCOutput::dshot_send(pwm_group &group, uint32_t time_out_us)
 
     memset((uint8_t *)group.dma_buffer, 0, DSHOT_BUFFER_LENGTH);
 
-    for (uint8_t i=0; i<4; i++) {
+    for (uint_fast8_t i=0; i<4; i++) {
         uint8_t chan = group.chan[i];
         if (group.is_chan_enabled(i)) {
 #ifdef HAL_WITH_BIDIR_DSHOT
@@ -1661,7 +1661,7 @@ void RCOutput::dma_cancel(pwm_group& group)
 #endif
     // normally the CCR registers are reset by the final 0 in the DMA buffer
     // since we are cancelling early they need to be reset to avoid infinite pulses
-    for (uint8_t i = 0; i < 4; i++) {
+    for (uint_fast8_t i = 0; i < 4; i++) {
         if (group.chan[i] != CHAN_DISABLED) {
             group.pwm_drv->tim->CCR[i] = 0;
         }
@@ -1697,7 +1697,7 @@ bool RCOutput::serial_setup_output(uint8_t chan, uint32_t baudrate, uint32_t cha
         }
         if (group.ch_mask & (1U<<chan)) {
             new_serial_group = &group;
-            for (uint8_t j=0; j<4; j++) {
+            for (uint_fast8_t j=0; j<4; j++) {
                 if (group.chan[j] == chan) {
                     group.serial.chan = j;
                 }
@@ -1762,7 +1762,7 @@ void RCOutput::fill_DMA_buffer_byte(uint32_t *buffer, uint8_t stride, uint8_t b,
     buffer[9*stride] = BIT_1;
 
     // 8 data bits
-    for (uint8_t i = 0; i < 8; i++) {
+    for (uint_fast8_t i = 0; i < 8; i++) {
         buffer[(1 + i) * stride] = (b & 1) ? BIT_1 : BIT_0;
         b >>= 1;
     }
@@ -1999,7 +1999,7 @@ void RCOutput::serial_end(void)
             serial_thread = nullptr;
         }
         irq.waiter = nullptr;
-        for (uint8_t i = 0; i < NUM_GROUPS; i++ ) {
+        for (uint_fast8_t i = 0; i < NUM_GROUPS; i++ ) {
             pwm_group &group = pwm_group_list[i];
             set_group_mode(group);
             set_freq_group(group);
@@ -2184,7 +2184,7 @@ bool RCOutput::set_serial_led_num_LEDs(const uint16_t chan, uint8_t num_leds, ou
 
             // Enable any clock channels in the same group
             grp->clock_mask = 0;
-            for (uint8_t j = 0; j < 4; j++) {
+            for (uint_fast8_t j = 0; j < 4; j++) {
                 if ((clock_mask & (1U<<(grp->chan[j] + chan_offset))) != 0) {
                     grp->clock_mask |= 1U<<j;
                 }
@@ -2207,7 +2207,7 @@ bool RCOutput::set_serial_led_num_LEDs(const uint16_t chan, uint8_t num_leds, ou
 void RCOutput::fill_DMA_buffer_serial_led(pwm_group& group)
 {
     memset(group.dma_buffer, 0, group.dma_buffer_len);
-    for (uint8_t j = 0; j < 4; j++) {
+    for (uint_fast8_t j = 0; j < 4; j++) {
         if (group.serial_led_data[j] == nullptr) {
             // something very bad has happended
             continue;
@@ -2215,13 +2215,13 @@ void RCOutput::fill_DMA_buffer_serial_led(pwm_group& group)
 
         if (group.current_mode == MODE_PROFILED && (group.clock_mask & 1U<<j) != 0) {
             // output clock channel
-            for (uint8_t i = 0; i < group.serial_nleds; i++) {
+            for (uint_fast8_t i = 0; i < group.serial_nleds; i++) {
                 _set_profiled_clock(&group, j, i);
             }
             continue;
         }
 
-        for (uint8_t i = 0; i < group.serial_nleds; i++) {
+        for (uint_fast8_t i = 0; i < group.serial_nleds; i++) {
             const SerialLed& led = group.serial_led_data[j][i];
             switch (group.current_mode) {
                 case MODE_NEOPIXEL:
@@ -2255,7 +2255,7 @@ void RCOutput::_set_neopixel_rgb_data(pwm_group *grp, uint8_t idx, uint8_t led, 
     uint32_t bits = (green<<16) | (red<<8) | blue;
     const uint32_t BIT_0 = NEOP_BIT_0_TICKS * grp->bit_width_mul;
     const uint32_t BIT_1 = NEOP_BIT_1_TICKS * grp->bit_width_mul;
-    for (uint16_t b=0; b < 24; b++) {
+    for (uint_fast16_t b=0; b < 24; b++) {
         buf[b * stride] = (bits & 0x800000) ? BIT_1 : BIT_0;
         bits <<= 1;
     }
@@ -2273,7 +2273,7 @@ void RCOutput::_set_profiled_rgb_data(pwm_group *grp, uint8_t idx, uint8_t led, 
     uint32_t *buf = grp->dma_buffer + (led * bit_length + pad_start_bits) * stride + idx;
     uint32_t bits = 0x1000000 | (blue<<16) | (red<<8) | green;
     const uint32_t BIT_1 = PROFI_BIT_1_TICKS * grp->bit_width_mul;
-    for (uint16_t b=0; b < bit_length; b++) {
+    for (uint_fast16_t b=0; b < bit_length; b++) {
         buf[b * stride] = (bits & 0x1000000) ? 0 : BIT_1;
         bits <<= 1;
     }
@@ -2290,7 +2290,7 @@ void RCOutput::_set_profiled_blank_frame(pwm_group *grp, uint8_t idx, uint8_t le
     const uint8_t stride = 4;
     uint32_t *buf = grp->dma_buffer + (led * bit_length + pad_start_bits) * stride + idx;
     const uint32_t BIT_1 = PROFI_BIT_1_TICKS * grp->bit_width_mul;
-    for (uint16_t b=0; b < bit_length; b++) {
+    for (uint_fast16_t b=0; b < bit_length; b++) {
         buf[b * stride] = BIT_1;
     }
 }
@@ -2305,7 +2305,7 @@ void RCOutput::_set_profiled_clock(pwm_group *grp, uint8_t idx, uint8_t led)
     const uint8_t stride = 4;
     uint32_t *buf = grp->dma_buffer + (led * bit_length + pad_start_bits) * stride + idx;
     const uint32_t BIT_1 = PROFI_BIT_0_TICKS * grp->bit_width_mul;
-    for (uint16_t b=0; b < bit_length; b++) {
+    for (uint_fast16_t b=0; b < bit_length; b++) {
         buf[b * stride] = BIT_1;
     }
 }
@@ -2342,13 +2342,13 @@ void RCOutput::set_serial_led_rgb_data(const uint16_t chan, int8_t led, uint8_t 
 
     if ((grp->current_mode != grp->led_mode) && ((grp->led_mode == MODE_NEOPIXEL) || (grp->led_mode == MODE_PROFILED))) {
         // Arrays have not yet been setup, do it now
-        for (uint8_t j = 0; j < 4; j++) {
+        for (uint_fast8_t j = 0; j < 4; j++) {
             delete[] grp->serial_led_data[j];
             grp->serial_led_data[j] = nullptr;
             grp->serial_led_data[j] = new SerialLed[grp->serial_nleds];
             if (grp->serial_led_data[j] == nullptr) {
                 // if allocation failed clear all memory
-                 for (uint8_t k = 0; k < 4; k++) {
+                 for (uint_fast8_t k = 0; k < 4; k++) {
                     delete[] grp->serial_led_data[k];
                     grp->serial_led_data[k] = nullptr;
                 }
@@ -2374,7 +2374,7 @@ void RCOutput::set_serial_led_rgb_data(const uint16_t chan, int8_t led, uint8_t 
 
     if (led == -1) {
         grp->prepared_send = true;
-        for (uint8_t n=0; n<grp->serial_nleds; n++) {
+        for (uint_fast8_t n=0; n<grp->serial_nleds; n++) {
             serial_led_set_single_rgb_data(*grp, i, n, red, green, blue);
         }
         return;
@@ -2383,7 +2383,7 @@ void RCOutput::set_serial_led_rgb_data(const uint16_t chan, int8_t led, uint8_t 
     // if not ouput clock and trailing frames, run through all LED's to do it now
     if (!grp->prepared_send) {
         grp->prepared_send = true;
-        for (uint8_t n=0; n<grp->serial_nleds; n++) {
+        for (uint_fast8_t n=0; n<grp->serial_nleds; n++) {
             serial_led_set_single_rgb_data(*grp, i, n, 0, 0, 0);
         }
     }

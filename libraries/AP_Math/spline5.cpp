@@ -42,7 +42,7 @@ void splinterp5(const float x[5], float out[4][4])
     z[n-1] = 0;
 
     // decomposition loop
-    for (uint8_t i=1; i<n-1; i++) {
+    for (uint_fast8_t i=1; i<n-1; i++) {
         float p = 0.5f * z[i-1] + 2.0f;
         // keep p from ever becoming zero
         if (p < 0.01f && p >= 0.0f) {
@@ -57,11 +57,11 @@ void splinterp5(const float x[5], float out[4][4])
     }
 
     // back-substitution loop
-    for (uint8_t i=n-1; i>0; i--) {
+    for (uint_fast8_t i=n-1; i>0; i--) {
         z[i] = z[i] * z[i+1] + u[i];
     }
 
-    for (uint8_t i=0; i<n-1; i++) {
+    for (uint_fast8_t i=0; i<n-1; i++) {
         out[i][0] = x[i+1];
         out[i][1] = x[i];
         out[i][2] = z[i+1];

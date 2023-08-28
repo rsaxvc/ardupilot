@@ -106,7 +106,7 @@ bool AP_Generator_RichenPower::get_reading()
     // calculate checksum....
     uint16_t checksum = 0;
     const uint8_t *checksum_buffer = &u.parse_buffer[2];
-    for (uint8_t i=0; i<5; i++) {
+    for (uint_fast8_t i=0; i<5; i++) {
         checksum += be16toh_ptr(&checksum_buffer[2*i]);
     }
 
@@ -371,7 +371,7 @@ bool AP_Generator_RichenPower::pre_arm_check(char *failmsg, uint8_t failmsg_len)
 
     if (errors) {
 
-        for (uint16_t i=0; i<16; i++) {
+        for (uint_fast16_t i=0; i<16; i++) {
             if (errors & (1U << i)) {
                 if (i < (uint16_t)Errors::LAST) {
                     hal.util->snprintf(failmsg, failmsg_len, "error: %s", error_strings[i]);

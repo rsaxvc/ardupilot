@@ -198,7 +198,7 @@ bool JSBSim::start_JSBSim(void)
         dup2(devnull, 0);
         dup2(p[1], 1);
         close(p[0]);
-        for (uint8_t i=3; i<100; i++) {
+        for (uint_fast8_t i=3; i<100; i++) {
             close(i);
         }
         char *logdirective;
@@ -395,13 +395,13 @@ void JSBSim::send_servos(const struct sitl_input &input)
 void FGNetFDM::ByteSwap(void)
 {
     uint32_t *buf = (uint32_t *)this;
-    for (uint16_t i=0; i<sizeof(*this)/4; i++) {
+    for (uint_fast16_t i=0; i<sizeof(*this)/4; i++) {
         buf[i] = ntohl(buf[i]);
     }
     // fixup the 3 doubles
     buf = (uint32_t *)&longitude;
     uint32_t tmp;
-    for (uint8_t i=0; i<3; i++) {
+    for (uint_fast8_t i=0; i<3; i++) {
         tmp = buf[0];
         buf[0] = buf[1];
         buf[1] = tmp;

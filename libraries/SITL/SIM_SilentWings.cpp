@@ -66,7 +66,7 @@ SilentWings::SilentWings(const char *frame_str) :
     // without using EKF, i.e., using "fake EKF (type 10)". Disable gyro calibration.
     // Set a few other parameters to specific values to keep the calibration checks happy.
     // TO DO: fix this. Setting parameters in this way doesn't appear to have any effect.
-    for (uint8_t i = 0; i < ARRAY_SIZE(sim_defaults); i++) {
+    for (uint_fast8_t i = 0; i < ARRAY_SIZE(sim_defaults); i++) {
         AP_Param::set_default_by_name(sim_defaults[i].name, sim_defaults[i].value);
         if (sim_defaults[i].save) {
             enum ap_var_type ptype;

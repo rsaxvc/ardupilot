@@ -88,7 +88,7 @@ public:
                 arming.arm(AP_Arming::Method::RUDDER);
                 logger.set_vehicle_armed(true);
                 // apply throttle values to motors to make sure the fake IMU generates energetic enough data
-                for (uint8_t i=0; i<4; i++) {
+                for (uint_fast8_t i=0; i<4; i++) {
                     hal.rcout->write(i, 1500);
                 }
             }

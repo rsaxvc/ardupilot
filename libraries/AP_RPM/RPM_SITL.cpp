@@ -37,7 +37,7 @@ void AP_RPM_SITL::update(void)
     const uint32_t motor_mask = sitl->state.motor_mask;
     uint8_t count = 0;
     // find the motor with the corresponding index
-    for (uint8_t i=0; i<32; i++) {
+    for (uint_fast8_t i=0; i<32; i++) {
         if (motor_mask & (1U<<i)) {
             if (count == instance) {
                 state.rate_rpm = sitl->state.rpm[i];

@@ -38,7 +38,7 @@ void AP_MotorsHeli_Quad::set_update_rate( uint16_t speed_hz )
 
     // setup fast channels
     uint32_t mask = 0;
-    for (uint8_t i=0; i<AP_MOTORS_HELI_QUAD_NUM_MOTORS; i++) {
+    for (uint_fast8_t i=0; i<AP_MOTORS_HELI_QUAD_NUM_MOTORS; i++) {
         mask |= 1U << (AP_MOTORS_MOT_1+i);
     }
 
@@ -52,7 +52,7 @@ bool AP_MotorsHeli_Quad::init_outputs()
         return true;
     }
 
-    for (uint8_t i=0; i<AP_MOTORS_HELI_QUAD_NUM_MOTORS; i++) {
+    for (uint_fast8_t i=0; i<AP_MOTORS_HELI_QUAD_NUM_MOTORS; i++) {
         add_motor_num(CH_1+i);
         SRV_Channels::set_angle(SRV_Channels::get_motor_function(i), QUAD_SERVO_MAX_ANGLE);
     }
@@ -160,7 +160,7 @@ void AP_MotorsHeli_Quad::calculate_roll_pitch_collective_factors()
     const bool x_clockwise[AP_MOTORS_HELI_QUAD_NUM_MOTORS] = { false, false, true, true };
     const float cos45 = cosf(radians(45));
 
-    for (uint8_t i=0; i<AP_MOTORS_HELI_QUAD_NUM_MOTORS; i++) {
+    for (uint_fast8_t i=0; i<AP_MOTORS_HELI_QUAD_NUM_MOTORS; i++) {
         bool clockwise = x_clockwise[i];
         if (_frame_type == MOTOR_FRAME_TYPE_H) {
             // reverse yaw for H frame
@@ -178,7 +178,7 @@ void AP_MotorsHeli_Quad::calculate_roll_pitch_collective_factors()
 uint32_t AP_MotorsHeli_Quad::get_motor_mask()
 {
     uint32_t mask = 0;
-    for (uint8_t i=0; i<AP_MOTORS_HELI_QUAD_NUM_MOTORS; i++) {
+    for (uint_fast8_t i=0; i<AP_MOTORS_HELI_QUAD_NUM_MOTORS; i++) {
         mask |= 1U << (AP_MOTORS_MOT_1+i);
     }
     mask |= 1U << AP_MOTORS_HELI_RSC;
@@ -261,7 +261,7 @@ void AP_MotorsHeli_Quad::move_actuators(float roll_out, float pitch_out, float c
     // reserve some collective for attitude control
     collective_out *= collective_range;
 
-    for (uint8_t i=0; i<AP_MOTORS_HELI_QUAD_NUM_MOTORS; i++) {
+    for (uint_fast8_t i=0; i<AP_MOTORS_HELI_QUAD_NUM_MOTORS; i++) {
         _out[i] =
             _rollFactor[CH_1+i] * roll_out +
             _pitchFactor[CH_1+i] * pitch_out +
@@ -269,7 +269,7 @@ void AP_MotorsHeli_Quad::move_actuators(float roll_out, float pitch_out, float c
     }
 
     // see if we need to scale down yaw_out
-    for (uint8_t i=0; i<AP_MOTORS_HELI_QUAD_NUM_MOTORS; i++) {
+    for (uint_fast8_t i=0; i<AP_MOTORS_HELI_QUAD_NUM_MOTORS; i++) {
         float y = _yawFactor[CH_1+i] * yaw_out;
         if (_out[i] < 0.0f) {
             // the slope of the yaw effect changes at zero collective
@@ -286,7 +286,7 @@ void AP_MotorsHeli_Quad::move_actuators(float roll_out, float pitch_out, float c
     }
 
     // now apply the yaw correction
-    for (uint8_t i=0; i<AP_MOTORS_HELI_QUAD_NUM_MOTORS; i++) {
+    for (uint_fast8_t i=0; i<AP_MOTORS_HELI_QUAD_NUM_MOTORS; i++) {
         float y = _yawFactor[CH_1+i] * yaw_out;
         if (_out[i] < 0.0f) {
             // the slope of the yaw effect changes at zero collective
@@ -295,7 +295,7 @@ void AP_MotorsHeli_Quad::move_actuators(float roll_out, float pitch_out, float c
         _out[i] += y;
     }
 
-    for (uint8_t i=0; i<AP_MOTORS_HELI_QUAD_NUM_MOTORS; i++) {
+    for (uint_fast8_t i=0; i<AP_MOTORS_HELI_QUAD_NUM_MOTORS; i++) {
         // scale output to 0 to 1
         _out[i] += _collective_zero_thrust_pct;
         // scale output to -1 to 1 for servo output
@@ -310,7 +310,7 @@ void AP_MotorsHeli_Quad::output_to_motors()
     }
 
     // move the servos
-    for (uint8_t i=0; i<AP_MOTORS_HELI_QUAD_NUM_MOTORS; i++) {
+    for (uint_fast8_t i=0; i<AP_MOTORS_HELI_QUAD_NUM_MOTORS; i++) {
         rc_write_angle(AP_MOTORS_MOT_1+i, _out[i] * QUAD_SERVO_MAX_ANGLE);
     }
 

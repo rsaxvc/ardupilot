@@ -411,7 +411,7 @@ bool CANIface::configureFilters(const CanFilterConfig* filter_configs,
             can_->FilterRegister[filter_start_index].FR2 = 0;
             can_->FA1R = 1 << filter_start_index;
         } else {
-            for (uint8_t i = 0; i < NumFilters; i++) {
+            for (uint_fast8_t i = 0; i < NumFilters; i++) {
                 if (i < num_configs) {
                     uint32_t id   = 0;
                     uint32_t mask = 0;

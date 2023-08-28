@@ -461,7 +461,7 @@ bool NavEKF2_core::InitialiseFilterBootstrap(void)
     statesInitialised = true;
 
     // reset inactive biases
-    for (uint8_t i=0; i<INS_MAX_INSTANCES; i++) {
+    for (uint_fast8_t i=0; i<INS_MAX_INSTANCES; i++) {
         inactiveBias[i].gyro_bias.zero();
         inactiveBias[i].accel_zbias = 0;
         inactiveBias[i].gyro_scale.x = 1;
@@ -934,19 +934,19 @@ void NavEKF2_core::CovariancePrediction()
     dAngScaleSigma = dt * constrain_ftype(frontend->_gyroScaleProcessNoise, 0.0f, 1.0f);
     magEarthSigma = dt * constrain_ftype(frontend->_magEarthProcessNoise, 0.0f, 1.0f);
     magBodySigma  = dt * constrain_ftype(frontend->_magBodyProcessNoise, 0.0f, 1.0f);
-    for (uint8_t i= 0; i<=8;  i++) processNoise[i] = 0.0f;
-    for (uint8_t i=9; i<=11; i++) processNoise[i] = dAngBiasSigma;
-    for (uint8_t i=12; i<=14; i++) processNoise[i] = dAngScaleSigma;
+    for (uint_fast8_t i= 0; i<=8;  i++) processNoise[i] = 0.0f;
+    for (uint_fast8_t i=9; i<=11; i++) processNoise[i] = dAngBiasSigma;
+    for (uint_fast8_t i=12; i<=14; i++) processNoise[i] = dAngScaleSigma;
     if (dal.get_takeoff_expected()) {
         processNoise[15] = 0.0f;
     } else {
         processNoise[15] = dVelBiasSigma;
     }
-    for (uint8_t i=16; i<=18; i++) processNoise[i] = magEarthSigma;
-    for (uint8_t i=19; i<=21; i++) processNoise[i] = magBodySigma;
-    for (uint8_t i=22; i<=23; i++) processNoise[i] = windVelSigma;
+    for (uint_fast8_t i=16; i<=18; i++) processNoise[i] = magEarthSigma;
+    for (uint_fast8_t i=19; i<=21; i++) processNoise[i] = magBodySigma;
+    for (uint_fast8_t i=22; i<=23; i++) processNoise[i] = windVelSigma;
 
-    for (uint8_t i= 0; i<=stateIndexLim; i++) processNoise[i] = sq(processNoise[i]);
+    for (uint_fast8_t i= 0; i<=stateIndexLim; i++) processNoise[i] = sq(processNoise[i]);
 
     // set variables used to calculate covariance growth
     dvx = imuDataDelayed.delVel.x;
@@ -1372,16 +1372,16 @@ void NavEKF2_core::CovariancePrediction()
     }
 
     // Copy upper diagonal to lower diagonal taking advantage of symmetry
-    for (uint8_t colIndex=0; colIndex<=stateIndexLim; colIndex++)
+    for (uint_fast8_t colIndex=0; colIndex<=stateIndexLim; colIndex++)
     {
-        for (uint8_t rowIndex=0; rowIndex<colIndex; rowIndex++)
+        for (uint_fast8_t rowIndex=0; rowIndex<colIndex; rowIndex++)
         {
             nextP[colIndex][rowIndex] = nextP[rowIndex][colIndex];
         }
     }
 
     // add the general state process noise variances
-    for (uint8_t i=0; i<=stateIndexLim; i++)
+    for (uint_fast8_t i=0; i<=stateIndexLim; i++)
     {
         nextP[i][i] = nextP[i][i] + processNoise[i];
     }
@@ -1392,9 +1392,9 @@ void NavEKF2_core::CovariancePrediction()
     // without GPS
     if ((P[6][6] + P[7][7]) > 1e4f)
     {
-        for (uint8_t i=6; i<=7; i++)
+        for (uint_fast8_t i=6; i<=7; i++)
         {
-            for (uint8_t j=0; j<=stateIndexLim; j++)
+            for (uint_fast8_t j=0; j<=stateIndexLim; j++)
             {
                 nextP[i][j] = P[i][j];
                 nextP[j][i] = P[j][i];
@@ -1436,7 +1436,7 @@ void NavEKF2_core::StoreOutputReset()
     outputDataNew.velocity = stateStruct.velocity;
     outputDataNew.position = stateStruct.position;
     // write current measurement to entire table
-    for (uint8_t i=0; i<imu_buffer_length; i++) {
+    for (uint_fast8_t i=0; i<imu_buffer_length; i++) {
         storedOutput[i] = outputDataNew;
     }
     outputDataDelayed = outputDataNew;
@@ -1450,7 +1450,7 @@ void NavEKF2_core::StoreQuatReset()
 {
     outputDataNew.quat = stateStruct.quat;
     // write current measurement to entire table
-    for (uint8_t i=0; i<imu_buffer_length; i++) {
+    for (uint_fast8_t i=0; i<imu_buffer_length; i++) {
         storedOutput[i].quat = outputDataNew.quat;
     }
     outputDataDelayed.quat = outputDataNew.quat;
@@ -1461,7 +1461,7 @@ void NavEKF2_core::StoreQuatRotate(const QuaternionF &deltaQuat)
 {
     outputDataNew.quat = outputDataNew.quat*deltaQuat;
     // write current measurement to entire table
-    for (uint8_t i=0; i<imu_buffer_length; i++) {
+    for (uint_fast8_t i=0; i<imu_buffer_length; i++) {
         storedOutput[i].quat = storedOutput[i].quat*deltaQuat;
     }
     outputDataDelayed.quat = outputDataDelayed.quat*deltaQuat;
@@ -1470,9 +1470,9 @@ void NavEKF2_core::StoreQuatRotate(const QuaternionF &deltaQuat)
 // force symmetry on the covariance matrix to prevent ill-conditioning
 void NavEKF2_core::ForceSymmetry()
 {
-    for (uint8_t i=1; i<=stateIndexLim; i++)
+    for (uint_fast8_t i=1; i<=stateIndexLim; i++)
     {
-        for (uint8_t j=0; j<=i-1; j++)
+        for (uint_fast8_t j=0; j<=i-1; j++)
         {
             ftype temp = 0.5f*(P[i][j] + P[j][i]);
             P[i][j] = temp;
@@ -1485,8 +1485,8 @@ void NavEKF2_core::ForceSymmetry()
 void NavEKF2_core::CopyCovariances()
 {
     // copy predicted covariances
-    for (uint8_t i=0; i<=stateIndexLim; i++) {
-        for (uint8_t j=0; j<=stateIndexLim; j++)
+    for (uint_fast8_t i=0; i<=stateIndexLim; i++) {
+        for (uint_fast8_t j=0; j<=stateIndexLim; j++)
         {
             P[i][j] = nextP[i][j];
         }
@@ -1496,13 +1496,13 @@ void NavEKF2_core::CopyCovariances()
 // constrain variances (diagonal terms) in the state covariance matrix to  prevent ill-conditioning
 void NavEKF2_core::ConstrainVariances()
 {
-    for (uint8_t i=0; i<=2; i++) P[i][i] = constrain_ftype(P[i][i],0.0f,1.0f); // attitude error
-    for (uint8_t i=3; i<=5; i++) P[i][i] = constrain_ftype(P[i][i],0.0f,1.0e3f); // velocities
-    for (uint8_t i=6; i<=7; i++) P[i][i] = constrain_ftype(P[i][i],0.0f,EK2_POSXY_STATE_LIMIT);
+    for (uint_fast8_t i=0; i<=2; i++) P[i][i] = constrain_ftype(P[i][i],0.0f,1.0f); // attitude error
+    for (uint_fast8_t i=3; i<=5; i++) P[i][i] = constrain_ftype(P[i][i],0.0f,1.0e3f); // velocities
+    for (uint_fast8_t i=6; i<=7; i++) P[i][i] = constrain_ftype(P[i][i],0.0f,EK2_POSXY_STATE_LIMIT);
     P[8][8] = constrain_ftype(P[8][8],0.0f,1.0e6f); // vertical position
-    for (uint8_t i=9; i<=11; i++) P[i][i] = constrain_ftype(P[i][i],0.0f,sq(0.175f * dtEkfAvg)); // delta angle biases
+    for (uint_fast8_t i=9; i<=11; i++) P[i][i] = constrain_ftype(P[i][i],0.0f,sq(0.175f * dtEkfAvg)); // delta angle biases
     if (PV_AidingMode != AID_NONE) {
-        for (uint8_t i=12; i<=14; i++) P[i][i] = constrain_ftype(P[i][i],0.0f,0.01f); // delta angle scale factors
+        for (uint_fast8_t i=12; i<=14; i++) P[i][i] = constrain_ftype(P[i][i],0.0f,0.01f); // delta angle scale factors
     } else {
         // we can't reliably estimate scale factors when there is no aiding data due to transient manoeuvre induced innovations
         // so inhibit estimation by keeping covariance elements at zero
@@ -1510,9 +1510,9 @@ void NavEKF2_core::ConstrainVariances()
         zeroCols(P,12,14);
     }
     P[15][15] = constrain_ftype(P[15][15],0.0f,sq(10.0f * dtEkfAvg)); // delta velocity bias
-    for (uint8_t i=16; i<=18; i++) P[i][i] = constrain_ftype(P[i][i],0.0f,0.01f); // earth magnetic field
-    for (uint8_t i=19; i<=21; i++) P[i][i] = constrain_ftype(P[i][i],0.0f,0.01f); // body magnetic field
-    for (uint8_t i=22; i<=23; i++) P[i][i] = constrain_ftype(P[i][i],0.0f,1.0e3f); // wind velocity
+    for (uint_fast8_t i=16; i<=18; i++) P[i][i] = constrain_ftype(P[i][i],0.0f,0.01f); // earth magnetic field
+    for (uint_fast8_t i=19; i<=21; i++) P[i][i] = constrain_ftype(P[i][i],0.0f,0.01f); // body magnetic field
+    for (uint_fast8_t i=22; i<=23; i++) P[i][i] = constrain_ftype(P[i][i],0.0f,1.0e3f); // wind velocity
 }
 
 // constrain states using WMM tables and specified limit
@@ -1535,33 +1535,33 @@ void NavEKF2_core::MagTableConstrain(void)
 void NavEKF2_core::ConstrainStates()
 {
     // attitude errors are limited between +-1
-    for (uint8_t i=0; i<=2; i++) statesArray[i] = constrain_ftype(statesArray[i],-1.0f,1.0f);
+    for (uint_fast8_t i=0; i<=2; i++) statesArray[i] = constrain_ftype(statesArray[i],-1.0f,1.0f);
     // velocity limit 500 m/sec (could set this based on some multiple of max airspeed * EAS2TAS)
-    for (uint8_t i=3; i<=5; i++) statesArray[i] = constrain_ftype(statesArray[i],-5.0e2f,5.0e2f);
+    for (uint_fast8_t i=3; i<=5; i++) statesArray[i] = constrain_ftype(statesArray[i],-5.0e2f,5.0e2f);
     // position limit - TODO apply circular limit
-    for (uint8_t i=6; i<=7; i++) statesArray[i] = constrain_ftype(statesArray[i],-EK2_POSXY_STATE_LIMIT,EK2_POSXY_STATE_LIMIT);
+    for (uint_fast8_t i=6; i<=7; i++) statesArray[i] = constrain_ftype(statesArray[i],-EK2_POSXY_STATE_LIMIT,EK2_POSXY_STATE_LIMIT);
     // height limit covers home alt on everest through to home alt at SL and ballon drop
     stateStruct.position.z = constrain_ftype(stateStruct.position.z,-4.0e4f,1.0e4f);
     // gyro bias limit (this needs to be set based on manufacturers specs)
-    for (uint8_t i=9; i<=11; i++) statesArray[i] = constrain_ftype(statesArray[i],-GYRO_BIAS_LIMIT*dtEkfAvg,GYRO_BIAS_LIMIT*dtEkfAvg);
+    for (uint_fast8_t i=9; i<=11; i++) statesArray[i] = constrain_ftype(statesArray[i],-GYRO_BIAS_LIMIT*dtEkfAvg,GYRO_BIAS_LIMIT*dtEkfAvg);
     // gyro scale factor limit of +-5% (this needs to be set based on manufacturers specs)
-    for (uint8_t i=12; i<=14; i++) statesArray[i] = constrain_ftype(statesArray[i],0.95f,1.05f);
+    for (uint_fast8_t i=12; i<=14; i++) statesArray[i] = constrain_ftype(statesArray[i],0.95f,1.05f);
     // Z accel bias limit 1.0 m/s^2	(this needs to be finalised from test data)
     stateStruct.accel_zbias = constrain_ftype(stateStruct.accel_zbias,-1.0f*dtEkfAvg,1.0f*dtEkfAvg);
 
     // earth magnetic field limit
     if (frontend->_mag_ef_limit <= 0 || !have_table_earth_field) {
         // constrain to +/-1Ga
-        for (uint8_t i=16; i<=18; i++) statesArray[i] = constrain_ftype(statesArray[i],-1.0f,1.0f);
+        for (uint_fast8_t i=16; i<=18; i++) statesArray[i] = constrain_ftype(statesArray[i],-1.0f,1.0f);
     } else {
         // use table constrain
         MagTableConstrain();
     }
 
     // body magnetic field limit
-    for (uint8_t i=19; i<=21; i++) statesArray[i] = constrain_ftype(statesArray[i],-0.5f,0.5f);
+    for (uint_fast8_t i=19; i<=21; i++) statesArray[i] = constrain_ftype(statesArray[i],-0.5f,0.5f);
     // wind velocity limit 100 m/s (could be based on some multiple of max airspeed * EAS2TAS) - TODO apply circular limit
-    for (uint8_t i=22; i<=23; i++) statesArray[i] = constrain_ftype(statesArray[i],-100.0f,100.0f);
+    for (uint_fast8_t i=22; i<=23; i++) statesArray[i] = constrain_ftype(statesArray[i],-100.0f,100.0f);
     // constrain the terrain state to be below the vehicle height unless we are using terrain as the height datum
     if (!inhibitGndState) {
         terrainState = MAX(terrainState, stateStruct.position.z + rngOnGnd);
@@ -1666,12 +1666,12 @@ QuaternionF NavEKF2_core::calcQuatAndFieldStates(ftype roll, ftype pitch)
 void NavEKF2_core::zeroAttCovOnly()
 {
     ftype varTemp[3];
-    for (uint8_t index=0; index<=2; index++) {
+    for (uint_fast8_t index=0; index<=2; index++) {
         varTemp[index] = P[index][index];
     }
     zeroCols(P,0,2);
     zeroRows(P,0,2);
-    for (uint8_t index=0; index<=2; index++) {
+    for (uint_fast8_t index=0; index<=2; index++) {
         P[index][index] = varTemp[index];
     }
 }

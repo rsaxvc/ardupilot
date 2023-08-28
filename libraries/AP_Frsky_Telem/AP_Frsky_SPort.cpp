@@ -205,7 +205,7 @@ void  AP_Frsky_SPort::send_sport_frame(uint8_t frame, uint16_t appid, uint32_t d
     memcpy(&buf[3], &data, 4);
 
     uint16_t sum = 0;
-    for (uint8_t i=0; i<sizeof(buf)-1; i++) {
+    for (uint_fast8_t i=0; i<sizeof(buf)-1; i++) {
         sum += buf[i];
         sum += sum >> 8;
         sum &= 0xFF;
@@ -217,7 +217,7 @@ void  AP_Frsky_SPort::send_sport_frame(uint8_t frame, uint16_t appid, uint32_t d
     uint8_t len = 0;
     uint8_t buf2[sizeof(buf)*2+1];
 
-    for (uint8_t i=0; i<sizeof(buf); i++) {
+    for (uint_fast8_t i=0; i<sizeof(buf); i++) {
         uint8_t c = buf[i];
         if (c == FRAME_DLE || buf[i] == FRAME_HEAD) {
             buf2[len++] = FRAME_DLE;
@@ -265,7 +265,7 @@ bool AP_Frsky_SPortParser::should_process_packet(const uint8_t *packet, bool dis
     }
     //check CRC
     int16_t crc = 0;
-    for (uint8_t i=1; i<SPORT_PACKET_SIZE; ++i) {
+    for (uint_fast8_t i=1; i<SPORT_PACKET_SIZE; ++i) {
         crc += _parse_state.rx_buffer[i]; // 0-1FE
         crc += crc >> 8;  // 0-1FF
         crc &= 0x00ff;    // 0-FF

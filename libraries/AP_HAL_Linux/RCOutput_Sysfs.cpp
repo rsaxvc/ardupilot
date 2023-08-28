@@ -32,7 +32,7 @@ RCOutput_Sysfs::RCOutput_Sysfs(uint8_t chip, uint8_t channel_base, uint8_t chann
 
 RCOutput_Sysfs::~RCOutput_Sysfs()
 {
-    for (uint8_t i = 0; i < _channel_count; i++) {
+    for (uint_fast8_t i = 0; i < _channel_count; i++) {
         delete _pwm_channels[i];
     }
 
@@ -41,7 +41,7 @@ RCOutput_Sysfs::~RCOutput_Sysfs()
 
 void RCOutput_Sysfs::init()
 {
-    for (uint8_t i = 0; i < _channel_count; i++) {
+    for (uint_fast8_t i = 0; i < _channel_count; i++) {
 #if CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_DISCO
         _pwm_channels[i] = new PWM_Sysfs_Bebop(_channel_base+i);
 #elif CONFIG_HAL_BOARD_SUBTYPE == HAL_BOARD_SUBTYPE_LINUX_RST_ZYNQ
@@ -64,7 +64,7 @@ void RCOutput_Sysfs::init()
 
 void RCOutput_Sysfs::set_freq(uint32_t chmask, uint16_t freq_hz)
 {
-    for (uint8_t i = 0; i < _channel_count; i++) {
+    for (uint_fast8_t i = 0; i < _channel_count; i++) {
         if (chmask & 1 << i) {
             _pwm_channels[i]->set_freq(freq_hz);
         }
@@ -140,7 +140,7 @@ void RCOutput_Sysfs::push(void)
     if (!_corked) {
         return;
     }
-    for (uint8_t i=0; i<_channel_count; i++) {
+    for (uint_fast8_t i=0; i<_channel_count; i++) {
         if ((1U<<i) & _pending_mask) {
             _pwm_channels[i]->set_duty_cycle(usec_to_nsec(_pending[i]));
         }

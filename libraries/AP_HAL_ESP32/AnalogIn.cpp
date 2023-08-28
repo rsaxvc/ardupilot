@@ -286,7 +286,7 @@ void AnalogIn::init()
 */
 void AnalogIn::_timer_tick()
 {
-    for (uint8_t j = 0; j < ANALOG_MAX_CHANNELS; j++) {
+    for (uint_fast8_t j = 0; j < ANALOG_MAX_CHANNELS; j++) {
         ESP32::AnalogSource *c = _channels[j];
         if (c != nullptr) {
             // add a value
@@ -303,7 +303,7 @@ void AnalogIn::_timer_tick()
         if (n > 6) {
             n = 6;
         }
-        for (uint8_t i = 0; i < n; i++) {
+        for (uint_fast8_t i = 0; i < n; i++) {
             adc[i] = buf_adc[i];
         }
         mavlink_msg_ap_adc_send(MAVLINK_COMM_0, adc[0], adc[1], adc[2], adc[3], adc[4],
@@ -317,7 +317,7 @@ void AnalogIn::_timer_tick()
 int8_t AnalogIn::find_pinconfig(int16_t ardupin)
 {
     // from ardupin, lookup which adc gpio that is..
-    for (uint8_t j = 0; j < ADC_GRP1_NUM_CHANNELS; j++) {
+    for (uint_fast8_t j = 0; j < ADC_GRP1_NUM_CHANNELS; j++) {
         if (pin_config[j].ardupin == ardupin) {
             return j;
         }
@@ -346,7 +346,7 @@ AP_HAL::AnalogSource *AnalogIn::channel(int16_t ardupin)
         scaler = pin_config[(uint8_t)pinconfig_offset].scaling;
     }
 
-    for (uint8_t j = 0; j < ANALOG_MAX_CHANNELS; j++) {
+    for (uint_fast8_t j = 0; j < ANALOG_MAX_CHANNELS; j++) {
         if (_channels[j] == nullptr) {
             _channels[j] = new AnalogSource(ardupin,gpioAdcPin, scaler,0.0f,1);
 

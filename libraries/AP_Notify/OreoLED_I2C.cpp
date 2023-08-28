@@ -330,7 +330,7 @@ void OreoLED_I2C::set_rgb(uint8_t instance, oreoled_pattern pattern, uint8_t red
     // check for all instances
     if (instance == OREOLED_INSTANCE_ALL) {
         // store desired rgb for all LEDs
-        for (uint8_t i=0; i<OREOLED_NUM_LEDS; i++) {
+        for (uint_fast8_t i=0; i<OREOLED_NUM_LEDS; i++) {
             _state_desired[i].set_rgb(pattern, red, green, blue);
             if (!(_state_desired[i] == _state_sent[i])) {
                 _send_required = true;
@@ -356,7 +356,7 @@ void OreoLED_I2C::set_rgb(uint8_t instance, oreoled_pattern pattern, uint8_t red
     // check for all instances
     if (instance == OREOLED_INSTANCE_ALL) {
         // store desired rgb for all LEDs
-        for (uint8_t i=0; i<OREOLED_NUM_LEDS; i++) {
+        for (uint_fast8_t i=0; i<OREOLED_NUM_LEDS; i++) {
             _state_desired[i].set_rgb(pattern, red, green, blue, amplitude_red, amplitude_green, amplitude_blue, period, phase_offset);
             if (!(_state_desired[i] == _state_sent[i])) {
                 _send_required = true;
@@ -380,7 +380,7 @@ void OreoLED_I2C::set_macro(uint8_t instance, oreoled_macro macro)
     // check for all instances
     if (instance == OREOLED_INSTANCE_ALL) {
         // store desired macro for all LEDs
-        for (uint8_t i=0; i<OREOLED_NUM_LEDS; i++) {
+        for (uint_fast8_t i=0; i<OREOLED_NUM_LEDS; i++) {
             _state_desired[i].set_macro(macro);
             if (!(_state_desired[i] == _state_sent[i])) {
                 _send_required = true;
@@ -400,7 +400,7 @@ void OreoLED_I2C::clear_state(void)
 {
     WITH_SEMAPHORE(_sem);
 
-    for (uint8_t i=0; i<OREOLED_NUM_LEDS; i++) {
+    for (uint_fast8_t i=0; i<OREOLED_NUM_LEDS; i++) {
         _state_desired[i].clear_state();
     }
 
@@ -418,7 +418,7 @@ bool OreoLED_I2C::command_send(oreoled_cmd_t &cmd)
     /* Calculate XOR CRC and append to the i2c write data */
     uint8_t cmd_xor = OREOLED_BASE_I2C_ADDR + cmd.led_num;
 
-    for (uint8_t i = 0; i < cmd.num_bytes; i++) {
+    for (uint_fast8_t i = 0; i < cmd.num_bytes; i++) {
         cmd_xor ^= cmd.buff[i];
     }
     cmd.buff[cmd.num_bytes++] = cmd_xor;
@@ -435,7 +435,7 @@ bool OreoLED_I2C::command_send(oreoled_cmd_t &cmd)
 void OreoLED_I2C::boot_leds(void)
 {
     oreoled_cmd_t cmd;
-    for (uint8_t i=0; i<OREOLED_NUM_LEDS; i++) {
+    for (uint_fast8_t i=0; i<OREOLED_NUM_LEDS; i++) {
         cmd.led_num = i;
         cmd.buff[0] = OREOLED_BOOT_CMD_BOOT_APP;
         cmd.buff[1] = OREOLED_BOOT_CMD_BOOT_NONCE;
@@ -476,7 +476,7 @@ void OreoLED_I2C::update_timer(void)
     }
 
     // for each LED
-    for (uint8_t i=0; i<OREOLED_NUM_LEDS; i++) {
+    for (uint_fast8_t i=0; i<OREOLED_NUM_LEDS; i++) {
 
         // check for state change
         if (true) {

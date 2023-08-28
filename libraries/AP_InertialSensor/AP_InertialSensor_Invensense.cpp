@@ -390,7 +390,7 @@ void AP_InertialSensor_Invensense::start()
         uint8_t regs[] = { MPUREG_ACC_OFF_X_H, MPUREG_ACC_OFF_X_L,
                            MPUREG_ACC_OFF_Y_H, MPUREG_ACC_OFF_Y_L,
                            MPUREG_ACC_OFF_Z_H, MPUREG_ACC_OFF_Z_L };
-        for (uint8_t i=0; i<ARRAY_SIZE(regs); i++) {
+        for (uint_fast8_t i=0; i<ARRAY_SIZE(regs); i++) {
             _register_write(regs[i], _register_read(regs[i]), true);
         }
     }
@@ -541,7 +541,7 @@ void AP_InertialSensor_Invensense::_check_register_change(void)
     static uint8_t next_reg;
     if (!reg_init) {
         reg_init = true;
-        for (uint8_t i=0; i<ARRAY_SIZE(reg_value); i++) {
+        for (uint_fast8_t i=0; i<ARRAY_SIZE(reg_value); i++) {
             reg_value[i] = _register_read(i);
         }
     }
@@ -566,7 +566,7 @@ void AP_InertialSensor_Invensense::_check_register_change(void)
 
 bool AP_InertialSensor_Invensense::_accumulate(uint8_t *samples, uint8_t n_samples)
 {
-    for (uint8_t i = 0; i < n_samples; i++) {
+    for (uint_fast8_t i = 0; i < n_samples; i++) {
         const uint8_t *data = samples + MPU_SAMPLE_SIZE * i;
         Vector3f accel, gyro;
         bool fsync_set = false;
@@ -626,7 +626,7 @@ bool AP_InertialSensor_Invensense::_accumulate_sensor_rate_sampling(uint8_t *sam
     bool clipped = false;
     bool ret = true;
     
-    for (uint8_t i = 0; i < n_samples; i++) {
+    for (uint_fast8_t i = 0; i < n_samples; i++) {
         const uint8_t *data = samples + MPU_SAMPLE_SIZE * i;
 
         // use temperature to detect FIFO corruption

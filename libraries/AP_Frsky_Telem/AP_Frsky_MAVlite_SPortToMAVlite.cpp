@@ -41,7 +41,7 @@ bool AP_Frsky_MAVlite_SPortToMAVlite::process(AP_Frsky_MAVlite_Message &rxmsg, c
     expected_seq = received_seq + 1;
 
     // deal with the remainder (post-sequence) of the packet:
-    for (uint8_t i=3; i<ARRAY_SIZE(packet.raw); i++) {
+    for (uint_fast8_t i=3; i<ARRAY_SIZE(packet.raw); i++) {
         parse(packet.raw[i]);
     }
     if (parse_state == State::MESSAGE_RECEIVED) {
