@@ -34,6 +34,7 @@ const char* GPIO_RPI::_system_memory_device_path = "/dev/mem";
 
 GPIO_RPI::GPIO_RPI()
 {
+fprintf(stderr,"%s:%i\n",__func__,__LINE__);
 }
 
 void GPIO_RPI::set_gpio_mode_alt(int pin, int alternative)
@@ -92,6 +93,21 @@ void GPIO_RPI::set_gpio_mode_out(int pin)
     register_value &= ~mask;
     _gpio[pin / pins_per_register] = register_value | mask_with_bit;
 }
+
+uint8_t GPIO_RPI::get_gpio_mode(int pin)
+{
+    // Each register can contain 10 pins
+    const uint8_t pins_per_register = 10;
+    // Calculates the position of the 3 bit mask in the 32 bits register
+    const uint8_t tree_bits_position_in_register = (pin%pins_per_register)*3;
+    // Create a mask to enable the bit that sets output functionality
+    // 0b00'000'000'000'000'000'000'001'000'000'000 enables output for the 4th pin
+    const uint32_t mask_with_bit = 0b001 << tree_bits_position_in_register;
+    // Clear all bits in our position and apply our mask with alt values
+    const uint32_t register_value = _gpio[pin / pins_per_register];
+    return !!(register_value & mask_with_bit);
+}
+
 
 void GPIO_RPI::set_gpio_high(int pin)
 {
@@ -160,6 +176,7 @@ void GPIO_RPI::closeMemoryDevice()
 
 void GPIO_RPI::init()
 {
+    fprintf(stderr,"%s:%i\n",__func__,__LINE__);
     const LINUX_BOARD_TYPE rpi_version = UtilRPI::from(hal.util)->detect_linux_board_type();
 
     GPIO_RPI::Address peripheral_base;
@@ -197,6 +214,13 @@ void GPIO_RPI::pinMode(uint8_t pin, uint8_t output)
     } else {
         set_gpio_mode_in(pin);
         set_gpio_mode_out(pin);
+    }
+}
+
+void GPIO_RPI::pinModeValidate(uint8_t pin, uint8_t output)
+{
+    if(get_gpio_mode(pin) != output) {
+        AP_HAL::panic("GPIO mode validation failed!");
     }
 }
 

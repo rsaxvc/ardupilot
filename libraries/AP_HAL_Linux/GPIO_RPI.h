@@ -28,6 +28,7 @@ public:
     GPIO_RPI();
     void    init() override;
     void    pinMode(uint8_t pin, uint8_t output) override;
+    void    pinModeValidate(uint8_t pin, uint8_t output) override;
     void    pinMode(uint8_t pin, uint8_t output, uint8_t alt) override;
     uint8_t read(uint8_t pin) override;
     void    write(uint8_t pin, uint8_t value) override;
@@ -84,6 +85,15 @@ private:
      * @return uint32_t
      */
     uint32_t get_address(GPIO_RPI::Address address, GPIO_RPI::PeripheralOffset offset) const;
+
+    /**
+     * @brief Get a specific GPIO's mode
+     * Check Linux::GPIO_RPI::set_gpio_mode_alt for more information.
+     *
+     * @param pin
+     * @return int mode
+     */
+    uint8_t get_gpio_mode(int pin);
 
     /**
      * @brief Change functionality of GPIO Function Select Registers (GPFSELn) to any alternative function.

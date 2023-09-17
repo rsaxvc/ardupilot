@@ -49,6 +49,7 @@ public:
     GPIO() {}
     virtual void    init() = 0;
     virtual void    pinMode(uint8_t pin, uint8_t output) = 0;
+    virtual void    pinModeValidate(uint8_t pin, uint8_t output) = 0;
 
     // optional interface on some boards
     virtual void    pinMode(uint8_t pin, uint8_t output, uint8_t alt) {};
