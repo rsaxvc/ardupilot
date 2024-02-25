@@ -1598,6 +1598,9 @@ class obal(linux):
 class rsaxvc(linux):
     toolchain = 'arm-linux-gnueabihf'
 
+    def __init__(self):
+        self.with_can = True
+
     def configure_env(self, cfg, env):
         super(rsaxvc, self).configure_env(cfg, env)
 
