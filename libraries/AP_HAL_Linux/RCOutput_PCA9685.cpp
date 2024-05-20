@@ -216,6 +216,7 @@ void RCOutput_PCA9685::write_raw(uint8_t ch, uint16_t period_us) {
     _pulses_buffer[ch] = period_us;
     _pending_write_mask |= (1U << ch);
 
+    fprintf(stderr,"%s buf[%u]=%u\n", __func__, ch, period_us);
     if (!_corking) {
         _corking = true;
         push();
@@ -229,6 +230,8 @@ void RCOutput_PCA9685::cork()
 
 void RCOutput_PCA9685::push()
 {
+    fprintf(stderr,"%s corking=%u pending=%u\n", __func__, _corking, _pending_write_mask);
+
     if (!_corking) {
         return;
     }

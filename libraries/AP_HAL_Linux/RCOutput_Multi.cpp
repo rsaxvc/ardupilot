@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include <AP_HAL/AP_HAL.h>
 
-#ifdef DEBUG
+//#ifdef DEBUG
+#if 1
 #define debug(fmt, args ...) do { fprintf(stderr,"[RCOutput_Multi]: %s:%d: " fmt "\n", __FUNCTION__, __LINE__, ## args); } while (0)
 #else
 #define debug(fmt, args ...)
@@ -145,6 +146,7 @@ void RCOutput_Multi::write(uint8_t ch, uint16_t period_us)
         {
         int group_chcount = std::get<1>(out_groups[g]);
         if( ch < group_chcount ) {
+            debug("writeGroup(g=%u, ch=%u, period_us=%u", g, ch, period_us);
             std::get<0>(out_groups[g]).write(ch, period_us);
             return;
             }
