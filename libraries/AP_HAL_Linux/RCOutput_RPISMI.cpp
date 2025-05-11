@@ -204,6 +204,7 @@ void RCOutput_RPISMI::set_freq(uint32_t chmask, uint16_t freq_hz)
         return;
     }
 
+    fprintf(stderr, "freq:%u->%u\n", _frequency, freq_hz);
     _frequency = freq_hz;
 
     sem.give();
@@ -227,6 +228,7 @@ void RCOutput_RPISMI::disable_ch(uint8_t ch)
 void RCOutput_RPISMI::set_output_mode(uint32_t mask, enum output_mode new_mode)
 {
     pthread_mutex_lock(&_mutex);
+    fprintf(stderr, "mode:%u->%u\n", mode, new_mode);
     mode = new_mode;
     pthread_mutex_unlock(&_mutex);
 }
@@ -256,6 +258,10 @@ void RCOutput_RPISMI::write(uint8_t ch, uint16_t period_us)
         return;
     }
 
+    if(_request_period_us[ch] != period_us) {
+        fprintf(stderr, "ch%u:%u->%uus\n", ch, _request_period_us[ch], period_us);
+    }
+
     _request_period_us[ch] = period_us;
 
     if (!_corking) {
@@ -279,7 +285,6 @@ void RCOutput_RPISMI::push()
     pthread_mutex_lock(&_mutex);
     memcpy(_period_us, _request_period_us, sizeof(_period_us));
     pthread_mutex_unlock(&_mutex);
-    memset(_request_period_us, 0, sizeof(_request_period_us));
 
     if (sem.take_nonblocking()) {
         return;
