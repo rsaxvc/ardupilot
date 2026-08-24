@@ -708,6 +708,40 @@ TEST(CRCTest, parity)
     EXPECT_EQ(parity(0b11111111), 0);
 }
 
+static uint64_t LeftShift(uint64_t x, int a)
+{
+    if (a >= 0 && a < 64) {
+        return x << a;
+    }
+    if (a < 0 && a >= -63) {
+        return x >> -a;
+    }
+    return 0;
+}
+
+TEST(MathTest, LeftShift)
+{
+    EXPECT_EQ(0ULL, LeftShift(1, -1));
+    EXPECT_EQ(1ULL, LeftShift(1, 0));
+    EXPECT_EQ(2ULL, LeftShift(1, 1));
+    EXPECT_EQ(1ULL << 62, LeftShift(1ULL << 63, -1));
+    EXPECT_EQ(1ULL << 63, LeftShift(1ULL << 63, 0));
+    EXPECT_EQ(1ULL << 63, LeftShift(1ULL << 62, 1));
+
+}
+
+TEST(MathTest, MulHi)
+{
+    for (int i=0; i < 64; ++i) {
+        for (int j=0; j < 64; ++j) {
+            uint64_t x = 3ULL << i;
+            uint64_t y = 5ULL << j;
+            uint64_t product = LeftShift((x>>i)*(y>>j), i + j - 64);
+            EXPECT_EQ(product, uint64_mulhi(x, y));
+        }
+    }
+}
+
 TEST(MathTest, div1000)
 {
     for (uint32_t i=0; i<1000000; i++) {
