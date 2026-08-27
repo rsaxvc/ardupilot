@@ -14,8 +14,7 @@
 
 class HALSITL::Util : public AP_HAL::Util {
 public:
-    Util(SITL_State *_sitlState) :
-        sitlState(_sitlState) {}
+    Util(SITL_State *_sitlState);
     
     /**
        how much free memory do we have in bytes. 
@@ -109,4 +108,5 @@ private:
     uart_stats log_uart_stats;
 #endif
 #endif // HAL_UART_STATS_ENABLED
+    int dev_random;
 };
