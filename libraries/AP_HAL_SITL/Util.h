@@ -14,9 +14,8 @@
 
 class HALSITL::Util : public AP_HAL::Util {
 public:
-    Util(SITL_State *_sitlState) :
-        sitlState(_sitlState) {}
-    
+    Util(SITL_State *_sitlState);
+
     /**
        how much free memory do we have in bytes. 
      */
@@ -79,6 +78,8 @@ public:
 
 private:
     SITL_State *sitlState;
+
+    int dev_random = -1;
 
 #ifdef WITH_SITL_TONEALARM
     static ToneAlarm_SF _toneAlarm;

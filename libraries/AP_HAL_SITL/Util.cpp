@@ -13,6 +13,14 @@ extern const AP_HAL::HAL& hal;
 HALSITL::ToneAlarm_SF HALSITL::Util::_toneAlarm;
 #endif
 
+HALSITL::Util::Util(SITL_State *_sitlState) : sitlState(_sitlState)
+{
+    dev_random = open("/dev/urandom", O_RDONLY);
+    if (dev_random < 0) {
+        AP_HAL::panic("unable to open /dev/urandom");
+    }
+}
+
 uint64_t HALSITL::Util::get_hw_rtc() const
 {
 #ifndef CLOCK_REALTIME
@@ -121,12 +129,7 @@ void HALSITL::Util::commandline_arguments(uint8_t &argc, char * const *&argv)
  */
 bool HALSITL::Util::get_random_vals(uint8_t* data, size_t size)
 {
-    int dev_random = open("/dev/urandom", O_RDONLY);
-    if (dev_random < 0) {
-        return false;
-    }
     ssize_t result = read(dev_random, data, size);
-    close(dev_random);
     return result >= 0 && (size_t)result == size;
 }
 
