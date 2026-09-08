@@ -644,17 +644,76 @@ class Board:
             bld.ap_version_append_int('BUILD_DATE_DAY', ltime.tm_mday)
 
     def embed_ROMFS_files(self, ctx):
-        '''embed some files using AP_ROMFS'''
+        '''embed some files using AP_ROMFS, as two stages of waf tasks.
+
+        Compressing each ROMFS file is its own per-file task, so adding
+        or removing a file - or changing the content of just one of
+        them - doesn't force every other file to be recompressed too
+        (and lets waf compress them in parallel on a clean build). A
+        final, cheap assembly task just concatenates the already
+        -compressed per-file fragments into ap_romfs_embedded.h.
+        '''
         import embed
-        header = ctx.bldnode.make_node('ap_romfs_embedded.h').abspath()
-        if not embed.create_embedded_h(header, ctx.env.ROMFS_FILES, ctx.env.ROMFS_UNCOMPRESSED):
-            ctx.fatal("Failed to created ap_romfs_embedded.h")
+
+        # de-duplicate identical (name, path) entries, same as the old
+        # single-task embed.create_embedded_h() used to, and check for
+        # any remaining name collisions up front with a clear error
+        files = sorted(set(ctx.env.ROMFS_FILES))
+        seen_names = set()
+        for name, path in files:
+            if name in seen_names:
+                ctx.fatal("Duplicate ROMFS file %s" % name)
+            seen_names.add(name)
+
+        uncompressed = ctx.env.ROMFS_UNCOMPRESSED
+
+        fragments = []
+        for name, path in files:
+            if os.path.isabs(path):
+                # e.g. the bootloader binary, embedded via an absolute
+                # path computed by chibios_hwdef.py
+                src_node = ctx.root.find_node(path)
+            else:
+                src_node = ctx.srcnode.find_node(path)
+            if src_node is None:
+                ctx.fatal("Failed to find ROMFS file %s" % path)
+
+            fragment_node = ctx.bldnode.find_or_declare(
+                'romfs_fragments/%s.json' % embed.array_name_for(name))
+
+            def compress_run(task, embedded_name=name):
+                embed.write_fragment(task.outputs[0].abspath(), task.inputs[0].abspath(),
+                                      embedded_name, uncompressed)
+                return 0
+
+            ctx(
+                rule=compress_run,
+                source=src_node,
+                target=fragment_node,
+                name='ap_romfs_compress:%s' % name,
+            )
+            fragments.append((name, fragment_node))
+
+        header = ctx.bldnode.find_or_declare('ap_romfs_embedded.h')
+
+        def assemble_run(task):
+            frag_pairs = [(nm, node.abspath()) for nm, node in fragments]
+            if not embed.assemble_embedded_h(task.outputs[0].abspath(), frag_pairs, uncompressed):
+                return 1
+            return 0
+
+        ctx(
+            rule=assemble_run,
+            source=[node for _, node in fragments],
+            target=header,
+            name='ap_romfs_embedded_h',
+        )
 
         ctx.env.CXXFLAGS += ['-DHAL_HAVE_AP_ROMFS_EMBEDDED_H']
 
         # Allow lua to load from ROMFS if any lua files are added
-        for file in ctx.env.ROMFS_FILES:
-            if file[0].startswith("scripts") and file[0].endswith(".lua"):
+        for name, path in files:
+            if name.startswith("scripts") and name.endswith(".lua"):
                 ctx.env.CXXFLAGS += ['-DHAL_HAVE_AP_ROMFS_EMBEDDED_LUA']
                 break
 
@@ -1598,4 +1657,4 @@ class QURTBoard(Board):
     def get_name(self):
         # get name of class
         return self.__class__.__name__
-    
+

@@ -9,17 +9,36 @@ Andrew Tridgell
 May 2017
 '''
 
-import os, sys, zlib
+import os, sys, zlib, json, hashlib
 
 def write_encode(out, s):
     out.write(s.encode())
 
-def embed_file(out, f, idx, embedded_name, uncompressed):
-    '''embed one file'''
+def crc32(bytes, crc=0):
+    '''crc32 equivalent to crc32_small() from AP_Math/crc.cpp'''
+    for byte in bytes:
+        crc ^= byte
+        for i in range(8):
+            mask = (-(crc & 1)) & 0xFFFFFFFF
+            crc >>= 1
+            crc ^= (0xEDB88320 & mask)
+    return crc
+
+def array_name_for(embedded_name):
+    '''a C array name that's stable for a given embedded ROMFS name,
+    independent of its position amongst the other embedded files - so a
+    fragment written by compress_fragment() doesn't need to change just
+    because other ROMFS files were added or removed'''
+    return 'ap_romfs_' + hashlib.sha1(embedded_name.encode()).hexdigest()[:16]
+
+def compress_fragment(src, embedded_name, uncompressed):
+    '''compress a single ROMFS file, returning a dict with everything
+    assemble_embedded_h() needs to embed it, without needing to touch
+    the file's contents again'''
     try:
-        contents = open(f,'rb').read()
+        contents = open(src,'rb').read()
     except Exception:
-        raise Exception("Failed to embed %s" % f)
+        raise Exception("Failed to embed %s" % src)
 
     if embedded_name.endswith("bootloader.bin"):
         # round size to a multiple of 32 bytes for bootloader, this ensures
@@ -31,7 +50,6 @@ def embed_file(out, f, idx, embedded_name, uncompressed):
             print("Padded %u bytes for %s to %u" % (pad, embedded_name, len(contents)))
 
     crc = crc32(contents)
-    write_encode(out, '__EXTFLASHFUNC__ static const uint8_t ap_romfs_%u[] = {' % idx)
 
     if uncompressed:
         # terminate if there's not already an existing null. we don't add it to
@@ -48,65 +66,66 @@ def embed_file(out, f, idx, embedded_name, uncompressed):
 
     if len(b) == 0:
         raise ValueError(f"Zero-length ROMFS contents ({embedded_name}) not permitted")
-    write_encode(out, ",".join(str(c) for c in b))
-    if null_terminate:
-        write_encode(out, ",0")
-    write_encode(out, '};\n\n');
-    return crc, len(contents)
 
-def crc32(bytes, crc=0):
-    '''crc32 equivalent to crc32_small() from AP_Math/crc.cpp'''
-    for byte in bytes:
-        crc ^= byte
-        for i in range(8):
-            mask = (-(crc & 1)) & 0xFFFFFFFF
-            crc >>= 1
-            crc ^= (0xEDB88320 & mask)
-    return crc
+    return {
+        'name': embedded_name,
+        'array_name': array_name_for(embedded_name),
+        'crc': crc,
+        'decompressed_size': len(contents),
+        'body': ",".join(str(c) for c in b),
+        'null_terminate': null_terminate,
+    }
 
-def create_embedded_h(filename, files, uncompressed=False):
-    '''create a ap_romfs_embedded.h file'''
+def write_fragment(out_path, src, embedded_name, uncompressed):
+    '''compress one ROMFS file and write its fragment out as JSON, for
+    assemble_embedded_h() to pick up later without recompressing it'''
+    frag = compress_fragment(src, embedded_name, uncompressed)
+    with open(out_path, 'w') as f:
+        json.dump(frag, f)
+
+def assemble_embedded_h(filename, fragments, uncompressed=False):
+    '''assemble a ap_romfs_embedded.h file from a list of (embedded_name,
+    fragment_path) pairs, each already compressed by write_fragment()'''
+
+    # remove duplicates and sort
+    fragments = sorted(set(fragments))
 
     done = set()
+    frags = []
+    for name, fragment_path in fragments:
+        if name in done:
+            print("Duplicate ROMFS file %s" % name)
+            return False
+        done.add(name)
+        with open(fragment_path) as f:
+            frags.append(json.load(f))
 
     out = open(filename, "wb")
     write_encode(out, '''// generated embedded files for AP_ROMFS\n\n''')
 
-    # remove duplicates and sort
-    files = sorted(list(set(files)))
-    crc = {}
-    decompressed_size = {}
-    for i in range(len(files)):
-        (name, filename) = files[i]
-        if name in done:
-            print("Duplicate ROMFS file %s" % name)
-            sys.exit(1)
-        done.add(name)
-        try:
-            crc[filename], decompressed_size[filename] = embed_file(out, filename, i, name, uncompressed)
-        except Exception as e:
-            print(e)
-            return False
+    for frag in frags:
+        write_encode(out, '__EXTFLASHFUNC__ static const uint8_t %s[] = {' % frag['array_name'])
+        write_encode(out, frag['body'])
+        if frag['null_terminate']:
+            write_encode(out, ",0")
+        write_encode(out, '};\n\n')
 
     write_encode(out, '''const AP_ROMFS::embedded_file AP_ROMFS::files[] = {\n''')
-
-    for i in range(len(files)):
-        (name, filename) = files[i]
-        if uncompressed:
-            ustr = ' (uncompressed)'
-        else:
-            ustr = ''
-        print("Embedding file %s:%s%s" % (name, filename, ustr))
-        write_encode(out, '{ "%s", sizeof(ap_romfs_%u), %d, 0x%08x, ap_romfs_%u },\n' % (
-            name, i, decompressed_size[filename], crc[filename], i))
+    for frag in frags:
+        ustr = ' (uncompressed)' if uncompressed else ''
+        print("Embedding file %s%s" % (frag['name'], ustr))
+        write_encode(out, '{ "%s", sizeof(%s), %d, 0x%08x, %s },\n' % (
+            frag['name'], frag['array_name'], frag['decompressed_size'], frag['crc'], frag['array_name']))
     write_encode(out, '};\n')
     out.close()
     return True
 
 if __name__ == '__main__':
-    import sys
-    flist = []
-    for i in range(1, len(sys.argv)):
-        f = sys.argv[i]
-        flist.append((f, f))
-    create_embedded_h("/tmp/ap_romfs_embedded.h", flist)
+    import sys, tempfile
+    with tempfile.TemporaryDirectory() as tmpdir:
+        flist = []
+        for i, f in enumerate(sys.argv[1:]):
+            frag_path = os.path.join(tmpdir, '%u.json' % i)
+            write_fragment(frag_path, f, f, False)
+            flist.append((f, frag_path))
+        assemble_embedded_h("/tmp/ap_romfs_embedded.h", flist)
