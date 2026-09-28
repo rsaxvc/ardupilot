@@ -39,6 +39,11 @@ from waflib.Tools import c_preproc
 
 import ardupilotwaf as ap
 
+# keep the shell/argv used to compile each c/cxx task around after it runs,
+# instead of discarding it in Task.post_run(), so compile_commands.json can
+# be written once from real compiles instead of a separate dry-run pass
+Task.Task.keep_last_cmd = True
+
 UTILITY_SOURCE_EXTS = ['utility/' + glob for glob in ap.SOURCE_EXTS]
 
 def _common_tgen_name(library):
@@ -347,95 +352,18 @@ def write_compilation_database(bld):
     root = list(compile_cmd_db.values())
     database_file.write_json(root)
 
-def target_list_changed(bld, targets):
-    """
-    Check if the list of targets has changed recorded in target_list file
-    """
-    # target_list file is in the root build directory
-    target_list_file = bld.bldnode.find_or_declare('target_list')
-    try:
-        with open(target_list_file.abspath(), 'r') as f:
-            old_targets = f.read().strip().split(',')
-    except IOError:
-        Logs.info('No target_list file found, creating')
-        old_targets = []
-    if old_targets != targets:
-        with open(target_list_file.abspath(), 'w') as f:
-            f.write(','.join(targets))
-        return True
-    return False
-
-@conf
-def remove_target_list(cfg):
-    target_list_file = cfg.bldnode.make_node(cfg.options.board + '/target_list')
-    try:
-        Logs.info('Removing target_list file %s', target_list_file.abspath())
-        os.remove(target_list_file.abspath())
-    except OSError:
-        pass
-
-@feature('cxxprogram', 'cxxstlib')
-@after_method('propagate_uselib_vars')
-def dry_run_compilation_database(self):
+@feature('c', 'cxx')
+@after_method('process_source')
+def collect_compilation_database_tasks(self):
+    # gather real compile tasks as they're created; compile_commands.json is
+    # written once, post-build, from their actual last_cmd (see write_compilation_database)
     if not hasattr(self, 'bld'):
         return
     bld = self.bld
-    bld.compilation_database_tasks = []
-    targets = bld.targets.split(',')
-    use = self.use
-    if isinstance(use, str):
-        use = [use]
-    # if targets have not changed and neither has configuration, 
-    # we can skip compilation database generation
-    if not target_list_changed(bld, targets + use):
-        Logs.info('Targets have not changed, skipping compilation database compile_commands.json generation')
-        return
-    Logs.info('Generating compile_commands.json')
-    # we need only to generate last_cmd, so override
-    # exec_command temporarily
-    def exec_command(bld, *k, **kw):
-        return 0
-
-    for g in bld.groups:
-        for tg in g:
-            # we only care to list targets and library objects
-            if not hasattr(tg, 'name'):
-                continue
-            if (tg.name not in targets) and (tg.name not in self.use):
-                continue
-            try:
-                f = tg.post
-            except AttributeError:
-                pass
-            else:
-                f()
-
-            if isinstance(tg, Task.Task):
-                lst = [tg]
-            else:
-                lst = tg.tasks
-            for tsk in lst:
-                if tsk.__class__.__name__ == "swig":
-                    tsk.runnable_status()
-                    if hasattr(tsk, 'more_tasks'):
-                        lst.extend(tsk.more_tasks)
-                # Not all dynamic tasks can be processed, in some cases
-                # one may have to call the method "run()" like this:
-                # elif tsk.__class__.__name__ == 'src2c':
-                #    tsk.run()
-                #    if hasattr(tsk, 'more_tasks'):
-                #        lst.extend(tsk.more_tasks)
-
-                tup = tuple(y for y in [Task.classes.get(x) for x in ('c', 'cxx')] if y)
-                if isinstance(tsk, tup):
-                    bld.compilation_database_tasks.append(tsk)
-                    tsk.nocache = True
-                    old_exec = tsk.exec_command
-                    tsk.exec_command = exec_command
-                    tsk.run()
-                    tsk.exec_command = old_exec
-
-    write_compilation_database(bld)
+    if not hasattr(bld, 'compilation_database_tasks'):
+        bld.compilation_database_tasks = []
+        bld.add_post_fun(write_compilation_database)
+    bld.compilation_database_tasks.extend(getattr(self, 'compiled_tasks', []))
 
 def configure(cfg):
     cfg.env.AP_LIBRARIES_OBJECTS_KW = dict()
