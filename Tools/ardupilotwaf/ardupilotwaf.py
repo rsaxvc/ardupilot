@@ -309,7 +309,6 @@ class upload_fw_blueos(Task.Task):
 
 class check_elf_symbols(Task.Task):
     color='CYAN'
-    always_run = True
     def keyword(self):
         return "checking symbols"
 
@@ -341,6 +340,13 @@ class check_elf_symbols(Task.Task):
         for b in blacklist:
             if nmout.find(b) != -1:
                 raise Errors.WafError("Disallowed symbol in %s: %s" % (elfpath, b))
+
+    # run() isn't built from run_str, so waf never hashes it into the task
+    # signature on its own; hash its source explicitly so editing the
+    # blacklist (or any other check_elf_symbols logic) invalidates cached
+    # signatures and forces a rescan, rather than needing an unrelated
+    # rebuild of the binary to notice the change.
+    hcode = Utils.h_cmd(run)
 
 
 @feature('post_link')
