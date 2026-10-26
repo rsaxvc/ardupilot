@@ -246,9 +246,6 @@ private:
     uint8_t motor_map[max_motors];
     uint32_t motor_mask;
 
-    // convert between servo number and FMU channel number for ESC telemetry
-    uint8_t chan_offset;
-
     // when did we last request telemetry?
     uint32_t last_telem_request_us;
     uint8_t last_telem_esc;
