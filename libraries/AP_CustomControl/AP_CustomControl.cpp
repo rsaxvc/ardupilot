@@ -43,7 +43,6 @@ const AP_Param::GroupInfo AP_CustomControl::var_info[] = {
 const struct AP_Param::GroupInfo *AP_CustomControl::_backend_var_info[AP_PLANE_CUSTOMCONTROL_MAX_TYPES];
 
 AP_CustomControl::AP_CustomControl(const AP_FixedWing &parms)
-    : aparm(parms)
 {
     AP_Param::setup_object_defaults(this, var_info);
 }

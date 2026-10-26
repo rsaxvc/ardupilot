@@ -96,7 +96,6 @@ private:
     AP_UInt32 _custom_controller_mask; // Enable up to 31 custom controller axes/outputs.
 
     AP_CustomControl_Backend *_backend;
-    const AP_FixedWing &aparm;
 
     FunctionInfo functions[AP_PLANE_CUSTOMCONTROL_FUNCTIONS_MAX];
     uint16_t channels_pwm[NUM_SERVO_CHANNELS]; // MAXINT16 means don't set.
