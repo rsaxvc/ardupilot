@@ -27,7 +27,7 @@ class AP_CustomControl_Backend;
 
 class AP_CustomControl {
 public:
-    AP_CustomControl(const AP_FixedWing &parms);
+    AP_CustomControl();
 
     CLASS_NO_COPY(AP_CustomControl);  /* Do not allow copies */
 

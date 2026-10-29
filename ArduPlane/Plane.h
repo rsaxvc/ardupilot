@@ -253,7 +253,7 @@ private:
     AP_SteerController steerController{};
 
 #if AP_PLANE_CUSTOMCONTROL_ENABLED
-    AP_CustomControl custom_control{aparm};
+    AP_CustomControl custom_control{};
 #endif // AP_PLANE_CUSTOMCONTROL_ENABLED
 
     // Training mode
